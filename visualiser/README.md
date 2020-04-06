@@ -26,7 +26,7 @@ Connect to a [media stream](https://developer.mozilla.org/en-US/docs/Web/API/Med
 
 To see a simple demo, clone this repository, and open the file `demo.html` in a browser. You can toggle the visualiser by clicking the start/stop buttons.
 
-For clues on how to use the visualiser in an application, have a look at the sample code in files `demo.html` and `demo.js`.
+For ideas on how to use the visualiser in an application, have a look at the sample code in files `demo.html` and `demo.js`.
 
 ### Screenshot with visualisation enabled
 ![](demo_screenshot_mic_on.png?raw=true)
