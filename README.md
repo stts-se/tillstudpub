@@ -1,2 +1,2 @@
 # tillstudpub
-Public resources for the TIllStud project
+Public resources for the TillStud project
