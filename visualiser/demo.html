@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+    <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="layout.css">
+	<link rel="stylesheet" type="text/css" href="look.css">
+	<title>STTS Visualiser demo</title>
+    </head>
+    <body id="body" class="selected-font grid-container">
+
+        <button id="recstart">start</button>
+        <button id="recstop" disabled="disabled">stop</button>
+
+        <div style="position:relative; height: 120px; width: 500px" class="visualiser-wrapper">
+            <canvas style="position:absolute; top:0px; left:0px; width: 100%; height: 120px" class="visualiser"></canvas>
+            <span style="padding-top: 10px; padding-bottom: 10px; text-align: center; position:absolute; top:0px; left:0px; width: 100%; height: 120px">
+                <image id="visualisermic" style="height: 100px" src=""></image>
+            </span>
+        </div>
+
+    </body>
+
+    <script src="demo.js"></script>
+    <script src="visualiser.js"></script>
+    </html>
