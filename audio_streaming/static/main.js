@@ -16,7 +16,7 @@ let micDetected = true;
 let context;
 var channelCount = 1;
 
-let bytesSent = 0;
+let bytesSent = 0; // for logging purposes
 
 const bigMicOnSrc = "images/mic_red_microphone-3404243_1280.png"
 
@@ -115,7 +115,10 @@ function disableAll() {
 }
 
 document.getElementById("recstart").addEventListener("click", function () {
-    //currentBlob = null;
+    // init audio context/recorder first time recstart is clicked (it has to be initialized after user gesture, in order to work in Chrome)
+    if (context === undefined ||context === null) {
+        initStreamer();    
+    }
 
     let wsURL = "ws://" + baseURL + "/ws/register";
     console.log(wsURL);
@@ -273,7 +276,7 @@ window.onload = async function () {
 
     this.loadUserSettings();
     this.initSettings();
-    this.initStreamer();
+    //this.initStreamer();
 }
 
 window.onbeforeunload = function () {
