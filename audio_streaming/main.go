@@ -173,8 +173,6 @@ func openDataWebsocket(w http.ResponseWriter, r *http.Request) {
 	}
 
 	go receiveAudioStream(*handshake.UUID, conn)
-
-	//go listenForResults(*handshake.UUID, jsonWriter, conn)
 }
 
 type bufferedFileWriter struct {
@@ -300,7 +298,8 @@ func initialiseAudioStream(conn *websocket.Conn) (Handshake, error) {
 
 	//ctx := context.Background()
 
-	if writer, err = newBufferedFileWriter(filepath.Join(outputDir, fmt.Sprintf("%s.json", id.String()))); err != nil {
+	jsonFileName := filepath.Join(outputDir, fmt.Sprintf("%s.json", id.String()))
+	if writer, err = newBufferedFileWriter(jsonFileName); err != nil {
 		return handshake, fmt.Errorf("couldn't connect recogniser context : %v", err)
 	}
 
@@ -323,6 +322,16 @@ func initialiseAudioStream(conn *websocket.Conn) (Handshake, error) {
 
 	if err = writer.writeJSON(handshake); err != nil {
 		return handshake, fmt.Errorf("failed to write handshake to file %v : %v", handshake, err)
+	}
+	if err := writer.close(); err != nil {
+		log.Printf("Couldn't save kson file: %v", err)
+	} else {
+		log.Printf("Saved json file %s", jsonFileName)
+		if err := copyFile(jsonFileName, latestJSONFileName); err != nil {
+			log.Printf("Couldn't copy json file to %s: %v", latestJSONFileName, err)
+		} else {
+			log.Printf("Saved audio file %s", latestJSONFileName)
+		}
 	}
 
 	js, err = writeMessageToSocket(returnMsg, conn)
