@@ -116,8 +116,8 @@ function disableAll() {
 
 document.getElementById("recstart").addEventListener("click", function () {
     // init audio context/recorder first time recstart is clicked (it has to be initialized after user gesture, in order to work in Chrome)
-    if (context === undefined ||context === null) {
-        initStreamer();    
+    if (context === undefined || context === null) {
+        initStreamer();
     }
 
     let wsURL = "ws://" + baseURL + "/ws/register";
@@ -260,7 +260,6 @@ function convertFloat32ToInt16(buffer) {
     }
     return buf.buffer
 }
-
 
 function defaultEncoding() {
     let browser = navigator.userAgent;
