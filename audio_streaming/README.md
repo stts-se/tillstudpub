@@ -6,11 +6,11 @@ To start the server, run
 
 Clients:
 
-* Javascript: Point your browser to http://localhost:7654
+* Javascript: Point your browser to http://localhost:7651
 
 * `Go` client: See folder `gocli`
 
 Recorded audio is saved in the `data` folder. The last recorded file is always saved as `data/latest.raw`. To play a recorded `.raw` files, run play with the correct parameters, e.g.
 
- `/usr/bin/play -e signed-integer -r 44100 -b 16 <rawfile>`
+ `play -e signed-integer -r 44100 -b 16 <rawfile>`
 
