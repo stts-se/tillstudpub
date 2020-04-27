@@ -6,7 +6,7 @@ To start the server, run
 
 Clients:
 
-* Javascript: Point your browser to http://localhost:7654
+* Javascript: Point your browser to http://localhost:7651
 
 * `Go` client: See folder `gocli`
 
