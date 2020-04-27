@@ -16,7 +16,6 @@ let speechDetected = false;
 
 let channelCount = 1;
 
-const bigMicOffSrc = "images/disabled_mic_needpix_com_edited_image.png";
 const bigMicOnSrc = "images/mic_red_microphone-3404243_1280.png"
 
 let audioWS;
@@ -114,6 +113,8 @@ function disableAll() {
 }
 
 document.getElementById("recstart").addEventListener("click", function() {
+    //currentBlob = null;
+
     let wsURL = "ws://" + baseURL + "/ws/register";
     console.log(wsURL);
     audioWS = new WebSocket(wsURL);
@@ -177,8 +178,8 @@ document.getElementById("recstart").addEventListener("click", function() {
 function startStreaming(context) {
     //console.log("supported constraints", navigator.mediaDevices.getSupportedConstraints());
     let constraints = {audio: true};
-    navigator.mediaDevices.getUserMedia(constraints)
 
+    navigator.mediaDevices.getUserMedia(constraints)
     // on success:
 	.then(function(stream) {
 	    
@@ -186,11 +187,13 @@ function startStreaming(context) {
 	    VISUALISER.connect(stream);
 	    
 	    let audioInput = context.createMediaStreamSource(stream);
-
 	    var bufferSize = 1024;
 	    recorder = context.createScriptProcessor(bufferSize, channelCount, channelCount);
+	    audioInput.connect(recorder)
+	    recorder.connect(context.destination);
 	    
 	    recorder.onaudioprocess = function(e){
+		//console.log("recorder.onaudioprocess");
 		if(!isRecording()) return;
 		//logMessage("info", "recording");
 		var left = e.inputBuffer.getChannelData(0);
@@ -199,8 +202,6 @@ function startStreaming(context) {
 		audioWS.send(sendable);
 	    }
 
-	    audioInput.connect(recorder)
-	    recorder.connect(context.destination);
 	})
 
     // on error:
@@ -216,7 +217,7 @@ function startStreaming(context) {
 document.getElementById("recstop").addEventListener("click", function() {
     recStop();
 });
-
+    
 function recStop() {						    
     if (recorder === null) {
 	msg = "Cannot record -- recorder is undefined";
