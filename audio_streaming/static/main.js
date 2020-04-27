@@ -276,6 +276,7 @@ window.onload = async function () {
 
     this.loadUserSettings();
     this.initSettings();
+    VISUALISER.init(isRecording);
     //this.initStreamer();
 }
 
