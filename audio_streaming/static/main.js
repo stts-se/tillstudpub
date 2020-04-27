@@ -249,7 +249,7 @@ function convertoFloat32ToInt16(buffer) {
 
 function defaultEncoding() {
     let browser = navigator.userAgent;
-    if (browser.indexOf("chrome") != -1) {
+    if (browser.toLowerCase().indexOf("chrome") != -1) {
 	return "flac";
     } else if (browser.indexOf("mozilla") != -1 || browser.indexOf("firefox") != -1) {
 	return "pcm";

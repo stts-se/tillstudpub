@@ -195,17 +195,13 @@ func main() {
 
 	var cmd = filepath.Base(os.Args[0])
 
-	var printUsage = func() {
+	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [flags] audioFile\n", cmd)
 		fmt.Fprintf(os.Stderr, " to record from stdin, use audioFile -\n")
 		fmt.Fprintf(os.Stderr, "\nSample usage: rec -r 48000 -t flac -c 2 - 2> /dev/null  | go run . -channels 2 -sample_rate 48000 -encoding flac -host 127.0.0.1 -port 7651 -\n")
 		fmt.Fprintf(os.Stderr, "\nFlags\n")
 		flag.PrintDefaults()
-	}
-
-	flag.Usage = func() {
-		printUsage()
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	var defaultUser string
@@ -222,12 +218,9 @@ func main() {
 	session = flag.String("session", "", "Session name")
 	project = flag.String("project", "", "Project name")
 
-	fmt.Println(channelCount, sampleRate)
-
 	flag.Parse()
 	if len(flag.Args()) != 1 {
-		printUsage()
-		os.Exit(1)
+		flag.Usage()
 	}
 
 	audioFile := flag.Args()[0]
