@@ -14,7 +14,9 @@ let recorder;
 let micDetected = true;
 let speechDetected = false;
 
-let channelCount = 1;
+var channelCount = 1;
+
+let bytesSent = 0;
 
 const bigMicOnSrc = "images/mic_red_microphone-3404243_1280.png"
 
@@ -182,7 +184,7 @@ function startStreaming(context) {
     navigator.mediaDevices.getUserMedia(constraints)
     // on success:
 	.then(function(stream) {
-	    
+
 	    VISUALISER.init(isRecording);		
 	    VISUALISER.connect(stream);
 	    
@@ -197,7 +199,8 @@ function startStreaming(context) {
 		if(!isRecording()) return;
 		//logMessage("info", "recording");
 		var left = e.inputBuffer.getChannelData(0);
-		let sendable = convertoFloat32ToInt16(left);
+		let sendable = convertFloat32ToInt16(left);
+		bytesSent = bytesSent + sendable.byteLength;
 		//console.log("streaming " + sendable.byteLength + " bytes of audio");
 		audioWS.send(sendable);
 	    }
@@ -226,6 +229,8 @@ function recStop() {
     }
     //logMessage("info", "recording stopped");
     console.log("recording stopped");
+    console.log("sent " + bytesSent + " bytes in total");
+    bytesSent=0;
 
     document.getElementById("recstop").disabled = true;
     document.getElementById("recstart").disabled = false;
@@ -237,7 +242,7 @@ function recStop() {
 };
 
 
-function convertoFloat32ToInt16(buffer) {
+function convertFloat32ToInt16(buffer) {
     var l = buffer.length;
     var buf = new Int16Array(l)
 
