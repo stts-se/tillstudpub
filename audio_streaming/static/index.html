@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<!-- <link rel="stylesheet" type="text/css" href="layout.css"> -->
+	<link rel="stylesheet" type="text/css" href="look.css">
+	<title>TillStud Audio streaming demo</title>
+    </head>
+
+    <body>
+	<h1 style="vertical-align: middle" alt="TillStud logo">
+	    <img style="width: 100px; vertical-align: middle" src="tillstud_logo.png"/>TillStud Audio streaming demo
+	</h1>
+
+	<p><em>*** Ssǝɹƃoɹd uᴉ ʞɹoM ***</em></p>
+
+	<div style="display: none">
+	    <span id="username"/><span id="session"/><span id="project"/>
+	</div>
+	
+	<div style="position:relative; height: 120px; width: 500px" class="visualiser-wrapper">
+	    <canvas style="position:absolute; top:0px; left:0px; width: 100%; height: 120px" class="visualiser"></canvas>
+	    <span style="padding-top: 10px; padding-bottom: 10px; text-align: center; position:absolute; top:0px; left:0px; width: 100%; height: 120px">
+		<span id="audiofeedbacktextspan" style="vertical-align: middle; padding-bottom: 70px; color: grey; font-size: 150%" id=""></span>
+		<image id="bigmic" style="height: 100px" src=""></image>
+	    </span>
+	</div>		
+
+	<p>
+	    <button id="recstart" class="btn" title="Start recording">Start</button>
+	    <button id="recstop" class="btn" disabled="disabled" title="Stop recording">Stop</button>
+	</p>
+
+	<p>
+	    <b>Result</b><br/>
+	    <span id="result"/>
+	</p>
+	
+	<p>
+	    <b>Messages</b><br/>
+	    <span id="messages"/>
+	</p>
+	
+    </body>
+
+    <script src="main.js"></script>
+    <script src="visualiser.js"></script>
+    <script src="audio.js"></script>
+
+</html>
