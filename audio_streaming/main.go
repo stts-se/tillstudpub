@@ -8,12 +8,14 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+
 	//"io"
 	"flag"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,6 +30,8 @@ const outputDir = "data"
 
 var latestAudioFileName = filepath.Join(outputDir, "latest.raw")
 var latestJSONFileName = filepath.Join(outputDir, "latest.json")
+var latestAudioFileMutex = &sync.Mutex{}
+var latestJSONFileMutex = &sync.Mutex{}
 
 // print serverMsg to server log, and return an http error with clientMsg and the specified error code (http.StatusInternalServerError, etc)
 func httpError(w http.ResponseWriter, serverMsg string, clientMsg string, errCode int) {
@@ -327,11 +331,13 @@ func initialiseAudioStream(conn *websocket.Conn) (Handshake, error) {
 		log.Printf("Couldn't save kson file: %v", err)
 	} else {
 		log.Printf("Saved json file %s", jsonFileName)
+		latestJSONFileMutex.Lock()
 		if err := copyFile(jsonFileName, latestJSONFileName); err != nil {
 			log.Printf("Couldn't copy json file to %s: %v", latestJSONFileName, err)
 		} else {
 			log.Printf("Saved audio file %s", latestJSONFileName)
 		}
+		latestJSONFileMutex.Unlock()
 	}
 
 	js, err = writeMessageToSocket(returnMsg, conn)
@@ -391,11 +397,13 @@ func receiveAudioStream(id uuid.UUID, audioStreamSender *websocket.Conn) {
 		log.Printf("Couldn't save audio file: %v", err)
 	} else {
 		log.Printf("Saved audio file %s", audioFileName)
+		latestAudioFileMutex.Lock()
 		if err := copyFile(audioFileName, latestAudioFileName); err != nil {
 			log.Printf("Couldn't copy audio file to %s: %v", latestAudioFileName, err)
 		} else {
 			log.Printf("Saved audio file %s", latestAudioFileName)
 		}
+		latestAudioFileMutex.Unlock()
 	}
 }
 
