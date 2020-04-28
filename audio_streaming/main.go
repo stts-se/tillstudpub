@@ -223,13 +223,14 @@ func (w bufferedFileWriter) close() error {
 	return nil
 }
 
+//Message is a struct for sending messages over websockets
 type Message struct {
-	Label      string      `json:"label"`
-	Error      string      `json:"error,omitempty"`
-	Transcript *Transcript `json:"transcript,omitempty"`
-	Handshake  *Handshake  `json:"handshake,omitempty"`
+	Label     string     `json:"label"`
+	Error     string     `json:"error,omitempty"`
+	Handshake *Handshake `json:"handshake,omitempty"`
 }
 
+//Handshake is a struct for sending handshakes over websockets
 type Handshake struct {
 	// sent from client to server
 	SampleRate   int    `json:"sample_rate"`
@@ -243,20 +244,6 @@ type Handshake struct {
 	Session  string `json:"session,omitempty"`
 
 	UUID *uuid.UUID `json:"uuid,omitempty"` // sent from server to client
-}
-
-type Word struct {
-	Word      string `json:"word,omitempty"`
-	StartTime string `json:"start_time,omitempty"`
-	EndTime   string `json:"end_time,omitempty"`
-}
-
-type Transcript struct {
-	Words     *[]Word `json:"words,omitempty"`
-	Text      string  `json:"text,omitempty"`
-	IsFinal   bool    `json:"is_final"`
-	StartTime string  `json:"start_time,omitempty"`
-	EndTime   string  `json:"end_time,omitempty"`
 }
 
 func writeMessageToSocket(msg Message, socket *websocket.Conn) (string, error) {
@@ -296,8 +283,6 @@ func initialiseAudioStream(conn *websocket.Conn) (Handshake, error) {
 	if err != nil {
 		return handshake, fmt.Errorf("couldn't create uuid : %v", err)
 	}
-
-	//ctx := context.Background()
 
 	jsonFileName := filepath.Join(outputDir, fmt.Sprintf("%s.json", id.String()))
 	if writer, err = newBufferedFileWriter(jsonFileName); err != nil {
