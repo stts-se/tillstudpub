@@ -2,16 +2,13 @@ package main
 
 import (
 	"bufio"
-	//"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net/http"
-
-	//"io"
-	"flag"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
