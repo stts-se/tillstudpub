@@ -22,7 +22,9 @@ Recorded audio is saved in the `data` folder. The last recorded file is always s
 
  `play -e signed-integer -r 44100 -b 16 <rawfile>`
 
-See also playraw_example.sh. Hints on what parameters to use can be found in the `.json` files accompanying each `.raw` file.
+See also playraw_example.sh.
+
+Hints on what parameters to use can be found in the `.json` files accompanying each `.raw` file.
 
 
 
