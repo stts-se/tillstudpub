@@ -1,13 +1,28 @@
-// This is "processor.js" file, evaluated in AudioWorkletGlobalScope upon
-// audioWorklet.addModule() call in the main global scope.
-class MyWorkletProcessor extends AudioWorkletProcessor {
+/**
+ * A simple bypass node demo.
+ *
+ * @class BypassProcessor
+ * @extends AudioWorkletProcessor
+ */
+
+class BypassProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
   }
 
-  process(inputs, outputs, parameters) {
-    // audio processing code here.
+  process(inputs, outputs) {
+    //console.log(inputs, outputs)
+      
+    // By default, the node has single input and output.
+    const input = inputs[0];
+    const output = outputs[0];
+
+    for (let channel = 0; channel < output.length; ++channel) {
+      output[channel].set(input[channel]);
+    }
+
+    return true;
   }
 }
 
-registerProcessor('my-worklet-processor', MyWorkletProcessor);
+registerProcessor('bypass-processor', BypassProcessor);

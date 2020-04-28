@@ -1,14 +1,51 @@
+<!-- https://github.com/GoogleChromeLabs/web-audio-samples/tree/master/audio-worklet/basic/hello-audio-worklet -->
+
 <!doctype html>
 <html lang="en">
-    <head>
-	<meta charset="utf-8">
-	<title>TillStud Audio streaming demo</title>
-    </head>
 
-<body>HEJ</body>
+<head>
+  <meta charset="utf-8">
+  <title>TillStud Audio streaming demo</title>
+</head>
+
+<body>
+  <div class="container was-page-wrap"></div>
+  <script type="module">
+
+    const demoCode = async (context) => {
+      await context.audioWorklet.addModule('processors.js');
+      const bypasser = new AudioWorkletNode(context, 'bypass-processor');
+      const oscillator = new OscillatorNode(context);
+      oscillator.connect(bypasser).connect(context.destination);
+      oscillator.start();
+    };
+
+    const audioContext = new AudioContext();
+    const eButton = document.getElementById('start');
+    eButton.textContent = 'START';
+    let isFirstClick = true;
+    eButton.onclick = (event) => {
+      if (eButton.textContent === 'START') {
+        if (isFirstClick) {
+          demoCode(audioContext);
+          isFirstClick = false;
+        }
+        audioContext.resume();
+        //console.log('Context resumed.');
+        eButton.textContent = 'STOP';
+      } else {
+        audioContext.suspend();
+        //console.log('Context suspended.');
+        eButton.textContent = 'START';
+      }
+    };
 
 
-<script src="processors.js"></script>
-<script src="main.js"></script>
-  
+  </script>
+
+  <button id="start">START</button>
+
+</body>
+
+
 </html>
