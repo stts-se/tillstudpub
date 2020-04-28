@@ -10,42 +10,11 @@
 
 <body>
   <div class="container was-page-wrap"></div>
-  <script type="module">
-
-    const demoCode = async (context) => {
-      await context.audioWorklet.addModule('processors.js');
-      const bypasser = new AudioWorkletNode(context, 'bypass-processor');
-      const oscillator = new OscillatorNode(context);
-      oscillator.connect(bypasser).connect(context.destination);
-      oscillator.start();
-    };
-
-    const audioContext = new AudioContext();
-    const eButton = document.getElementById('start');
-    eButton.textContent = 'START';
-    let isFirstClick = true;
-    eButton.onclick = (event) => {
-      if (eButton.textContent === 'START') {
-        if (isFirstClick) {
-          demoCode(audioContext);
-          isFirstClick = false;
-        }
-        audioContext.resume();
-        //console.log('Context resumed.');
-        eButton.textContent = 'STOP';
-      } else {
-        audioContext.suspend();
-        //console.log('Context suspended.');
-        eButton.textContent = 'START';
-      }
-    };
-
-
-  </script>
-
-  <button id="start">START</button>
+  
+  <button id="button">START</button>
 
 </body>
 
+<script src="main.js"></script>
 
 </html>
