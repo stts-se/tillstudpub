@@ -18,11 +18,11 @@ Clients:
 
 * `Go` command line client: See folder `gocli`
 
-Recorded audio is saved in the `data` folder. The last recorded file is always saved as `data/latest.raw`. To play a recorded `.raw` files, run play with the correct parameters, e.g.
+Recorded audio is saved in the `data` folder. The last recorded file is always saved as `data/latest.raw`. To play a recorded `.raw` file, run `play` with the correct parameters, e.g.
 
  `play -e signed-integer -r 44100 -b 16 <rawfile>`
 
-(See playraw_example.sh.)
+See also playraw_example.sh. Hints on what parameters to use can be found in the `.json` files accompanying each `.raw` file.
 
 
 
