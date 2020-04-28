@@ -13,8 +13,6 @@ let mediaAccess;
 let recorder;
 let micDetected = true;
 
-let debugVariable;
-
 let context;
 var channelCount = 1;
 
@@ -165,7 +163,6 @@ document.getElementById("recstart").addEventListener("click", function () {
                 document.getElementById("recstart").disabled = true;
                 document.getElementById("audiofeedbacktextspan").innerText = "";
                 document.getElementById("bigmic").src = bigMicOnSrc;
-
                 console.log("recording started");
             }
         }
@@ -204,26 +201,30 @@ function initStreamerWithAudioWorklet() {
             VISUALISER.init(isRecording);
             VISUALISER.connect(stream);
 
-            let audioInput = context.createMediaStreamSource(stream);
+            let audioSource = context.createMediaStreamSource(stream);
             await context.audioWorklet.addModule('processor.js');
-            const bypasser = new AudioWorkletNode(context, 'bypass-processor');
-            debugVariable = bypasser;
-            audioInput.connect(bypasser).connect(context.destination);
+            const recorder = new AudioWorkletNode(context, 'recorder-worklet');
+            audioSource.connect(recorder).connect(context.destination);
 
-            bypasser.port.onmessage = (e) => {
+            recorder.port.onmessage = function (e) {
                 if (e.data.eventType === 'data') {
-                  const audioData = e.data.audioBuffer;
-                  if (!isRecording()) return;
-                  var left = e.inputBuffer.getChannelData(0);
-                  let sendable = convertFloat32ToInt16(left);
-                  bytesSent = bytesSent + sendable.byteLength;
-                  audioWS.send(sendable);
+                    console.log("recorder.ondata");
+                    const audioData = e.data.audioBuffer;
+                    if (!isRecording()) return;
+                    var left = e.inputBuffer.getChannelData(0);
+                    let sendable = convertFloat32ToInt16(left);
+                    bytesSent = bytesSent + sendable.byteLength;
+                    audioWS.send(sendable);
                 }
                 if (e.data.eventType === 'stop') {
-                  // recording has stopped
+                    // recording has stopped
                 }
-              };
-        
+            };
+            //let time = new Date().getTime(); // ??? 
+            //let duration = 1; // ??? 
+            //recorder.parameters.get('isRecording').setValueAtTime(1, time);
+            //recorder.parameters.get('isRecording').setValueAtTime(0, time + duration);
+            //yourSourceNode.start(time); // ??? 
             return true;
         })
 
@@ -256,7 +257,6 @@ function initStreamerWithScriptProcessor() {
     navigator.mediaDevices.getUserMedia({ audio: true })
         // on success:
         .then(function (stream) {
-
             VISUALISER.init(isRecording);
             VISUALISER.connect(stream);
 
@@ -301,7 +301,7 @@ function recStop() {
     }
     //logMessage("info", "recording stopped");
     console.log("recording stopped");
-    //console.log("sent " + bytesSent + " bytes in total");
+    console.log("sent " + bytesSent + " bytes in total");
     bytesSent = 0;
 
     document.getElementById("recstop").disabled = true;

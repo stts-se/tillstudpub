@@ -8,7 +8,7 @@ async function startProcessFunc(context) {
   let mikeStream = await openMike();
   let mikeNode = context.createMediaStreamSource(mikeStream);
 
-  await context.audioWorklet.addModule('processors.js');
+  await context.audioWorklet.addModule('processor.js');
   const bypasser = new AudioWorkletNode(context, 'bypass-processor');
   mikeNode.connect(bypasser).connect(context.destination);
 }
