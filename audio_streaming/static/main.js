@@ -22,9 +22,9 @@ const bigMicOnSrc = "images/mic_red_microphone-3404243_1280.png"
 
 let audioWS;
 
-let username = document.getElementById("username");
-let sessionname = document.getElementById("session");
-let projectname = document.getElementById("project");
+let user = document.getElementById("user");
+let session = document.getElementById("session");
+let project = document.getElementById("project");
 
 // START: UTIL
 function addClass(element, theClass) {
@@ -94,13 +94,13 @@ function loadUserSettings() { // TEMPLATE
     // TODO: Save settings between sessions
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('project')) {
-        projectname.value = urlParams.get("project");
+        project.value = urlParams.get("project");
     }
     if (urlParams.has('session')) {
-        sessionname.value = urlParams.get("session");
+        session.value = urlParams.get("session");
     }
     if (urlParams.has('user')) {
-        username.value = urlParams.get("user");
+        user.value = urlParams.get("user");
     }
 }
 
@@ -117,7 +117,7 @@ function disableAll() {
 document.getElementById("recstart").addEventListener("click", function () {
     // init audio context/recorder first time recstart is clicked (it has to be initialized after user gesture, in order to work in Chrome)
     if (context === undefined || context === null) {
-        initStreamer();
+        initStreamerWithScriptProcessor();
     }
 
     let wsURL = "ws://" + baseURL + "/ws/register";
@@ -133,10 +133,9 @@ document.getElementById("recstart").addEventListener("click", function () {
                 'sample_rate': context.sampleRate,
                 'channel_count': channelCount,
                 'encoding': defaultEncoding(),
-                //'user': user, ... etc
                 'user_agent': navigator.userAgent,
                 'timestamp': new Date().toISOString(),
-                'user_name': username.value,
+                'user_name': user.value,
                 'project': project.value,
                 'session': session.value,
             },
@@ -156,13 +155,11 @@ document.getElementById("recstart").addEventListener("click", function () {
                 recStop();
             }
             else {
-                //startStreaming(context);
                 document.getElementById("recstop").disabled = false;
                 document.getElementById("recstart").disabled = true;
                 document.getElementById("audiofeedbacktextspan").innerText = "";
                 document.getElementById("bigmic").src = bigMicOnSrc;
 
-                //logMessage("info", "recording started");
                 console.log("recording started");
             }
         }
@@ -170,14 +167,16 @@ document.getElementById("recstart").addEventListener("click", function () {
     audioWS.onclose = function () {
         console.log("websocket closed");
     }
-
-
-
-    // recorder.start();
 });
 
+function disableEverything() {
+    document.getElementById("recstop").disabled = true;
+    document.getElementById("recstart").disabled = true;
+    document.getElementById("audiofeedbacktextspan").innerText = "";
+    document.getElementById("bigmic").src = "";
+}
 
-function initStreamer() {
+function initStreamerWithScriptProcessor() {
     if (!navigator.mediaDevices.getUserMedia)
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia || navigator.msGetUserMedia;
@@ -204,13 +203,10 @@ function initStreamer() {
             recorder.connect(context.destination);
 
             recorder.onaudioprocess = function (e) {
-                //console.log("recorder.onaudioprocess");
                 if (!isRecording()) return;
-                //logMessage("info", "recording");
                 var left = e.inputBuffer.getChannelData(0);
                 let sendable = convertFloat32ToInt16(left);
                 bytesSent = bytesSent + sendable.byteLength;
-                //console.log("streaming " + sendable.byteLength + " bytes of audio");
                 audioWS.send(sendable);
             }
 
@@ -276,7 +272,6 @@ window.onload = async function () {
     this.loadUserSettings();
     this.initSettings();
     VISUALISER.init(isRecording);
-    //this.initStreamer();
 }
 
 window.onbeforeunload = function () {

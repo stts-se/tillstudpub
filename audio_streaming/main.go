@@ -235,15 +235,15 @@ type Handshake struct {
 	// sent from client to server
 	SampleRate   int    `json:"sample_rate"`
 	ChannelCount int    `json:"channel_count"`
-	Encoding     string `json:"encoding,omitempty"`
+	Encoding     string `json:"encoding"`
 	UserAgent    string `json:"user_agent"`
-	Timestamp    string `json:"timestamp,omitempty"`
+	Timestamp    string `json:"timestamp"`
 
-	UserName string `json:"user,omitempty"`
-	Project  string `json:"project,omitempty"`
-	Session  string `json:"session,omitempty"`
+	UserName string `json:"user_name"`
+	Project  string `json:"project"`
+	Session  string `json:"session"`
 
-	UUID *uuid.UUID `json:"uuid,omitempty"` // sent from server to client
+	UUID *uuid.UUID `json:"uuid"` // sent from server to client
 }
 
 func writeMessageToSocket(msg Message, socket *websocket.Conn) (string, error) {
