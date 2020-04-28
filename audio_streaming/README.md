@@ -2,7 +2,7 @@
 
 This is a test of streaming user microphone audio from the browser to a server, where the audio is currently saved as a binary "raw" audio file, along with a JSON file, containing the audio parameters needed to play the file.
 
-The files are stored in the "data" directory on the server. Each file is given a unique (UUID) file namne, with the extensions `.raw` and `.json`. The last file created is copied to "latest.raw" and "latest.json", as a conveninence for testing.
+The files are stored in the "data" directory on the server. Each file is given a unique (UUID) file namne, with the extensions `.raw` and `.json`. The last file created is copied to "latest.raw" and "latest.json", as a convenience for testing.
 
 # Usage
 
