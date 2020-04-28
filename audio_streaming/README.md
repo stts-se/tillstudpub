@@ -1,3 +1,11 @@
+* Overview
+
+This is a test of streaming user microphone audio from the browser to a server, where the audio is currently saved as a binary "raw" audio file, along with a JSON file, containing the audio parameters needed to play the file.
+
+
+
+* Usage
+
 Simple server/client library for testing audio streaming using the MediaRecorder API.
 
 To start the server, run
@@ -15,3 +23,6 @@ Recorded audio is saved in the `data` folder. The last recorded file is always s
  `play -e signed-integer -r 44100 -b 16 <rawfile>`
 
 (See playraw_example.sh.)
+
+
+
