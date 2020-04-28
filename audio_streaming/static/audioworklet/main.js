@@ -6,7 +6,6 @@ let button = document.getElementById('button');
 
 async function startProcessFunc(context) {
   let mikeStream = await openMike();
-  document.mikeStream = mikeStream;
   let mikeNode = context.createMediaStreamSource(mikeStream);
 
   await context.audioWorklet.addModule('processors.js');
