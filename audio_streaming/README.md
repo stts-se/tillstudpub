@@ -63,7 +63,7 @@ To start the server, change directory to `audio_streaming` and run
 
  `go run . `
 
-(or use a precompiled executable).
+(or use a precompiled executable from here: https://github.com/stts-se/tillstudpub/releases).
 
 Clients:
 
@@ -75,6 +75,7 @@ You can use `gocli` to stream audio output via the sox `play` command:
 
    `rec -r 48000 -t flac -c 2 - 2> /dev/null  | go run gocli/main.go -channels 2 -sample_rate 48000 -encoding flac -host 127.0.0.1 -port 7651 -`
 
+Instead of `go run`, you can use a precompiled executable from here: https://github.com/stts-se/tillstudpub/releases.
 
 End the recording with `CTRL-c`.
 
