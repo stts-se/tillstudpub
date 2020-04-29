@@ -29,6 +29,8 @@ The ScriptProcessorNode was deprecated due to some critical design flaws. More i
 
 The downside of using AudioWorkletNode is that it is not fully supported by Firefox yet (we have tested using stable version 75 and beta version 76, and none of these work). It works fine with Google Chrome (81) and Opera (version 68), however.
 
+We are working on a version using AudioWorkletMode for audio streaming, but it's not fully functioning yet.
+
 
 ### Browser settings for audio streaming
 
