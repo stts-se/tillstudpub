@@ -26,6 +26,8 @@ let user = document.getElementById("user");
 let session = document.getElementById("session");
 let project = document.getElementById("project");
 
+let initStreamer; // = initStreamerWithScriptProcessor;
+
 // START: UTIL
 function addClass(element, theClass) {
     element.setAttribute("class", element.getAttribute("class") + " " + theClass);
@@ -102,6 +104,29 @@ function loadUserSettings() { // TEMPLATE
     if (urlParams.has('user')) {
         user.value = urlParams.get("user");
     }
+    
+    let scriptProcessorNode = "scriptprocessornode";
+    let audioWorkletNode =  "audioworkletnode";
+    let mode = scriptProcessorNode;
+    // streaming mode
+    if (urlParams.has('mode')) {
+	mode = urlParams.get("mode");
+    }
+    if (mode.toLowerCase() === scriptProcessorNode) {
+	initStreamer = initStreamerWithScriptProcessor();
+    } else if (mode.toLowerCase() === audioWorkletNode) {
+	initStreamer = initStreamerWithAudioWorklet();
+    } else {
+	alert("Invalid mode: " + mode + "\nValid modes: " + scriptProcessorNode + " (default) or " + audioWorkletNode);
+	disableEverything();
+    }
+
+    // log settings
+    console.log("project", project.value);
+    console.log("session", session.value);
+    console.log("user", user.value);
+    console.log("mode", mode);
+    console.log("options can be set using URL params, e.g. http://localhost:7651/?mode=audioworkletmode to use audioworklet instead of scriptprocessormode");
 }
 
 function initSettings() {
@@ -179,115 +204,6 @@ function disableEverything() {
     document.getElementById("bigmic").src = "";
 }
 
-const initStreamer = initStreamerWithAudioWorklet;
-
-function initStreamerWithAudioWorklet() {
-    if (!navigator.mediaDevices.getUserMedia)
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-    if (!navigator.mediaDevices.getUserMedia) {
-        disableEverything();
-        alert('getUserMedia not supported in this browser.');
-        return false;
-    }
-
-
-    let audioCtx = window.AudioContext || window.webkitAudioContext;
-    context = new audioCtx();
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        // on success:
-        .then(async function (stream) {
-            VISUALISER.init(isRecording);
-            VISUALISER.connect(stream);
-
-            let audioSource = context.createMediaStreamSource(stream);
-            await context.audioWorklet.addModule('processor.js');
-            const recorder = new AudioWorkletNode(context, 'recorder-worklet');
-            audioSource.connect(recorder).connect(context.destination);
-
-            recorder.port.onmessage = function (e) {
-                if (e.data.eventType === 'data') {
-                    console.log("recorder.ondata");
-                    const audioData = e.data.audioBuffer;
-                    if (!isRecording()) return;
-                    var left = e.inputBuffer.getChannelData(0);
-                    let sendable = convertFloat32ToInt16(left);
-                    bytesSent = bytesSent + sendable.byteLength;
-                    audioWS.send(sendable);
-                }
-                if (e.data.eventType === 'stop') {
-                    // recording has stopped
-                }
-            };
-            //let time = new Date().getTime(); // ??? 
-            //let duration = 1; // ??? 
-            //recorder.parameters.get('isRecording').setValueAtTime(1, time);
-            //recorder.parameters.get('isRecording').setValueAtTime(0, time + duration);
-            //yourSourceNode.start(time); // ??? 
-            return true;
-        })
-
-        // on error:
-        .catch(function (err) {
-            console.log("error from getUserMedia", err);
-            micDetected = false;
-            logMessage("error", "No microphone detected. Please verify that your microphone is properly connected.");
-            alert("Couldn't initialize recorder: " + err.message + "\n\nPlease verify that your microphone is properly connected.");
-            disableEverything();
-            return false;
-        });
-
-}
-
-function initStreamerWithScriptProcessor() {
-    if (!navigator.mediaDevices.getUserMedia)
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-    if (!navigator.mediaDevices.getUserMedia) {
-        disableEverything();
-        alert('getUserMedia not supported in this browser.');
-        return false;
-    }
-
-
-    let audioCtx = window.AudioContext || window.webkitAudioContext;
-    context = new audioCtx();
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        // on success:
-        .then(function (stream) {
-            VISUALISER.init(isRecording);
-            VISUALISER.connect(stream);
-
-            let audioInput = context.createMediaStreamSource(stream);
-            var bufferSize = 1024;
-            recorder = context.createScriptProcessor(bufferSize, channelCount, channelCount);
-            audioInput.connect(recorder)
-            recorder.connect(context.destination);
-
-            recorder.onaudioprocess = function (e) {
-                if (!isRecording()) return;
-                var left = e.inputBuffer.getChannelData(0);
-                let sendable = convertFloat32ToInt16(left);
-                bytesSent = bytesSent + sendable.byteLength;
-                audioWS.send(sendable);
-            }
-            return true;
-        })
-
-        // on error:
-        .catch(function (err) {
-            console.log("error from getUserMedia", err);
-            micDetected = false;
-            logMessage("error", "No microphone detected. Please verify that your microphone is properly connected.");
-            alert("Couldn't initialize recorder: " + err.message + "\n\nPlease verify that your microphone is properly connected.");
-            disableEverything();
-            return false;
-        });
-
-}
-
 document.getElementById("recstop").addEventListener("click", function () {
     recStop();
 });
@@ -295,7 +211,7 @@ document.getElementById("recstop").addEventListener("click", function () {
 function recStop() {
     //audioContext.suspend();
     if (recorder === null) {
-        msg = "Cannot record -- recorder is undefined";
+        msg = "Cannot stop recording -- recorder is undefined"; // todo: only applicable to ScriptProcessor mode
         console.log(msg);
         alert(msg);
     }
@@ -314,16 +230,6 @@ function recStop() {
 };
 
 
-function convertFloat32ToInt16(buffer) {
-    var l = buffer.length;
-    var buf = new Int16Array(l)
-
-    while (l--) {
-        buf[l] = buffer[l] * 0xFFFF; //convert to 16 bit
-    }
-    return buf.buffer
-}
-
 function defaultEncoding() {
     // let browser = navigator.userAgent;
     // if (browser.toLowerCase().indexOf("chrome") != -1) {
@@ -335,7 +241,6 @@ function defaultEncoding() {
 }
 
 window.onload = async function () {
-
     this.loadUserSettings();
     this.initSettings();
     VISUALISER.init(isRecording);
