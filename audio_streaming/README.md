@@ -17,18 +17,20 @@ The downside of using AudioWorkletNode is that it is not fully supported by Fire
 
 ## Browser settings for audio streaming
 
-There seems to be some "secret" settings in the browser(s), that are difficult to control or even access for reading. This includes for example audio encoding and sample rate.
+There seems to be some settings in the browser(s), that are difficult to control or even access for reading. This includes for example audio encoding and sample rate.
+We can read the sample rate setting, but haven't figure out how to change it.
 
-We would like to be able to control these settings, or at the very least find out what they are, so that we can send this information to the server along with the other metadata. This information is needed to save the raw audio data as a specific audio file (wav or similar).
+
+We would like to be able to better control these settings, or at the very least find out what they are, so that we can confidently send this information to the server along with the other metadata. This information is needed to save the raw audio data as a specific audio file (wav or similar).
 
 
 ## Saving audio with wav header
 
-For now, we are just saving the audio data as-is, in a "raw" file. If you know what settings were used to record the raw audio data, you can play it back using the `play` command (on Linux), or using the import dialog in Audacity.
+For now, we are just saving the audio data as-is, in a "raw" file. If you know what settings were used to record the raw audio data, you can play it back using the `play` command (on Linux), or using the import dialog in Audacity, for example.
 
 The audio settings (and other metadata) is saved in the JSON file accompanying each raw file.
 
-In the future, we will use these settings to have the server save the audio with a wav hedaer. We haven't figured out the details about this yet, but there are libraries for this, so it should be fairly straightforward.
+In the future, we will use these settings to have the server save the audio with a wav header. We haven't figured out the details about this yet, but there are libraries for this, so it should be fairly straightforward.
 
 
 ## Distortion
@@ -68,9 +70,11 @@ When the user stops the recording, the audio capture is terminated, and the webs
 
 Simple server/client library for testing audio streaming using the MediaRecorder API.
 
-To start the server, run
+To start the server, chamge directory to `audio_streaming` and run
 
  `go run . `
+
+(or use a precompiled executable).
 
 Clients:
 
@@ -78,9 +82,18 @@ Clients:
 
 * `Go` command line client: See folder `gocli`
 
-Recorded audio is saved in the `data` folder. The last recorded file is always saved as `data/latest.raw`. To play a recorded `.raw` file, run `play` with the correct parameters, e.g.
+You can use `gocli` to stream audio output via the sox `play` command:
+
+   `rec -r 48000 -t flac -c 2 - 2> /dev/null  | go run gocli/main.go -channels 2 -sample_rate 48000 -encoding flac -host 127.0.0.1 -port 7651 -`
+
+
+End the recording with `CTRL-c`.
+
+
+Recorded audio is saved in the `data` folder in the `audio_streaming` directory. The last recorded file is always saved as `data/latest.raw`. To play a recorded `.raw` file, run `play` with the correct parameters, e.g.
 
  `play -e signed-integer -r 44100 -b 16 <rawfile>`
+
 
 See also playraw_example.sh.
 
