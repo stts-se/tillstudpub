@@ -14,7 +14,7 @@ The client opens a websocket for each recording, and sends a "handshake" message
 
 On the receiving end, the server continuosly writes received bytes to a file buffer.
 
-When the user stops the recording, the audio capture is terminated, and the websocket is closed. When the server receives the close message from the client's websocket, the buffered audio data is saved to disk as a binary "raw" audio file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the "data" directory on the server. Each file is given their unique (UUID) file namne, with the extensions `.raw` and `.json`. The last files created are copied to "latest.raw" and "latest.json", as a convenience for testing.
+When the user stops the recording, the audio capture is terminated, and the websocket is closed. When the server receives the close message over the websocket, the buffered audio data is saved to disk as a binary "raw" audio file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the "data" directory on the server. Each file is given their unique (UUID) file namne, with the extensions `.raw` and `.json`. The last files created are copied to "latest.raw" and "latest.json", as a convenience for testing.
 
 
 ## Remaining issues
