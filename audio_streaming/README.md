@@ -1,9 +1,50 @@
 # Overview
 
-This is a simple proof of concept application for streaming user microphone audio from a client to a server, where the audio is saved as a binary "raw" audio file, along with a JSON file, containing relevant metadata about the recording.
+This is a simple proof of concept application for streaming user microphone audio from a client to a server. The audio is saved in the server as a binary "raw" audio file, along with a JSON file, containing relevant metadata about the recording.
+
+The communication between the client and the server is performed using websockets.
+
+## Audio stream capture
+
+The current Javascript client uses a [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) to capture the input audio as a stream.
+
+Since this part of the Web Audio API is deprecated, we are working on an update using [AudioWorkletNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode) instead.
+
+The ScriptProcessorNode was deprecated due to some critical design flaws. More information on the motivation behind the switch to AudioWorkletNode can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
+
+The downside of using AudioWorkletNode is that it is not fully supported by Firefox yet (we have tested using stable version 75 and beta version 76, and none of these work). It works fine with Google Chrome (81) and Opera (version 68), however.
 
 
-## Technical description
+## Browser settings for audio streaming
+
+There seems to be some "secret" settings in the browser(s), that are difficult to control or even access for reading. This includes for example audio encoding and sample rate.
+
+We would like to be able to control these settings, or at the very least find out what they are, so that we can send this information to the server along with the other metadata. This information is needed to save the raw audio data as a specific audio file (wav or similar).
+
+
+## Saving audio with wav header
+
+For now, we are just saving the audio data as-is, in a "raw" file. If you know what settings were used to record the raw audio data, you can play it back using the `play` command (on Linux), or using the import dialog in Audacity.
+
+The audio settings (and other metadata) is saved in the JSON file accompanying each raw file.
+
+In the future, we will use these settings to have the server save the audio with a wav hedaer. We haven't figured out the details about this yet, but there are libraries for this, so it should be fairly straightforward.
+
+
+
+## TODO
+
+1. Upgrade audio stream capture to use AudioWorkletNode (work in progress)
+
+2. Investigate how to read and set audio configuration settings in the browser
+
+3. Saving audio data with a wav header
+
+4. Are other options needed for what format the server should use? Once we have a wav file, we can always convert to another format if needed.
+
+
+
+# Technical description
 
 There are two available clients for testing the application:
 
@@ -15,35 +56,6 @@ The client opens a websocket for each recording, and sends a "handshake" message
 On the receiving end, the server continuosly writes received bytes to a file buffer.
 
 When the user stops the recording, the audio capture is terminated, and the websocket is closed. When the server receives the close message over the websocket, the buffered audio data is saved to disk as a binary "raw" audio file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the `data` directory on the server. Each file is given their unique (UUID) file namne, with the extensions `.raw` and `.json`. The last files created are copied to "latest.raw" and "latest.json", as a convenience for testing.
-
-
-## Remaining issues
-
-### Audio capture: ScriptProcessorNode vs. AudioWorkletNode
-
-The current version of the Javascript client uses a [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) to capture the input audio as a stream.
-
-Since this part of the Web Audio API is deprecated, we are working on an update using [AudioWorkletNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode) instead.
-
-The ScriptProcessorNode was deprecated due to some critical design flaws. More information on the motivation behind the switch to AudioWorkletNode can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
-
-The downside of using AudioWorkletNode is that it is not fully supported by Firefox yet (we have tested using stable version 75 and beta version 76, and none of these work). It works fine with Google Chrome (81) and Opera (version 68), however.
-
-We are working on a version using AudioWorkletMode for audio streaming, but it's not fully functioning yet.
-
-
-### Browser settings for audio streaming
-
-There seems to be some "secret" settings in the browser(s), that are difficult to control or even access for reading. This includes for example audio encoding and sample rate.
-
-We would like to be able to control these settings, or at the very least find out what they are, so that we can send this information to the server along with the other metadata. This information is needed to save the raw audio data as a specific audio file (wav or similar).
-
-
-### Saving audio as non-raw data
-
-For now, we are just saving the audio data as-is, in a "raw" file. If you know what settings were used to record the raw audio data, you can play it back using the `play` command (on Linux), or using the import dialog in Audacity.
-
-In the future, we will use these settings to create a non-raw audio file (wav or similar). We haven't figured out the details about this yet, but it should not be too complicated.
 
 
 
