@@ -6,7 +6,7 @@ The communication between the client and the server is performed using websocket
 
 ## Audio stream capture
 
-The current Javascript client uses a [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) to capture the input audio as a stream.
+The current JavaScript client uses a [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) to capture the input audio as a stream.
 
 Since this part of the Web Audio API is deprecated, we are working on an update using [AudioWorkletNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode) instead.
 
@@ -17,9 +17,11 @@ The downside of using AudioWorkletNode is that it is not fully supported by Fire
 
 ## Browser settings for audio streaming
 
-There seems to be some settings in the browser(s), that are difficult to control or even access for reading. This includes for example audio encoding and sample rate.
-We can read the sample rate setting, but haven't figure out how to change it.
+There seems to be some settings in the browser(s), that are difficult to control or even access for reading. Examples:
 
+* sample rate: we can read it, but haven't figure out how to change it.
+* audio encoding: we currently cannot read or set this value in the browser
+* channel count: we can set this value, but we are not sure how it's used (may differ between ScriptProcessorNode and AudioWorkletNode)
 
 We would like to be able to better control these settings, or at the very least find out what they are, so that we can confidently send this information to the server along with the other metadata. This information is needed to save the raw audio data as a specific audio file (wav or similar).
 
@@ -28,7 +30,7 @@ We would like to be able to better control these settings, or at the very least 
 
 For now, we are just saving the audio data as-is, in a "raw" file. If you know what settings were used to record the raw audio data, you can play it back using the `play` command (on Linux), or using the import dialog in Audacity, for example.
 
-The audio settings (and other metadata) is saved in the JSON file accompanying each raw file.
+The audio settings (and other metadata) are saved in the JSON file accompanying each raw file.
 
 In the future, we will use these settings to have the server save the audio with a wav header. We haven't figured out the details about this yet, but there are libraries for this, so it should be fairly straightforward.
 
@@ -38,31 +40,18 @@ In the future, we will use these settings to have the server save the audio with
 Currently, there is some distortion especially in the beginning of the audio files. This needs to be investigated further. It is possible that this will change once we move over to using AudioWorkletNode, but if not, this issue needs to be resolved.
 
 
-## TODO
-
-1. Upgrade audio stream capture to use AudioWorkletNode (work in progress)
-
-2. Investigate how to read and set audio configuration settings in the browser
-
-3. Saving audio data with a wav header
-
-4. Are other options needed for what format the server should use? Once we have a wav file, we can always convert to another format if needed.
-
-5. Investigate distortion issues, if it doesn't improve after the switch to AudioWorkletNode.
-
-
 # Technical description
 
 There are two available clients for testing the application:
 
-1. Javascript for browser use
+1. JavaScript for browser use
 2. A `go` command line client
 
-The client opens a websocket for each recording, and sends a "handshake" message to the server. If the server is up and running, and the handshake is correct and valid, the server reponds with the same handshake message, adding a unique identifier (UUID). Once this handshake is received by the client, the audio stream capture is started, and sent in chunks (typically 1024 or 2048 bytes each) to the server, using the open websocket.
+The client opens a websocket for each recording, and sends a "handshake" message to the server. If the server is up and running, and the handshake is correct and valid, the server responds with the same handshake message, adding a unique identifier (UUID). Once this handshake is received by the client, the audio stream capture is started, and sent in chunks (typically 1024 or 2048 bytes each) to the server, using the open websocket.
 
-On the receiving end, the server continuosly writes received bytes to a file buffer.
+On the receiving end, the server continuously writes received bytes to a file buffer.
 
-When the user stops the recording, the audio capture is terminated, and the websocket is closed. When the server receives the close message over the websocket, the buffered audio data is saved to disk as a binary "raw" audio file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the `data` directory on the server. Each file is given their unique (UUID) file namne, with the extensions `.raw` and `.json`. The last files created are copied to "latest.raw" and "latest.json", as a convenience for testing.
+When the user stops the recording, the audio capture is terminated, and the websocket is closed. When the server receives the close message over the websocket, the buffered audio data is saved to disk as a binary "raw" audio file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the `data` directory on the server. Each file is given their unique (UUID) file name, with the extensions `.raw` and `.json`. The last files created are copied to "latest.raw" and "latest.json", as a convenience for testing.
 
 
 
@@ -70,7 +59,7 @@ When the user stops the recording, the audio capture is terminated, and the webs
 
 Simple server/client library for testing audio streaming using the MediaRecorder API.
 
-To start the server, chamge directory to `audio_streaming` and run
+To start the server, change directory to `audio_streaming` and run
 
  `go run . `
 
@@ -78,7 +67,7 @@ To start the server, chamge directory to `audio_streaming` and run
 
 Clients:
 
-* Javascript: Point your browser to http://localhost:7651
+* JavaScript: Point your browser to http://localhost:7651
 
 * `Go` command line client: See folder `gocli`
 
@@ -100,8 +89,21 @@ See also playraw_example.sh.
 Hints on what parameters to use can be found in the `.json` files accompanying each `.raw` file.
 
 
+# TODO
 
-## Test AudioWorkletNode
+1. Upgrade audio stream capture to use AudioWorkletNode (work in progress)
+
+2. Investigate how to read and set audio configuration settings in the browser
+
+3. Saving audio data with a wav header
+
+4. Are other options needed for what format the server should use? Once we have a wav file, we can always convert to another format if needed.
+
+5. Investigate distortion issues, if it doesn't improve after the switch to AudioWorkletNode.
+
+
+
+# Testing a browser's AudioWorkletNode compatibility
 
 1. Start the server (see above)
 2. Point your browser to http://localhost:7651/audioworklet
