@@ -110,7 +110,6 @@ function initStreamerWithScriptProcessor() {
         return false;
     }
 
-
     let audioCtx = window.AudioContext || window.webkitAudioContext;
     context = new audioCtx();
     navigator.mediaDevices.getUserMedia({ audio: true })
@@ -144,6 +143,7 @@ function initStreamerWithScriptProcessor() {
             disableEverything();
             return false;
         });
+    return true;
 }
 
 function initStreamerWithAudioWorklet() {
@@ -203,7 +203,7 @@ function initStreamerWithAudioWorklet() {
             disableEverything();
             return false;
         });
-
+    return true;
 }
 
 
@@ -232,9 +232,9 @@ function loadUserSettings() { // TEMPLATE
 	mode = urlParams.get("mode");
     }
     if (mode.toLowerCase() === scriptProcessorNode) {
-	initStreamer = initStreamerWithScriptProcessor();
+	initStreamer = initStreamerWithScriptProcessor;
     } else if (mode.toLowerCase() === audioWorkletNode) {
-	initStreamer = initStreamerWithAudioWorklet();
+	initStreamer = initStreamerWithAudioWorklet;
     } else {
 	alert("Invalid mode: " + mode + "\nValid modes: " + scriptProcessorNode + " (default) or " + audioWorkletNode);
 	disableEverything();
