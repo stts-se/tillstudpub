@@ -4,6 +4,15 @@ This is a test of streaming user microphone audio from the browser to a server, 
 
 The files are stored in the "data" directory on the server. Each file is given a unique (UUID) file namne, with the extensions `.raw` and `.json`. The last file created is copied to "latest.raw" and "latest.json", as a convenience for testing.
 
+## Technical description
+
+The current demo version uses a [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) to catch the input audio and stream to server.
+
+Since this part of the Web Audio API is deprecated, we are working on an update using [AudioWorkletNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode) instead.
+
+The reason for switching to the TODO ... More information on the motivation behind the AudioWorkletNode can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
+
+
 # Usage
 
 Simple server/client library for testing audio streaming using the MediaRecorder API.
