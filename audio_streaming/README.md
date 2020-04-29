@@ -12,6 +12,8 @@ Since this part of the Web Audio API is deprecated, we are working on an update 
 
 The reason for switching to the TODO ... More information on the motivation behind the AudioWorkletNode can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
 
+The downside of using AudioWorkletNode is that it is not fully supported by Firefox yet. It works with Google Chrome, however.
+
 
 # Usage
 
