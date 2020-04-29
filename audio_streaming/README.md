@@ -12,7 +12,7 @@ Since this part of the Web Audio API is deprecated, we are working on an update 
 
 The ScriptProcessorNode was deprecated due to some critical design flaws. More information on the motivation behind the switch to AudioWorkletNode can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
 
-The downside of using AudioWorkletNode is that it is not fully supported by Firefox yet (we have tested using stable version 75 and beta version 76, and none of these work). It works fine with Google Chrome (81) and Opera (version 68), however.
+The downside of using AudioWorkletNode is that it is not fully supported by Firefox yet (we have tested using stable version 75 and beta version 76, and none of these work). It works fine with Google Chrome (version 81) and Opera (version 68), however.
 
 
 ## Browser settings for audio streaming
