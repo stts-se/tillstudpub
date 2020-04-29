@@ -14,7 +14,7 @@ let recorder;
 let micDetected = true;
 
 let context;
-var channelCount = 1;
+let channelCount = 1;
 
 let bytesSent = 0; // for logging purposes
 
@@ -119,8 +119,9 @@ function initStreamerWithScriptProcessor() {
             VISUALISER.connect(stream);
 
             let audioInput = context.createMediaStreamSource(stream);
-            var bufferSize = 1024;
+	    let bufferSize = 2048; // 16384; // 1024; // 16384 is max
             recorder = context.createScriptProcessor(bufferSize, channelCount, channelCount);
+	    console.log("ScriptProcessor bufferSize", bufferSize);
             audioInput.connect(recorder)
             recorder.connect(context.destination);
 
@@ -241,11 +242,12 @@ function loadUserSettings() { // TEMPLATE
     }
 
     // log settings
-    console.log("project:", project.value);
-    console.log("session:", session.value);
-    console.log("user:", user.value);
-    console.log("mode:", mode);
-    console.log(" - options can be set using URL params, e.g. http://localhost:7651/?mode=audioworkletmode to use audioworklet instead of scriptprocessormode");
+    console.log("Settings");
+    console.log("- project:", project.value);
+    console.log("- session:", session.value);
+    console.log("- user:", user.value);
+    console.log("- mode:", mode);
+    console.log("Options can be set using URL params, e.g. http://localhost:7651/?mode=" + audioWorkletNode + " to use audioworklet instead of " + scriptProcessorNode);
 }
 
 function initSettings() {
