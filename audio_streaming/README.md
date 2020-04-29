@@ -19,7 +19,7 @@ The downside of using AudioWorkletNode is that it is not fully supported by Fire
 
 There seems to be some settings in the browser(s), that are difficult to control or even access for reading. Examples:
 
-* sample rate: we can read it, but haven't figure out how to change it.
+* sample rate: we can read it, but haven't figure out how to change it
 * audio encoding: we currently cannot read or set this value in the browser
 * channel count: we can set this value, but we are not sure how it's used (may differ between ScriptProcessorNode and AudioWorkletNode)
 
