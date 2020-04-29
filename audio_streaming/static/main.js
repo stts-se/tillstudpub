@@ -241,11 +241,11 @@ function loadUserSettings() { // TEMPLATE
     }
 
     // log settings
-    console.log("project", project.value);
-    console.log("session", session.value);
-    console.log("user", user.value);
-    console.log("mode", mode);
-    console.log("options can be set using URL params, e.g. http://localhost:7651/?mode=audioworkletmode to use audioworklet instead of scriptprocessormode");
+    console.log("project:", project.value);
+    console.log("session:", session.value);
+    console.log("user:", user.value);
+    console.log("mode:", mode);
+    console.log(" - options can be set using URL params, e.g. http://localhost:7651/?mode=audioworkletmode to use audioworklet instead of scriptprocessormode");
 }
 
 function initSettings() {
