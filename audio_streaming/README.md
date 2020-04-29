@@ -56,7 +56,7 @@ There are two available clients for testing the application:
 1. Javascript for browser use
 2. A `go` command line client
 
-The client opens a websocket for each recording, and sends a "handshake" message to the server. If the server is up and running, and the handshake is correct and valid, the server reponds with the same handshake message, adding a unique identifier (UUID). Once this handshake is received by the client, the audio stream capture is started, and sent in 1024 or 2048 byte chunks to the server, using the open websocket.
+The client opens a websocket for each recording, and sends a "handshake" message to the server. If the server is up and running, and the handshake is correct and valid, the server reponds with the same handshake message, adding a unique identifier (UUID). Once this handshake is received by the client, the audio stream capture is started, and sent in chunks (typically 1024 or 2048 bytes each) to the server, using the open websocket.
 
 On the receiving end, the server continuosly writes received bytes to a file buffer.
 
