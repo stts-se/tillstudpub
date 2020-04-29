@@ -31,6 +31,10 @@ The audio settings (and other metadata) is saved in the JSON file accompanying e
 In the future, we will use these settings to have the server save the audio with a wav hedaer. We haven't figured out the details about this yet, but there are libraries for this, so it should be fairly straightforward.
 
 
+## Distortion
+
+Currently, there is some distortion especially in the beginning of the audio files. This needs to be investigated further. It is possible that this will change once we move over to using AudioWorkletNode, but if not, this issue needs to be resolved.
+
 
 ## TODO
 
@@ -42,6 +46,7 @@ In the future, we will use these settings to have the server save the audio with
 
 4. Are other options needed for what format the server should use? Once we have a wav file, we can always convert to another format if needed.
 
+5. Investigate distortion issues, if it doesn't improve after the switch to AudioWorkletNode.
 
 
 # Technical description
