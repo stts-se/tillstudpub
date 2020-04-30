@@ -61,21 +61,21 @@ Simple server/client library for testing audio streaming using the MediaRecorder
 
 To start the server, change directory to `audio_streaming` and run
 
- `go run . `
+ `go run cmd/server/main.go`
 
-(or use a precompiled executable from here: https://github.com/stts-se/tillstudpub/releases).
+If you prefer precompiled executables, use the `server` command from a published release: https://github.com/stts-se/tillstudpub/releases.
 
 Clients:
 
 * JavaScript: Point your browser to http://localhost:7651
 
-* `Go` command line client: See folder `gocli`
+* `Go` command line client: See folder `cmd/client`
 
-You can use `gocli` to stream audio output via the sox `play` command:
+You can use the Go client to stream audio output via the sox `play` command:
 
-   `rec -r 48000 -t flac -c 2 - 2> /dev/null  | go run gocli/main.go -channels 2 -sample_rate 48000 -encoding flac -host 127.0.0.1 -port 7651 -`
+   `rec -r 48000 -t flac -c 2 - 2> /dev/null  | go run cmd/client/main.go -channels 2 -sample_rate 48000 -encoding flac -host 127.0.0.1 -port 7651 -`
 
-Instead of `go run`, you can use a precompiled executable from here: https://github.com/stts-se/tillstudpub/releases.
+Instead of using `go run`, you can use the `client` command from a published release: https://github.com/stts-se/tillstudpub/releases.
 
 End the recording with `CTRL-c`.
 

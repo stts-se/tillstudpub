@@ -1,4 +1,4 @@
-module github.com/stts-se/TillStud/audio_streaming
+module github.com/stts-se/tillstudpub/audiostreaming
 
 go 1.13
 

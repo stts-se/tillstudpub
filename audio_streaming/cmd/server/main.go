@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/stts-se/tillstudpub/audiostreaming"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -224,37 +225,7 @@ func (w bufferedFileWriter) close() error {
 	return nil
 }
 
-//Message is a struct for sending messages over websockets
-type Message struct {
-	Label     string     `json:"label"`
-	Error     string     `json:"error,omitempty"`
-	Handshake *Handshake `json:"handshake,omitempty"`
-}
-
-//AudioConfig contains settings for audio
-type AudioConfig struct {
-	SampleRate   int    `json:"sample_rate"`
-	ChannelCount int    `json:"channel_count"`
-	Encoding     string `json:"encoding"`
-}
-
-//Handshake is a struct for sending handshakes over websockets
-type Handshake struct {
-	// sent from client to server
-	AudioConfig *AudioConfig `json:"audio_config"`
-
-	StreamingMethod string `json:"streaming_method"`
-	UserAgent       string `json:"user_agent"`
-	Timestamp       string `json:"timestamp"`
-
-	UserName string `json:"user_name"`
-	Project  string `json:"project"`
-	Session  string `json:"session"`
-
-	UUID *uuid.UUID `json:"uuid"` // sent from server to client
-}
-
-func writeMessageToSocket(msg Message, socket *websocket.Conn) (string, error) {
+func writeMessageToSocket(msg audiostreaming.Message, socket *websocket.Conn) (string, error) {
 	jsb, err := json.Marshal(msg)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal json %v : %v", msg, err)
@@ -265,8 +236,8 @@ func writeMessageToSocket(msg Message, socket *websocket.Conn) (string, error) {
 	return string(jsb), nil
 }
 
-func readMessageFromSocket(socket *websocket.Conn) (Message, string, error) {
-	var res Message
+func readMessageFromSocket(socket *websocket.Conn) (audiostreaming.Message, string, error) {
+	var res audiostreaming.Message
 	mType, bts, err := socket.ReadMessage()
 	if err != nil {
 		return res, "", fmt.Errorf("could not read from websocket : %v", err)
@@ -279,10 +250,10 @@ func readMessageFromSocket(socket *websocket.Conn) (Message, string, error) {
 	return res, string(bts), nil
 }
 
-func initialiseAudioStream(conn *websocket.Conn) (Handshake, error) {
+func initialiseAudioStream(conn *websocket.Conn) (audiostreaming.Handshake, error) {
 	log.Printf("Opened audio stream")
 
-	var handshake Handshake
+	var handshake audiostreaming.Handshake
 	var id uuid.UUID
 	var err error
 	var writer bufferedFileWriter
@@ -309,7 +280,7 @@ func initialiseAudioStream(conn *websocket.Conn) (Handshake, error) {
 
 	handshake = *msg.Handshake
 	handshake.UUID = &id
-	returnMsg := Message{
+	returnMsg := audiostreaming.Message{
 		Label:     "handshake",
 		Handshake: &handshake,
 	}

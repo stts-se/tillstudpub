@@ -13,9 +13,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/google/uuid"
-
 	"github.com/gorilla/websocket"
+
+	"github.com/stts-se/tillstudpub/audiostreaming"
 )
 
 func sendFile(c *websocket.Conn, audioFile string) {
@@ -79,39 +79,9 @@ func sendStdin(c *websocket.Conn) {
 	log.Printf("Read %v bytes from stdin", nTotal)
 }
 
-type Message struct {
-	Label string `json:"label"`
-	Error string `json:"error,omitempty"`
-	//Transcript *Transcript `json:"transcript,omitempty"`
-	Handshake *Handshake `json:"handshake,omitempty"`
-}
-
-//AudioConfig contains settings for audio
-type AudioConfig struct {
-	SampleRate   int    `json:"sample_rate"`
-	ChannelCount int    `json:"channel_count"`
-	Encoding     string `json:"encoding"`
-}
-
-//Handshake is a struct for sending handshakes over websockets
-type Handshake struct {
-	// sent from client to server
-	AudioConfig *AudioConfig `json:"audio_config"`
-
-	StreamingMethod string `json:"streaming_method"`
-	UserAgent       string `json:"user_agent"`
-	Timestamp       string `json:"timestamp,omitempty"`
-
-	UserName string `json:"user,omitempty"`
-	Project  string `json:"project,omitempty"`
-	Session  string `json:"session,omitempty"`
-
-	UUID *uuid.UUID `json:"uuid,omitempty"` // sent from server to client
-}
-
 func listenToResults(c *websocket.Conn) {
 	for {
-		var result = Message{}
+		var result = audiostreaming.Message{}
 		err := c.ReadJSON(&result)
 		if err != nil {
 			log.Printf("Failed to read websocket : %v", err)
@@ -120,7 +90,7 @@ func listenToResults(c *websocket.Conn) {
 	}
 }
 
-func writeMessageToSocket(msg Message, socket *websocket.Conn) error {
+func writeMessageToSocket(msg audiostreaming.Message, socket *websocket.Conn) error {
 	jsb, err := json.Marshal(msg)
 	if err != nil {
 		return fmt.Errorf("failed to marshal json %v : %v", msg, err)
@@ -131,8 +101,8 @@ func writeMessageToSocket(msg Message, socket *websocket.Conn) error {
 	return nil
 }
 
-func readMessageFromSocket(socket *websocket.Conn) (Message, error) {
-	var res Message
+func readMessageFromSocket(socket *websocket.Conn) (audiostreaming.Message, error) {
+	var res audiostreaming.Message
 	mType, bts, err := socket.ReadMessage()
 	if err != nil {
 		return res, fmt.Errorf("could not read from websocket : %v", err)
@@ -146,13 +116,15 @@ func readMessageFromSocket(socket *websocket.Conn) (Message, error) {
 }
 
 func doHandshakes(c *websocket.Conn) error {
-	msg := Message{
+	msg := audiostreaming.Message{
 		Label: "handshake",
-		Handshake: &Handshake{
+		Handshake: &audiostreaming.Handshake{
+			AudioConfig: &audiostreaming.AudioConfig{
+				SampleRate:   *sampleRate,
+				Encoding:     *encoding,
+				ChannelCount: *channelCount,
+			},
 			Timestamp:       time.Now().String(),
-			SampleRate:      *sampleRate,
-			Encoding:        *encoding,
-			ChannelCount:    *channelCount,
 			StreamingMethod: "gocli",
 			UserAgent:       "gocli",
 			UserName:        *userName,
