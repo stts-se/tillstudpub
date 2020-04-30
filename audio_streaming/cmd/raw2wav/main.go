@@ -6,14 +6,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/cryptix/wav"
 )
 
 func main() {
 
-	var cmd = filepath.Base(os.Args[0])
+	var cmd = "raw2wav"
 
 	//handshake := flag.String("handshake", "", "JSON handshake `file`")
 	channelCount := flag.Int("channels", 1, "Number of channels")

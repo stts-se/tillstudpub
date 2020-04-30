@@ -116,7 +116,7 @@ func getLanguage(langName string) (language, bool) {
 }
 
 func parseFlags() config {
-	var cmd = filepath.Base(os.Args[0])
+	var cmd = "audstr_server"
 
 	var cfg config
 	cfg.language = flag.String("language", "sv-SE", "Audio input language code")
