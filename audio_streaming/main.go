@@ -19,6 +19,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+
+	"github.com/cryptix/wav"
 )
 
 var upgrader = websocket.Upgrader{}
@@ -347,10 +349,34 @@ func receiveAudioStream(id uuid.UUID, audioStreamSender *websocket.Conn) {
 	var err error
 
 	audioRawFileName := filepath.Join(outputDir, fmt.Sprintf("%s.raw", id.String()))
+
+	audioWavFileName := filepath.Join(outputDir, fmt.Sprintf("%s.wav", id.String()))
+
 	//audioWavFileName := filepath.Join(outputDir, fmt.Sprintf("%s.wav", id.String()))
 	audioW, err := newBufferedFileWriter(audioRawFileName)
 	if err != nil {
-		log.Printf("Couldn't open audio file for writing: %v", err)
+		log.Printf("Couldn't open raw audio file for writing: %v", err)
+		return
+	}
+
+	// ------------------------- TODO ---------------------------
+	//TODO No harwired values for wav
+	// Create the headers for our new mono file
+	meta := wav.File{
+		Channels:        1,
+		SampleRate:      44100,
+		SignificantBits: 16,
+	}
+
+	f, err := os.Create(audioWavFileName)
+	if err != nil {
+		log.Printf("Couldn't open wav audio file for writing: %v", err)
+		return
+	}
+
+	wavWriter, err := meta.NewWriter(f)
+	if err != nil {
+		log.Printf("Couldn't create wav audio file writer: %v", err)
 		return
 	}
 
@@ -377,12 +403,23 @@ func receiveAudioStream(id uuid.UUID, audioStreamSender *websocket.Conn) {
 
 		if len(bts) > 0 {
 			if _, err := audioW.writer.Write(bts); err != nil {
-				log.Printf("Couldn't write audio to file: %v", err)
+				log.Printf("Couldn't write raw audio to file: %v", err)
 				break
 			}
+
+			//--------------------- TODO -------------------------
+
+			if _, err := wavWriter.Write(bts); err != nil {
+				log.Printf("Couldn't write wav audio to file: %v", err)
+				break
+			}
+
 			//log.Printf("Wrote %v bytes of audio to file", len(bts))
 		}
 	}
+
+	wavWriter.Close()
+	f.Close()
 
 	// save raw file
 	if err := audioW.close(); err != nil {
