@@ -86,11 +86,17 @@ type Message struct {
 	Handshake *Handshake `json:"handshake,omitempty"`
 }
 
-type Handshake struct {
-	// sent from client to server
+//AudioConfig contains settings for audio
+type AudioConfig struct {
 	SampleRate   int    `json:"sample_rate"`
 	ChannelCount int    `json:"channel_count"`
-	Encoding     string `json:"encoding,omitempty"`
+	Encoding     string `json:"encoding"`
+}
+
+//Handshake is a struct for sending handshakes over websockets
+type Handshake struct {
+	// sent from client to server
+	AudioConfig *AudioConfig `json:"audio_config"`
 
 	StreamingMethod string `json:"streaming_method"`
 	UserAgent       string `json:"user_agent"`

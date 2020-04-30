@@ -120,9 +120,9 @@ function initStreamerWithScriptProcessor() {
             VISUALISER.connect(stream);
 
             let audioInput = context.createMediaStreamSource(stream);
-	    let bufferSize = 2048; // 16384; // 1024; // 16384 is max
+            let bufferSize = 2048; // 16384; // 1024; // 16384 is max
             recorder = context.createScriptProcessor(bufferSize, channelCount, channelCount);
-	    console.log("ScriptProcessor bufferSize", bufferSize);
+            console.log("ScriptProcessor bufferSize", bufferSize);
             audioInput.connect(recorder)
             recorder.connect(context.destination);
 
@@ -226,21 +226,21 @@ function loadUserSettings() { // TEMPLATE
     if (urlParams.has('user')) {
         user.value = urlParams.get("user");
     }
-    
+
     let scriptProcessorNode = "scriptprocessornode";
-    let audioWorkletNode =  "audioworkletnode";
+    let audioWorkletNode = "audioworkletnode";
     streamingMode = scriptProcessorNode;
     // streaming mode
     if (urlParams.has('mode')) {
         streamingMode = urlParams.get("mode");
     }
     if (streamingMode.toLowerCase() === scriptProcessorNode) {
-	initStreamer = initStreamerWithScriptProcessor;
+        initStreamer = initStreamerWithScriptProcessor;
     } else if (streamingMode.toLowerCase() === audioWorkletNode) {
-	initStreamer = initStreamerWithAudioWorklet;
+        initStreamer = initStreamerWithAudioWorklet;
     } else {
-	alert("Invalid mode: " + streamingMode + "\nValid modes: " + scriptProcessorNode + " (default) or " + audioWorkletNode);
-	disableEverything();
+        alert("Invalid mode: " + streamingMode + "\nValid modes: " + scriptProcessorNode + " (default) or " + audioWorkletNode);
+        disableEverything();
     }
 
     // log settings
@@ -282,9 +282,11 @@ document.getElementById("recstart").addEventListener("click", function () {
         let handshake = {
             'label': 'handshake',
             'handshake': {
-                'sample_rate': context.sampleRate,
-                'channel_count': channelCount,
-                'encoding': defaultEncoding(),
+                'audio_config': {
+                    'sample_rate': context.sampleRate,
+                    'channel_count': channelCount,
+                    'encoding': defaultEncoding(),
+                },
                 'streaming_method': streamingMode,
                 'user_agent': navigator.userAgent,
                 'timestamp': new Date().toISOString(),
