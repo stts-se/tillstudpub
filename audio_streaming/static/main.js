@@ -269,7 +269,7 @@ document.getElementById("recstart").addEventListener("click", function () {
             return;
         }
     } else {
-        context.resume();
+        //context.resume();
     }
 
     let wsURL = "ws://" + baseURL + "/ws/register";
@@ -336,7 +336,7 @@ document.getElementById("recstop").addEventListener("click", function () {
 });
 
 function recStop() {
-    context.suspend();
+    //context.suspend();
     if (recorder === null) {
         msg = "Cannot stop recording -- recorder is undefined";
         console.log(msg);
