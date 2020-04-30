@@ -68,59 +68,10 @@ func copyFile(fromFile, toFile string) error {
 	return nil
 }
 
-type language struct {
-	Code, Description string
-}
-
-type encoding struct {
-	Code, Description string
-}
-
-var languages = []language{
-	{"sv-SE", "Swedish (Sweden)"},
-	{"en-US", "English (US)"},
-	{"da-DK", "Danish (Denmark)"},
-	{"en", "English"},
-	{"en-UK", "English (UK)"},
-}
-
-var encodings = []encoding{
-	{"amr", ""},
-	{"amr_wb", ""},
-	{"flac", ""},
-	{"pcm", ""},
-	{"linear16", ""},
-	{"mulaw", ""},
-	{"ogg_opus", ""},
-	{"ogg", ""},
-	{"opus", ""},
-	{"speex_hb", ""},
-}
-
-func getEncoding(encName string) (encoding, bool) {
-	for _, enc := range encodings {
-		if enc.Code == encName {
-			return enc, true
-		}
-	}
-	return encoding{}, false
-}
-
-func getLanguage(langName string) (language, bool) {
-	for _, lang := range languages {
-		if lang.Code == langName {
-			return lang, true
-		}
-	}
-	return language{}, false
-}
-
 func parseFlags() config {
 	var cmd = "audstr_server"
 
 	var cfg config
-	cfg.language = flag.String("language", "sv-SE", "Audio input language code")
-	cfg.encoding = flag.String("encoding", "flac", "Audio input encoding")
 	cfg.host = flag.String("host", "127.0.0.1", "Server host")
 	cfg.port = flag.String("port", "7651", "Server port")
 
@@ -130,37 +81,12 @@ func parseFlags() config {
 	}
 	flag.Parse()
 
-	if _, ok := getEncoding(*cfg.encoding); !ok {
-		fmt.Fprintf(os.Stderr, "Invalid encoding: %s\n", *cfg.encoding)
-		fmt.Fprintf(os.Stderr, "Valid encodings: ")
-		for i, e := range encodings {
-			fmt.Fprintf(os.Stderr, e.Code)
-			if i < len(encodings)-1 {
-				fmt.Fprintf(os.Stderr, ", ")
-			}
-		}
-		fmt.Fprintf(os.Stderr, "\n")
-		os.Exit(1)
-	}
-	if _, ok := getLanguage(*cfg.language); !ok {
-		fmt.Fprintf(os.Stderr, "Invalid language code: %s\n", *cfg.language)
-		fmt.Fprintf(os.Stderr, "Valid language codes: ")
-		for i, l := range languages {
-			fmt.Fprintf(os.Stderr, l.Code)
-			if i < len(languages)-1 {
-				fmt.Fprintf(os.Stderr, ", ")
-			}
-		}
-		fmt.Fprintf(os.Stderr, "\n")
-		os.Exit(1)
-	}
-
 	return cfg
 }
 
 // server config
 type config struct {
-	language, encoding, host, port *string
+	host, port *string
 }
 
 func openDataWebsocket(w http.ResponseWriter, r *http.Request) {
