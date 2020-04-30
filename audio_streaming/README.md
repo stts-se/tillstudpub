@@ -6,13 +6,13 @@ The communication between the client and the server is performed using websocket
 
 ## Audio stream capture
 
-The current JavaScript client uses a [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) to capture the input audio as a stream.
+The JavaScript client uses a [AudioWorkletNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode) to capture the input audio as a stream.
 
-Since this part of the Web Audio API is deprecated, we are working on an update using [AudioWorkletNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode) instead.
+There is an option to use a [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) instead. This part of the Web Audio API has been deprecated due to some critical design flaws. More information on the motivation behind the move to AudioWorkletNode can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
 
-The ScriptProcessorNode was deprecated due to some critical design flaws. More information on the motivation behind the switch to AudioWorkletNode can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
+Unfortunately, the newer AudioWorkletNode is not fully supported by Firefox yet (neither stable version 75 nor beta version 76 work as of April 29th, 2020). It works fine with Google Chrome (version 81) and Opera (version 68).
 
-The downside of using AudioWorkletNode is that it is not fully supported by Firefox yet (we have tested using stable version 75 and beta version 76, and none of these work). It works fine with Google Chrome (version 81) and Opera (version 68), however.
+The ScriptProcessorNode implementation has been kept for testing and compatability issues.
 
 
 ## Browser settings for audio streaming
@@ -68,6 +68,8 @@ If you prefer precompiled executables, use the `audstr_server` command from a pu
 Clients:
 
 * JavaScript: Point your browser to http://localhost:7651
+
+   To use the deprecated ScritpProcessorNode implementation, use http://localhost:7651?mode=scriptprocessornode
 
 * `Go` command line client: See folder `cmd/audstr_client`
 
