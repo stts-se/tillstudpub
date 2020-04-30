@@ -157,7 +157,7 @@ func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [flags] audioFile\n", cmd)
 		fmt.Fprintf(os.Stderr, " to record from stdin, use audioFile -\n")
-		fmt.Fprintf(os.Stderr, "\nSample usage: rec -r 48000 -t sox -c 1 - 2> /dev/null  | %s -channels 1 -sample_rate 48000 -encoding linear16 -host 127.0.0.1 -port 7651 -\n", cmd)
+		fmt.Fprintf(os.Stderr, "\nSample usage: rec -r 48000 -t raw -c 1 - 2> /dev/null  | %s -channels 1 -sample_rate 48000 -encoding linear16 -host 127.0.0.1 -port 7651 -\n", cmd)
 		fmt.Fprintf(os.Stderr, "\nFlags\n")
 		flag.PrintDefaults()
 		os.Exit(1)
