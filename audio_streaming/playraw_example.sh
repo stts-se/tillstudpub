@@ -1,1 +1,1 @@
-/usr/bin/play -e signed-integer -r 44100 -b 16 -c 1 $*
+/usr/bin/play -e signed-integer -r 48000 -b 16 -c 1 $*
