@@ -1,28 +1,28 @@
 .PHONY: all
-all: server client server_mac client_mac server.exe client.exe zip
+all: audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe zip
 
-server: cmd/server/*go
-	GOOS=linux GOARCH=amd64 go build -o server cmd/server/*go
+audstr_server: cmd/audstr_server/*go
+	GOOS=linux GOARCH=amd64 go build -o audstr_server cmd/audstr_server/*go
 
-client: cmd/client/*go 
-	GOOS=linux GOARCH=amd64 go build -o client cmd/client/*go
+audstr_client: cmd/audstr_client/*go 
+	GOOS=linux GOARCH=amd64 go build -o audstr_client cmd/audstr_client/*go
 
-server_mac: cmd/server/*go
-	GOOS=darwin GOARCH=amd64 go build -o server_mac cmd/server/*go
+audstr_server_mac: cmd/audstr_server/*go
+	GOOS=darwin GOARCH=amd64 go build -o audstr_server_mac cmd/audstr_server/*go
 
-client_mac: cmd/client/*go
-	GOOS=darwin GOARCH=amd64 go build -o client_mac cmd/client/*go
+audstr_client_mac: cmd/audstr_client/*go
+	GOOS=darwin GOARCH=amd64 go build -o audstr_client_mac cmd/audstr_client/*go
 
-server.exe: cmd/server/*go 
-	GOOS=windows GOARCH=amd64 go build -o server.exe cmd/server/*go
+audstr_server.exe: cmd/audstr_server/*go 
+	GOOS=windows GOARCH=amd64 go build -o audstr_server.exe cmd/audstr_server/*go
 
-client.exe: cmd/client/*go 
-	GOOS=windows GOARCH=amd64 go build -o client.exe cmd/client/*go
+audstr_client.exe: cmd/audstr_client/*go 
+	GOOS=windows GOARCH=amd64 go build -o audstr_client.exe cmd/audstr_client/*go
 
-zip: server client server_mac client_mac server.exe client.exe static/*css static/*html static/*js static/*ico static/images/*png static/audioworklet/* README.md
-	zip -q audio_streaming.zip server client server_mac client_mac server.exe client.exe static/*css static/*html static/*js static/*ico static/images/*png static/audioworklet/* README.md
-	rm server client server_mac client_mac server.exe client.exe
+zip: audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe static/*css static/*html static/*js static/*ico static/images/*png static/audioworklet/* README.md
+	zip -q audio_streaming.zip audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe static/*css static/*html static/*js static/*ico static/images/*png static/audioworklet/* README.md
+	rm audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe
 	
 
 clean:
-	rm -f server client server_mac client_mac server.exe client.exe audio_streaming.zip
+	rm -f audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe audio_streaming.zip
