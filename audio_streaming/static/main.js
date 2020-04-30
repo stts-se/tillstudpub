@@ -226,10 +226,15 @@ function loadUserSettings() { // TEMPLATE
     if (urlParams.has('user')) {
         user.value = urlParams.get("user");
     }
-
+    
+    console.log("Settings");
+    console.log("- project:", project.value);
+    console.log("- session:", session.value);
+    console.log("- user:", user.value);
+    
     let scriptProcessorNode = "scriptprocessornode";
     let audioWorkletNode = "audioworkletnode";
-    streamingMode = scriptProcessorNode;
+    streamingMode = audioWorkletNode;
     // streaming mode
     if (urlParams.has('mode')) {
         streamingMode = urlParams.get("mode");
@@ -239,17 +244,14 @@ function loadUserSettings() { // TEMPLATE
     } else if (streamingMode.toLowerCase() === audioWorkletNode) {
         initStreamer = initStreamerWithAudioWorklet;
     } else {
-        alert("Invalid mode: " + streamingMode + "\nValid modes: " + scriptProcessorNode + " (default) or " + audioWorkletNode);
+        alert("Invalid mode: " + streamingMode + "\nValid modes: " + audioWorkletNode + " (default) or " + scriptProcessorNode);
         disableEverything();
     }
 
     // log settings
-    console.log("Settings");
-    console.log("- project:", project.value);
-    console.log("- session:", session.value);
-    console.log("- user:", user.value);
     console.log("- mode:", streamingMode);
-    console.log("Options can be set using URL params, e.g. http://localhost:7651/?mode=" + audioWorkletNode + " to use audioworklet instead of " + scriptProcessorNode);
+    console.log("Options can be set using URL params, e.g. http://localhost:7651/?mode=STREAMINGMODE");
+    console.log("Available streaming modes: "  + audioWorkletNode + " (default) or " + scriptProcessorNode);
 }
 
 function initSettings() {
