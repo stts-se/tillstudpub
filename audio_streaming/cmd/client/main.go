@@ -120,9 +120,10 @@ func doHandshakes(c *websocket.Conn) error {
 		Label: "handshake",
 		Handshake: &audiostreaming.Handshake{
 			AudioConfig: &audiostreaming.AudioConfig{
-				SampleRate:   *sampleRate,
-				Encoding:     *encoding,
-				ChannelCount: *channelCount,
+				SampleRate:      *sampleRate,
+				Encoding:        *encoding,
+				ChannelCount:    *channelCount,
+				SignificantBits: *significantBits,
 			},
 			Timestamp:       time.Now().String(),
 			StreamingMethod: "gocli",
@@ -147,7 +148,7 @@ func doHandshakes(c *websocket.Conn) error {
 	return nil
 }
 
-var channelCount, sampleRate *int
+var channelCount, sampleRate, significantBits *int
 var encoding, userName, project, session *string
 
 func main() {
@@ -173,6 +174,7 @@ func main() {
 	channelCount = flag.Int("channels", 2, "Number of channels")
 	sampleRate = flag.Int("sample_rate", 48000, "Sample rate")
 	encoding = flag.String("encoding", "flac", "Audio encoding")
+	significantBits = flag.Int("bits", 16, "significant bits")
 	userName = flag.String("user", defaultUser, "User name")
 	session = flag.String("session", "", "Session name")
 	project = flag.String("project", "", "Project name")

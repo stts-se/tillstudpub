@@ -286,6 +286,7 @@ document.getElementById("recstart").addEventListener("click", function () {
                     'sample_rate': context.sampleRate,
                     'channel_count': channelCount,
                     'encoding': defaultEncoding(),
+                    'significant_bits': 16,
                 },
                 'streaming_method': streamingMode,
                 'user_agent': navigator.userAgent,
