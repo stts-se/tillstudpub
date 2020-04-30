@@ -75,7 +75,7 @@ Clients:
 
 You can use the Go client to stream audio output via the sox `play` command:
 
-   `rec -r 48000 -t flac -c 2 - 2> /dev/null  | go run cmd/audstr_client/main.go -channels 2 -sample_rate 48000 -encoding flac -host 127.0.0.1 -port 7651 -`
+   `rec -r 48000 -t flac -c 1 - 2> /dev/null  | go run cmd/audstr_client/main.go -channels 1 -sample_rate 48000 -encoding flac -host 127.0.0.1 -port 7651 -`
 
 Instead of using `go run`, you can use the `audstr_client` command from a published release: https://github.com/stts-se/tillstudpub/releases.
 
