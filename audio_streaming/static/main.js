@@ -15,6 +15,7 @@ let micDetected = true;
 
 let context;
 let channelCount = 1;
+let streamingMode;
 
 let bytesSent = 0; // for logging purposes
 
@@ -127,6 +128,7 @@ function initStreamerWithScriptProcessor() {
 
             recorder.onaudioprocess = function (e) {
                 if (!isRecording()) return;
+                //console.log("recorder.onaudioprocess", typeof e , e.inputBuffer.getChannelData(0).length)   ;
                 var left = e.inputBuffer.getChannelData(0);
                 let sendable = convertFloat32ToInt16(left);
                 bytesSent = bytesSent + sendable.byteLength;
@@ -175,10 +177,10 @@ function initStreamerWithAudioWorklet() {
 
             recorder.port.onmessage = function (e) {
                 if (e.data.eventType === 'data') {
-                    console.log("recorder.ondata");
+                    //console.log("recorder.ondata", typeof e.data , e.data.audioBuffer.length);
                     const audioData = e.data.audioBuffer;
                     if (!isRecording()) return;
-                    var left = e.inputBuffer.getChannelData(0);
+                    var left = e.data.audioBuffer;
                     let sendable = convertFloat32ToInt16(left);
                     bytesSent = bytesSent + sendable.byteLength;
                     audioWS.send(sendable);
@@ -227,17 +229,17 @@ function loadUserSettings() { // TEMPLATE
     
     let scriptProcessorNode = "scriptprocessornode";
     let audioWorkletNode =  "audioworkletnode";
-    let mode = scriptProcessorNode;
+    streamingMode = scriptProcessorNode;
     // streaming mode
     if (urlParams.has('mode')) {
-	mode = urlParams.get("mode");
+        streamingMode = urlParams.get("mode");
     }
-    if (mode.toLowerCase() === scriptProcessorNode) {
+    if (streamingMode.toLowerCase() === scriptProcessorNode) {
 	initStreamer = initStreamerWithScriptProcessor;
-    } else if (mode.toLowerCase() === audioWorkletNode) {
+    } else if (streamingMode.toLowerCase() === audioWorkletNode) {
 	initStreamer = initStreamerWithAudioWorklet;
     } else {
-	alert("Invalid mode: " + mode + "\nValid modes: " + scriptProcessorNode + " (default) or " + audioWorkletNode);
+	alert("Invalid mode: " + streamingMode + "\nValid modes: " + scriptProcessorNode + " (default) or " + audioWorkletNode);
 	disableEverything();
     }
 
@@ -246,7 +248,7 @@ function loadUserSettings() { // TEMPLATE
     console.log("- project:", project.value);
     console.log("- session:", session.value);
     console.log("- user:", user.value);
-    console.log("- mode:", mode);
+    console.log("- mode:", streamingMode);
     console.log("Options can be set using URL params, e.g. http://localhost:7651/?mode=" + audioWorkletNode + " to use audioworklet instead of " + scriptProcessorNode);
 }
 
@@ -267,7 +269,7 @@ document.getElementById("recstart").addEventListener("click", function () {
             return;
         }
     } else {
-        //audioContext.resume();
+        context.resume();
     }
 
     let wsURL = "ws://" + baseURL + "/ws/register";
@@ -283,6 +285,7 @@ document.getElementById("recstart").addEventListener("click", function () {
                 'sample_rate': context.sampleRate,
                 'channel_count': channelCount,
                 'encoding': defaultEncoding(),
+                'streaming_method': streamingMode,
                 'user_agent': navigator.userAgent,
                 'timestamp': new Date().toISOString(),
                 'user_name': user.value,
@@ -330,9 +333,9 @@ document.getElementById("recstop").addEventListener("click", function () {
 });
 
 function recStop() {
-    //audioContext.suspend();
+    context.suspend();
     if (recorder === null) {
-        msg = "Cannot stop recording -- recorder is undefined"; // todo: only applicable to ScriptProcessor mode
+        msg = "Cannot stop recording -- recorder is undefined";
         console.log(msg);
         alert(msg);
     }

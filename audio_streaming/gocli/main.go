@@ -91,8 +91,10 @@ type Handshake struct {
 	SampleRate   int    `json:"sample_rate"`
 	ChannelCount int    `json:"channel_count"`
 	Encoding     string `json:"encoding,omitempty"`
-	UserAgent    string `json:"user_agent"`
-	Timestamp    string `json:"timestamp,omitempty"`
+
+	StreamingMethod string `json:"streaming_method"`
+	UserAgent       string `json:"user_agent"`
+	Timestamp       string `json:"timestamp,omitempty"`
 
 	UserName string `json:"user,omitempty"`
 	Project  string `json:"project,omitempty"`
@@ -100,20 +102,6 @@ type Handshake struct {
 
 	UUID *uuid.UUID `json:"uuid,omitempty"` // sent from server to client
 }
-
-type Word struct {
-	Word      string `json:"word,omitempty"`
-	StartTime string `json:"start_time,omitempty"`
-	EndTime   string `json:"end_time,omitempty"`
-}
-
-// type Transcript struct {
-// 	Words     *[]Word `json:"words,omitempty"`
-// 	Text      string  `json:"text,omitempty"`
-// 	IsFinal   bool    `json:"is_final"`
-// 	StartTime string  `json:"start_time,omitempty"`
-// 	EndTime   string  `json:"end_time,omitempty"`
-// }
 
 func listenToResults(c *websocket.Conn) {
 	for {
@@ -123,14 +111,6 @@ func listenToResults(c *websocket.Conn) {
 			log.Printf("Failed to read websocket : %v", err)
 			break
 		}
-		// if result.Label == "transcript" {
-		// 	if result.Transcript.IsFinal {
-		// 		fmt.Println()
-		// 		fmt.Println(result.Transcript.Text)
-		// 	} else {
-		// 		fmt.Printf("\r                                                          \r> %s", result.Transcript.Text)
-		// 	}
-		// }
 	}
 }
 
@@ -163,14 +143,15 @@ func doHandshakes(c *websocket.Conn) error {
 	msg := Message{
 		Label: "handshake",
 		Handshake: &Handshake{
-			Timestamp:    time.Now().String(),
-			SampleRate:   *sampleRate,
-			Encoding:     *encoding,
-			ChannelCount: *channelCount,
-			UserAgent:    "gocli",
-			UserName:     *userName,
-			Session:      *session,
-			Project:      *project,
+			Timestamp:       time.Now().String(),
+			SampleRate:      *sampleRate,
+			Encoding:        *encoding,
+			ChannelCount:    *channelCount,
+			StreamingMethod: "gocli",
+			UserAgent:       "gocli",
+			UserName:        *userName,
+			Session:         *session,
+			Project:         *project,
 		},
 	}
 	if err := writeMessageToSocket(msg, c); err != nil {

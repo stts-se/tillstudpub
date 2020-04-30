@@ -11,10 +11,10 @@ class RecorderWorkletProcessor extends AudioWorkletProcessor {
 
   constructor() {
     super();
-      this._bufferSize = 2048;
-      console.log("AudioWorkletProcessor bufferSize", this._bufferSize);
-      this._buffer = new Float32Array(this._bufferSize);
-      this._initBuffer();
+    this._bufferSize = 2048;
+    console.log("AudioWorkletProcessor bufferSize", this._bufferSize);
+    this._buffer = new Float32Array(this._bufferSize);
+    this._initBuffer();
   }
 
   _initBuffer() {
@@ -59,62 +59,22 @@ class RecorderWorkletProcessor extends AudioWorkletProcessor {
   }
 
   process(inputs, outputs, parameters) {
-    console.log("process called");
-  
-    const isRecordingValues = parameters.isRecording;
-    //console.log(isRecordingValues);
+    // By default, the node has single input and output.
+    const input = inputs[0];
 
-    // echo input
-    // for (let channel = 0; channel < output[0].length; ++channel) { outputs[0][channel].set(input[0]channel]); }
+    const channel = input[0]; // TODO: why only use first channel? I can't play the audio using more channels
 
-    for (
-      let dataIndex = 0;
-      dataIndex < isRecordingValues.length;
-      dataIndex++
-    ) {
-      const shouldRecord = isRecordingValues[dataIndex] === 1;
-      if (!shouldRecord && !this._isBufferEmpty()) {
-        this._flush();
-        this._recordingStopped();
+    //for (let ci = 0; ci < input.length; ci++) {
+    //  const channel = input[ci];
+      for (let i = 0; i < channel.length; i++) {
+        this._appendToBuffer(channel[i]);
       }
-
-      if (shouldRecord) {
-        this._appendToBuffer(inputs[0][0][dataIndex]);
-      }
-    }
+   //}
 
     return true;
+
   }
 
 }
 
 registerProcessor('recorder-worklet', RecorderWorkletProcessor);
-
-/**
- * A simple bypass node demo.
- *
- * @class BypassProcessor
- * @extends AudioWorkletProcessor
- */
-
-class BypassProcessor extends AudioWorkletProcessor {
-  constructor() {
-    super();
-  }
-
-  process(inputs, outputs) {
-    //console.log("process called");
-      
-    // By default, the node has single input and output.
-    const input = inputs[0];
-    const output = outputs[0];
-
-    for (let channel = 0; channel < output.length; ++channel) {
-      output[channel].set(input[channel]);
-    }
-
-    return true;
-  }
-}
-
-registerProcessor('bypass-processor', BypassProcessor);
