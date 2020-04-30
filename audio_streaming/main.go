@@ -418,6 +418,7 @@ func receiveAudioStream(id uuid.UUID, audioStreamSender *websocket.Conn) {
 		}
 	}
 
+	//TODO Handler err
 	wavWriter.Close()
 	f.Close()
 
