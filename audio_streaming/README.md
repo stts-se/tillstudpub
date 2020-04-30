@@ -88,7 +88,7 @@ Recorded audio is saved in the `data` folder in the `audio_streaming` directory.
 
 To play a recorded `.raw` file, run `play` with the correct parameters, e.g.
 
- `play -e signed-integer -r 48000 -b 16 <rawfile>`
+ `play -e signed-integer -r 48000 -b 16 -c 1 <rawfile>`
 
 
 See also playraw_example.sh.
