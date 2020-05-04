@@ -232,26 +232,27 @@ function loadUserSettings() { // TEMPLATE
     console.log("- session:", session.value);
     console.log("- user:", user.value);
     
-    let scriptProcessorNode = "scriptprocessornode";
-    let audioWorkletNode = "audioworkletnode";
-    streamingMode = audioWorkletNode;
+    let scriptProcessor = "scriptprocessor";
+    let audioWorklet = "audioworklet";
+    let streamingModeUsage = "Available streaming modes: "  + audioWorklet + " (default) or " + scriptProcessor;
+    streamingMode = audioWorklet;
     // streaming mode
     if (urlParams.has('mode')) {
         streamingMode = urlParams.get("mode");
     }
-    if (streamingMode.toLowerCase() === scriptProcessorNode) {
+    if (streamingMode.toLowerCase() === scriptProcessor) {
         initStreamer = initStreamerWithScriptProcessor;
-    } else if (streamingMode.toLowerCase() === audioWorkletNode) {
+    } else if (streamingMode.toLowerCase() === audioWorklet) {
         initStreamer = initStreamerWithAudioWorklet;
     } else {
-        alert("Invalid mode: " + streamingMode + "\nValid modes: " + audioWorkletNode + " (default) or " + scriptProcessorNode);
+        alert("Invalid mode: " + streamingMode + "\n" + streamingModeUsage);
         disableEverything();
     }
 
     // log settings
     console.log("- mode:", streamingMode);
     console.log("Options can be set using URL params, e.g. http://localhost:7651/?mode=STREAMINGMODE");
-    console.log("Available streaming modes: "  + audioWorkletNode + " (default) or " + scriptProcessorNode);
+    console.log(streamingModeUsage);
 }
 
 function initSettings() {
