@@ -1,13 +1,12 @@
-// Testing code and examples from https://gist.github.com/flpvsk/047140b31c968001dc563998f7440cc1
-// but they need to be adapted.
+// Adapted from https://gist.github.com/flpvsk/047140b31c968001dc563998f7440cc1
 
 class RecorderWorkletProcessor extends AudioWorkletProcessor {
-  static get parameterDescriptors() {
-    return [{
-      name: 'isRecording',
-      defaultValue: 0
-    }];
-  }
+  // static get parameterDescriptors() {
+  //   return [{
+  //     name: 'isRecording',
+  //     defaultValue: 0
+  //   }];
+  // }
 
   constructor() {
     super();
