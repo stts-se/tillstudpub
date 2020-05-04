@@ -13,11 +13,11 @@ For streaming audio with JavaScript only (no external libraries) the Web Audio A
 TODO more background
 
 
-'Pros'
+**Pros**
 * Designed to be lossless
 * ...
 
-'Cons'
+**Cons**
 * Not supported by all browsers
 * ...
 
@@ -29,11 +29,11 @@ Unfortunately, the AudioWorklet is not fully supported by Firefox yet (neither s
 
 TODO more background
 
-'Pros'
+**Pros**
 * Supported by most browsers
 * ...
 
-'Cons'
+**Cons**
 * Not lossless
 * ...
 
@@ -42,11 +42,11 @@ TODO more background
 
 Background TODO
 
-'Pros'
+**Pros**
 * Supported by most browsers (?)
 * ...
 
-'Cons'
+**Cons**
 * Not lossless
 * ...
 
