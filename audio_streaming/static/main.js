@@ -15,7 +15,11 @@ let micDetected = true;
 
 let context;
 let channelCount = 1;
+
+const scriptProcessorMode = "scriptprocessor";
+const audioWorkletMode = "audioworklet";
 let streamingMode;
+//let initStreamer;
 
 let bytesSent = 0; // for logging purposes
 
@@ -26,8 +30,6 @@ let audioWS;
 let user = document.getElementById("user");
 let session = document.getElementById("session");
 let project = document.getElementById("project");
-
-let initStreamer; // = initStreamerWithScriptProcessor;
 
 // START: UTIL
 function addClass(element, theClass) {
@@ -99,8 +101,8 @@ function convertFloat32ToInt16(buffer) {
     return buf.buffer
 }
 
-function initStreamerWithScriptProcessor() {
-    console.log("initStreamerWithScriptProcessor called");
+function initStreamer(mode) {
+    console.log("initStreamer called with " + mode + " mode");
     if (!navigator.mediaDevices.getUserMedia)
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia || navigator.msGetUserMedia;
@@ -119,84 +121,20 @@ function initStreamerWithScriptProcessor() {
             VISUALISER.init(isRecording);
             VISUALISER.connect(stream);
 
-            let audioInput = context.createMediaStreamSource(stream);
-            let bufferSize = 2048; // 16384; // 1024; // 16384 is max
-            recorder = context.createScriptProcessor(bufferSize, channelCount, channelCount);
-            console.log("ScriptProcessor bufferSize", bufferSize);
-            audioInput.connect(recorder)
-            recorder.connect(context.destination);
-
-            recorder.onaudioprocess = function (e) {
-                if (!isRecording()) return;
-                //console.log("recorder.onaudioprocess", typeof e , e.inputBuffer.getChannelData(0).length)   ;
-                var left = e.inputBuffer.getChannelData(0);
-                let sendable = convertFloat32ToInt16(left);
-                bytesSent = bytesSent + sendable.byteLength;
-                audioWS.send(sendable);
-            }
-            return true;
-        })
-
-        // on error:
-        .catch(function (err) {
-            console.log("error from getUserMedia", err);
-            micDetected = false;
-            logMessage("error", "No microphone detected. Please verify that your microphone is properly connected.");
-            alert("Couldn't initialize recorder: " + err.message + "\n\nPlease verify that your microphone is properly connected.");
-            disableEverything();
-            return false;
-        });
-    return true;
-}
-
-function initStreamerWithAudioWorklet() {
-    console.log("initStreamerWithAudioWorklet called");
-    if (!navigator.mediaDevices.getUserMedia)
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-    if (!navigator.mediaDevices.getUserMedia) {
-        disableEverything();
-        alert('getUserMedia not supported in this browser.');
-        return false;
-    }
-
-
-    let audioCtx = window.AudioContext || window.webkitAudioContext;
-    context = new audioCtx();
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        // on success:
-        .then(async function (stream) {
-            VISUALISER.init(isRecording);
-            VISUALISER.connect(stream);
-
             let audioSource = context.createMediaStreamSource(stream);
-            await context.audioWorklet.addModule('processor.js');
-            const recorder = new AudioWorkletNode(context, 'recorder-worklet');
-            audioSource.connect(recorder).connect(context.destination);
-
-            recorder.port.onmessage = function (e) {
-                if (e.data.eventType === 'data') {
-                    //console.log("recorder.ondata", typeof e.data , e.data.audioBuffer.length);
-                    const audioData = e.data.audioBuffer;
-                    if (!isRecording()) return;
-                    var left = e.data.audioBuffer;
-                    let sendable = convertFloat32ToInt16(left);
-                    bytesSent = bytesSent + sendable.byteLength;
-                    audioWS.send(sendable);
-                }
-                if (e.data.eventType === 'stop') {
-                    // recording has stopped
-                }
-            };
-            //let time = new Date().getTime(); // ??? 
-            //let duration = 1; // ??? 
-            //recorder.parameters.get('isRecording').setValueAtTime(1, time);
-            //recorder.parameters.get('isRecording').setValueAtTime(0, time + duration);
-            //yourSourceNode.start(time); // ??? 
-            return true;
+            let api;
+            if (streamingMode == scriptProcessorMode) {
+                api = new ScriptProcessorAPI();
+            } else if (streamingMode == audioWorkletMode) {
+                api = new AudioWorkletAPI();
+            } else {
+                const msg = "Invalid streaming mode: " + streamingMode
+                logMessage("error", msg);
+                alert("Couldn't initialize recorder: " + msg);
+                disableEverything();
+            }
+            api.connect(context,audioSource);
         })
-
         // on error:
         .catch(function (err) {
             console.log("error from getUserMedia", err);
@@ -208,7 +146,6 @@ function initStreamerWithAudioWorklet() {
         });
     return true;
 }
-
 
 function isRecording() {
     return document.getElementById("recstop").disabled === false;
@@ -226,24 +163,22 @@ function loadUserSettings() { // TEMPLATE
     if (urlParams.has('user')) {
         user.value = urlParams.get("user");
     }
-    
+
     console.log("Settings");
     console.log("- project:", project.value);
     console.log("- session:", session.value);
     console.log("- user:", user.value);
-    
-    let scriptProcessor = "scriptprocessor";
-    let audioWorklet = "audioworklet";
-    let streamingModeUsage = "Available streaming modes: "  + audioWorklet + " (default) or " + scriptProcessor;
-    streamingMode = audioWorklet;
+
+    let streamingModeUsage = "Available streaming modes: " + audioWorkletMode + " (default) or " + scriptProcessorMode;
+    streamingMode = audioWorkletMode;
     // streaming mode
     if (urlParams.has('mode')) {
         streamingMode = urlParams.get("mode");
     }
-    if (streamingMode.toLowerCase() === scriptProcessor) {
-        initStreamer = initStreamerWithScriptProcessor;
-    } else if (streamingMode.toLowerCase() === audioWorklet) {
-        initStreamer = initStreamerWithAudioWorklet;
+    if (streamingMode.toLowerCase() === scriptProcessorMode) {
+        //initStreamerFunc = initStreamerWithScriptProcessor;
+    } else if (streamingMode.toLowerCase() === audioWorkletMode) {
+        //initStreamerFunc = initStreamerWithAudioWorklet;
     } else {
         alert("Invalid mode: " + streamingMode + "\n" + streamingModeUsage);
         disableEverything();
@@ -260,15 +195,10 @@ function initSettings() {
     document.getElementById("recstart").disabled = false;
 }
 
-function disableAll() {
-    document.getElementById("recstop").disabled = true;
-    document.getElementById("recstart").disabled = true;
-}
-
 document.getElementById("recstart").addEventListener("click", function () {
     // init audio context/recorder first time recstart is clicked (it has to be initialized after user gesture, in order to work in Chrome)
     if (context === undefined || context === null) {
-        if (!initStreamer()) {
+        if (!initStreamer(streamingMode)) {
             return;
         }
     } else {
