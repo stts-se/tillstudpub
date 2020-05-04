@@ -76,7 +76,7 @@ See audio_streaming/README.md
 
 # Testing a browser's AudioWorklet compatibility
 
-Not all browsers support AudioWorklet yet (see above)
+Not all browsers support AudioWorklet yet (see above). Here's how to do a quick test:
 
 1. Start the server (see above)
 2. Point your browser to http://localhost:7651/audioworklet
