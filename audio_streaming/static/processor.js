@@ -8,12 +8,12 @@ class RecorderWorkletProcessor extends AudioWorkletProcessor {
   //   }];
   // }
 
-  constructor() {
-    super();
-    this._bufferSize = 2048;
-    console.log("AudioWorkletProcessor bufferSize", this._bufferSize);
-    this._buffer = new Float32Array(this._bufferSize);
-    this._initBuffer();
+    constructor() {
+      super();
+	this._bufferSize = 2048;
+	//console.log("AudioWorkletProcessor bufferSize", this._bufferSize);
+	this._buffer = new Float32Array(this._bufferSize);
+	this._initBuffer();
   }
 
   _initBuffer() {

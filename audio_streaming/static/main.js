@@ -19,9 +19,7 @@ let channelCount = 1;
 const scriptProcessorMode = "scriptprocessor";
 const audioWorkletMode = "audioworklet";
 let streamingMode;
-//let initStreamer;
-
-let bytesSent = 0; // for logging purposes
+let streamingAPI
 
 const bigMicOnSrc = "images/mic_red_microphone-3404243_1280.png"
 
@@ -101,7 +99,7 @@ function convertFloat32ToInt16(buffer) {
     return buf.buffer
 }
 
-function initStreamer(mode) {
+async function initStreamer(mode) {
     console.log("initStreamer called with " + mode + " mode");
     if (!navigator.mediaDevices.getUserMedia)
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -115,25 +113,25 @@ function initStreamer(mode) {
 
     let audioCtx = window.AudioContext || window.webkitAudioContext;
     context = new audioCtx();
-    navigator.mediaDevices.getUserMedia({ audio: true })
+    await navigator.mediaDevices.getUserMedia({ audio: true })
         // on success:
-        .then(function (stream) {
+        .then(async function (stream) {
             VISUALISER.init(isRecording);
             VISUALISER.connect(stream);
 
             let audioSource = context.createMediaStreamSource(stream);
-            let api;
             if (streamingMode == scriptProcessorMode) {
-                api = new ScriptProcessorAPI();
+                streamingAPI = new ScriptProcessorAPI(context, audioSource, isRecording);
             } else if (streamingMode == audioWorkletMode) {
-                api = new AudioWorkletAPI();
+                streamingAPI = new AudioWorkletAPI(context, audioSource, isRecording);
             } else {
                 const msg = "Invalid streaming mode: " + streamingMode
                 logMessage("error", msg);
                 alert("Couldn't initialize recorder: " + msg);
                 disableEverything();
             }
-            api.connect(context,audioSource);
+	    console.log("initStreamer created " + mode + " streamer:", streamingAPI, "(1)");
+            //streamingAPI.connect(context,audioSource);
         })
         // on error:
         .catch(function (err) {
@@ -144,6 +142,7 @@ function initStreamer(mode) {
             disableEverything();
             return false;
         });
+    console.log("initStreamer function return");
     return true;
 }
 
@@ -176,9 +175,7 @@ function loadUserSettings() { // TEMPLATE
         streamingMode = urlParams.get("mode");
     }
     if (streamingMode.toLowerCase() === scriptProcessorMode) {
-        //initStreamerFunc = initStreamerWithScriptProcessor;
     } else if (streamingMode.toLowerCase() === audioWorkletMode) {
-        //initStreamerFunc = initStreamerWithAudioWorklet;
     } else {
         alert("Invalid mode: " + streamingMode + "\n" + streamingModeUsage);
         disableEverything();
@@ -195,10 +192,11 @@ function initSettings() {
     document.getElementById("recstart").disabled = false;
 }
 
-document.getElementById("recstart").addEventListener("click", function () {
+document.getElementById("recstart").addEventListener("click", async function () {
     // init audio context/recorder first time recstart is clicked (it has to be initialized after user gesture, in order to work in Chrome)
     if (context === undefined || context === null) {
-        if (!initStreamer(streamingMode)) {
+	let ok = await initStreamer(streamingMode);
+        if (!ok) {
             return;
         }
     } else {
@@ -208,6 +206,8 @@ document.getElementById("recstart").addEventListener("click", function () {
     let wsURL = "ws://" + baseURL + "/ws/register";
     console.log(wsURL);
     audioWS = new WebSocket(wsURL);
+    console.log("streamingAPI", streamingAPI);
+    streamingAPI.websocket = audioWS;
 
     audioWS.onopen = function () {
         console.log("websocket opened");
@@ -277,16 +277,17 @@ function recStop() {
     }
     //logMessage("info", "recording stopped");
     console.log("recording stopped");
-    console.log("sent " + bytesSent + " bytes in total");
-    bytesSent = 0;
+    console.log("sent " + streamingAPI.byteCount + " bytes in total");
 
     document.getElementById("recstop").disabled = true;
     document.getElementById("recstart").disabled = false;
     document.getElementById("audiofeedbacktextspan").innerText = "";
     document.getElementById("bigmic").src = "";
+
     //recorder.stop();
     audioWS.close();
     audioWS = null;
+    streamingAPI.reset();
 };
 
 
