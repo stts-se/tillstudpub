@@ -18,7 +18,7 @@ TODO more background
 * ...
 
 **Cons**
-* Not supported by all browsers
+* Not supported by all browsers (browser support listed here: https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode)
 * ...
 
 ### ScriptProcessorNode
