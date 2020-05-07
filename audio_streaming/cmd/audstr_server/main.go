@@ -241,12 +241,35 @@ func initialiseAudioStream(conn *websocket.Conn) (audiostreaming.Handshake, erro
 	return handshake, nil
 }
 
+func createWavHeader(audioConfig *audiostreaming.AudioConfig) wav.File {
+	// type File struct {
+	// 	SampleRate      uint32
+	// 	SignificantBits uint16
+	// 	Channels        uint16
+	// 	NumberOfSamples uint32
+	// 	Duration        time.Duration
+	// 	AudioFormat     uint16
+	// 	SoundSize       uint32
+	// 	Canonical       bool
+	// 	BytesPerSecond  uint32
+	// }
+
+	// Create the headers for our new mono file
+	// TODO: problematic conversion int => unitNN ?
+	return wav.File{
+		Channels:        uint16(audioConfig.ChannelCount),
+		SampleRate:      uint32(audioConfig.SampleRate),
+		SignificantBits: uint16(16), // usually 16
+	}
+}
+
 func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *websocket.Conn) {
 	defer audioStreamSender.Close() // ??
 	var err error
 
 	audioRawFileName := filepath.Join(outputDir, fmt.Sprintf("%s.raw", handshake.UUID.String()))
 	audioWavFileName := filepath.Join(outputDir, fmt.Sprintf("%s.wav", handshake.UUID.String()))
+	byteCount := 0
 
 	rawWriter, err := newBufferedFileWriter(audioRawFileName)
 	if err != nil {
@@ -254,13 +277,7 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 		return
 	}
 
-	// Create the headers for our new mono file
-	// TODO: problematic conversion int => unitNN ?
-	wavMeta := wav.File{
-		Channels:        uint16(handshake.AudioConfig.ChannelCount),
-		SampleRate:      uint32(handshake.AudioConfig.SampleRate),
-		SignificantBits: uint16(handshake.AudioConfig.SignificantBits), // usually 16
-	}
+	wavHeader := createWavHeader(handshake.AudioConfig)
 
 	wavFile, err := os.Create(audioWavFileName)
 	if err != nil {
@@ -268,7 +285,7 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 		return
 	}
 
-	wavWriter, err := wavMeta.NewWriter(wavFile)
+	wavWriter, err := wavHeader.NewWriter(wavFile)
 	if err != nil {
 		log.Printf("Couldn't create wav audio file writer: %v", err)
 		return
@@ -296,6 +313,7 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 		}
 
 		if len(bts) > 0 {
+			byteCount += len(bts)
 			if _, err := rawWriter.writer.Write(bts); err != nil {
 				log.Printf("Couldn't write raw audio to file: %v", err)
 				break
@@ -327,7 +345,7 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 		log.Printf("Couldn't save raw audio file: %v", err)
 		return
 	}
-	log.Printf("Saved raw audio file %s", audioRawFileName)
+	log.Printf("Saved raw audio file %s (%v bytes)", audioRawFileName, byteCount)
 
 	// copy raw to latest.raw
 	latestAudioFileMutex.Lock()

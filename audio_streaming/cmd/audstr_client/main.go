@@ -78,7 +78,7 @@ func sendStdin(c *websocket.Conn) {
 	log.Printf("Read %v bytes from stdin", nTotal)
 }
 
-func listenToResults(c *websocket.Conn) {
+func listenForResults(c *websocket.Conn) {
 	for {
 		var result = audiostreaming.Message{}
 		err := c.ReadJSON(&result)
@@ -119,10 +119,10 @@ func doHandshakes(c *websocket.Conn) error {
 		Label: "handshake",
 		Handshake: &audiostreaming.Handshake{
 			AudioConfig: &audiostreaming.AudioConfig{
-				SampleRate:      *sampleRate,
-				Encoding:        *encoding,
-				ChannelCount:    *channelCount,
-				SignificantBits: *significantBits,
+				SampleRate:   *sampleRate,
+				Encoding:     *encoding,
+				ChannelCount: *channelCount,
+				//SignificantBits: *significantBits,
 			},
 			Timestamp:       time.Now().String(),
 			StreamingMethod: "gocli",
@@ -147,7 +147,7 @@ func doHandshakes(c *websocket.Conn) error {
 	return nil
 }
 
-var channelCount, sampleRate, significantBits *int
+var channelCount, sampleRate *int
 var encoding, userName, project, session *string
 
 func main() {
@@ -172,8 +172,8 @@ func main() {
 	port := flag.String("port", "7651", "Server port")
 	channelCount = flag.Int("channels", 1, "Number of channels")
 	sampleRate = flag.Int("sample_rate", 48000, "Sample rate")
-	encoding = flag.String("encoding", "flac", "Audio encoding")
-	significantBits = flag.Int("bits", 16, "significant bits")
+	encoding = flag.String("encoding", "linear16", "Audio encoding")
+	//significantBits = flag.Int("bits", 16, "significant bits")
 	userName = flag.String("user", defaultUser, "User name")
 	session = flag.String("session", "", "Session name")
 	project = flag.String("project", "", "Project name")
@@ -204,7 +204,7 @@ func main() {
 		go sendFile(c, audioFile)
 	}
 
-	go listenToResults(c)
+	go listenForResults(c)
 	select {}
 
 }
