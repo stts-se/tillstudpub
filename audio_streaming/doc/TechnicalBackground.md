@@ -14,7 +14,7 @@ TODO more background
 
 
 **Pros**
-* Designed to be lossless
+* Designed to be "lossless" [TODO wording]
 * ...
 
 **Cons**
@@ -34,7 +34,7 @@ TODO more background
 * ...
 
 **Cons**
-* Not lossless
+* Not "lossless" [TODO wording]
 * ...
 
 
@@ -47,7 +47,7 @@ Background TODO
 * ...
 
 **Cons**
-* Not lossless
+* Not "lossless" [TODO wording]
 * ...
 
 
