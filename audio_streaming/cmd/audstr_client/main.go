@@ -173,7 +173,7 @@ func main() {
 	channelCount = flag.Int("channels", 1, "Number of channels")
 	sampleRate = flag.Int("sample_rate", 48000, "Sample rate")
 	encoding = flag.String("encoding", "linear16", "Audio encoding")
-	//significantBits = flag.Int("bits", 16, "significant bits")
+	//significantBits = flag.Int("sigbits", 16, "significant bits")
 	userName = flag.String("user", defaultUser, "User name")
 	session = flag.String("session", "", "Session name")
 	project = flag.String("project", "", "Project name")

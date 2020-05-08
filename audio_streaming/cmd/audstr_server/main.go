@@ -259,7 +259,7 @@ func createWavHeader(audioConfig *audiostreaming.AudioConfig) wav.File {
 	return wav.File{
 		Channels:        uint16(audioConfig.ChannelCount),
 		SampleRate:      uint32(audioConfig.SampleRate),
-		SignificantBits: uint16(16), // usually 16
+		SignificantBits: uint16(16), // Endianness, why 16???
 	}
 }
 
