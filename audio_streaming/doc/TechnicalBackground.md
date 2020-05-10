@@ -2,6 +2,37 @@
 
 In this document, we describe the background for the `audio_streaming` demo application, available methods for audio streaming and technical challenges with different methods.
 
+# Microphone capture in the web browser
+
+## Recording a complete file before sending to the server
+
+One way to do microphone recording in a web browser is using the JavaScript Web Audio API. You can obtain an audio stream from the microphone using the `getUserMedia()` function. Using a `MediaRecorder`, the audio can be saved as a Blob. When the recording is done, the Blob can be added to an HTML5 audio element, that can be played in the web browser.
+
+The audio file can be sent to a HTTP server as a base64 encoded string, and decoded and saved on the server.
+
+This method works when the user wants to record something, and only when done send it to the server. This could, for example, be a recording tool, where you read aloud and record a manuscript sentence presented in the browser.
+
+How ever, this method is not useful for streaming audio to the server.
+
+
+
+## Streaming over a websocket
+
+A websocket can be thought of as a bi-directional HTTP connection. Usually, when a client calls an HTTP server, there is a request from the client, and a response from the server, and that's it. Subsequent calls must establish new connections to the server.
+
+A websocket, on the other hand, is an HTTP connection that may stay open for any period of time, and on which both the client and the server may send data. Since a websocket is an upgraded HTTP connection, is has much of the same characteristics, such as guarantees against package loss, etc.
+
+A difference between a websocket and a normal HTTP connection, is that there is not a well defined protocol for interaction between client and server (such as GET and POST, etc). After a websocket connection has been established, the client and the server may send text or binary data to each other in any form.
+
+
+## Streaming using WebRTC
+
+WebRCT is a peer-to-peer method for streaming audio and video. Since human cognition is more forgiving to missing samples than to latency, as little lag as possible is more important than being sure that the sound wave is complete and intact --- packet loss is tolerated.
+
+Under the hood, WebRTC takes care of things like echo-canceling and noise reduction.
+
+WebRTC also includes a DataChannel API, that can be used for transporting data losslessly between peers. However, a websocket may do the job equally good, if you do not need peer-to-peer capabilities.
+
 
 ## Streaming technologies
 
