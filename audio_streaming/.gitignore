@@ -1,1 +1,5 @@
 data
+
+doc/*.aux
+doc/*.dvi
+doc/*.log
