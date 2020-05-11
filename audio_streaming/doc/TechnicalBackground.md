@@ -27,7 +27,7 @@ A difference between a websocket and a normal HTTP connection, is that there is 
 
 ## Streaming using WebRTC
 
-WebRCT is a peer-to-peer method for streaming audio and video. Since human cognition is more forgiving to missing samples than to latency, as little lag as possible is more important than being sure that the sound wave is complete and intact --- packet loss is tolerated.
+WebRTC is a peer-to-peer method for streaming audio and video. Since human cognition is more forgiving to missing samples than to latency, as little lag as possible is more important than being sure that the sound wave is complete and intact --- packet loss is tolerated.
 
 Under the hood, WebRTC takes care of things like echo-canceling and noise reduction.
 
