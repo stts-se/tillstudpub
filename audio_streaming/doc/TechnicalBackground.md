@@ -12,9 +12,16 @@ The audio file can be sent to a HTTP server as a base64 encoded string, and deco
 
 This method works when the user wants to record something, and only when done send it to the server. This could, for example, be a recording tool, where you read aloud and record a manuscript sentence presented in the browser.
 
-How ever, this method is not useful for streaming audio to the server.
+However, this method is not useful for streaming audio to the server.
 
+**Pros**
+* The audio format is known
+* ...
 
+**Cons**
+* The audio format cannot be changed (it is controlled by the browser)
+* Not for streaming
+* ...
 
 ## Streaming over a websocket
 
