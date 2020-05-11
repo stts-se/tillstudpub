@@ -1,8 +1,9 @@
 class StreamingAPI {
 
-    constructor(context, audioSource, isRecordingFunc) {
+    constructor(context, audioSource, bitDepth, isRecordingFunc) {
         this._bytesSent = 0;
         this._isRecordingFunc = isRecordingFunc;
+	this._bitDepth = bitDepth;
     }
 
     get byteCount() {
@@ -20,26 +21,22 @@ class StreamingAPI {
         this._audioWS = null;
     }
 
+    get bitDepth() {
+	return this._bitDepth;
+    }
+    
     convertFloat32ToInt16(bufferIn) {
         var l = bufferIn.length;
-        var res = new Int16Array(l);     
+        var res = new Int16Array(l);
         const intMax = 32767;
+	const intMin = -32768;
         while (l--) {
             let f = bufferIn[l] * intMax;
             if (f > intMax) 
                 f = intMax;
-            else if (f < -intMax)
-                f = -intMax;
+            else if (f < intMin)
+                f = intMin;
             res[l] = f;
-        }
-        return res.buffer;
-    }
-
-    convertFloat32ToInt16OLD(bufferIn) {
-        var l = buffer.length;
-        var res = new Int16Array(l);
-        while (l--) {
-            res[l] = bufferIn[l] * 0xFFFF; //convert to 16 bit
         }
         return res.buffer;
     }
@@ -48,8 +45,8 @@ class StreamingAPI {
 
 class ScriptProcessorAPI extends StreamingAPI {
 
-    constructor(context, audioSource, isRecordingFunc) {
-        super(context, audioSource, isRecordingFunc);
+    constructor(context, audioSource, bitDepth, isRecordingFunc) {
+        super(context, audioSource, bitDepth, isRecordingFunc);
         let parent = this;
 
         let bufferSize = 2048;
@@ -62,9 +59,14 @@ class ScriptProcessorAPI extends StreamingAPI {
             if (!parent._isRecordingFunc()) return;
             //console.log("recorder.onaudioprocess", typeof e , e.inputBuffer.getChannelData(0).length);
             const buffer = e.inputBuffer.getChannelData(0);
-            const sendable = convertFloat32ToInt16(buffer);
-            parent._bytesSent = parent._bytesSent + sendable.byteLength;
+		    let sendable;
+		    if (parent._bitDepth === 16) {
+			sendable = parent.convertFloat32ToInt16(buffer);
+		    } else {
+			sendable = buffer;
+		    }
             parent._audioWS.send(sendable);
+            parent._bytesSent = parent._bytesSent + sendable.byteLength;
         }
     }
 
@@ -72,8 +74,8 @@ class ScriptProcessorAPI extends StreamingAPI {
 
 class AudioWorkletAPI extends StreamingAPI {
 
-    constructor(context, audioSource, isRecordingFunc) {
-        super(context, audioSource, isRecordingFunc);
+    constructor(context, audioSource, bitDepth, isRecordingFunc) {
+        super(context, audioSource, bitDepth, isRecordingFunc);
         let parent = this;
 
         const connect = async function (context, audioSource) {
@@ -86,9 +88,14 @@ class AudioWorkletAPI extends StreamingAPI {
                 if (e.data.eventType === 'data') {
                     //console.log("recorder.ondata", typeof e.data , e.data.audioBuffer.length);
                     const buffer = e.data.audioBuffer;
-                    const sendable = convertFloat32ToInt16(buffer);
-                    parent._bytesSent = parent._bytesSent + sendable.byteLength;
+		    let sendable;
+		    if (parent._bitDepth === 16) {
+			sendable = parent.convertFloat32ToInt16(buffer);
+		    } else {
+			sendable = buffer;
+		    }
                     parent._audioWS.send(sendable);
+                    parent._bytesSent = parent._bytesSent + sendable.byteLength;
                 }
                 if (e.data.eventType === 'stop') {
                     // recording has stopped

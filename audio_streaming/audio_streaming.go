@@ -16,7 +16,7 @@ type AudioConfig struct {
 	SampleRate   int    `json:"sample_rate"`
 	ChannelCount int    `json:"channel_count"`
 	Encoding     string `json:"encoding"`
-	//SignificantBits int    `json:"significant_bits"`
+	BitDepth     int    `json:"bit_depth"`
 }
 
 //Handshake is a struct for sending handshakes over websockets

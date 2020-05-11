@@ -89,16 +89,6 @@ function sleep(ms) {
 // END: UTIL
 
 
-function convertFloat32ToInt16(buffer) {
-    var l = buffer.length;
-    var buf = new Int16Array(l)
-
-    while (l--) {
-        buf[l] = buffer[l] * 0xFFFF; //convert to 16 bit
-    }
-    return buf.buffer
-}
-
 async function initStreamer(mode) {
     console.log("initStreamer called with " + mode + " mode");
     if (!navigator.mediaDevices.getUserMedia)
@@ -120,10 +110,11 @@ async function initStreamer(mode) {
             VISUALISER.connect(stream);
 
             let audioSource = context.createMediaStreamSource(stream);
+	    const bitDepth = 16;
             if (streamingMode == scriptProcessorMode) {
-                streamingAPI = new ScriptProcessorAPI(context, audioSource, isRecording);
+                streamingAPI = new ScriptProcessorAPI(context, audioSource, bitDepth, isRecording);
             } else if (streamingMode == audioWorkletMode) {
-                streamingAPI = new AudioWorkletAPI(context, audioSource, isRecording);
+                streamingAPI = new AudioWorkletAPI(context, audioSource, bitDepth, isRecording);
             } else {
                 const msg = "Invalid streaming mode: " + streamingMode
                 logMessage("error", msg);
@@ -219,7 +210,7 @@ document.getElementById("recstart").addEventListener("click", async function () 
                     'sample_rate': context.sampleRate,
                     'channel_count': channelCount,
                     'encoding': defaultEncoding(),
-                    'significant_bits': 16,
+                    'bit_depth': streamingAPI.bitDepth,
                 },
                 'streaming_method': streamingMode,
                 'user_agent': navigator.userAgent,
