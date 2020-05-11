@@ -31,8 +31,6 @@ The default settings for this application is to use the AudioWorklet
 ## ScriptProcessorNode
 TODO
 
-## WebRTC
-TODO
 
 # Saved audio format
 
