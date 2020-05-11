@@ -86,16 +86,27 @@
  \cfoot{\thepage (\pageref{LastPage})}  
   
 
-In this document, we describe the background for the `audio\_streaming` demo application, available methods for audio streaming and technical challenges with different methods.
+In this document, we describe the background for the
+`audio\_streaming` demo application, available methods for audio
+streaming and technical challenges with different methods.
 
 
 \section{Recording a complete file before sending to the server}
 
-One way to do microphone recording in a web browser is using the JavaScript Web Audio API. You can obtain an audio stream from the microphone using the `getUserMedia()` function. Using a `MediaRecorder`, the audio can be saved as a Blob. When the recording is done, the Blob can be added to an HTML5 audio element, that can be played in the web browser.
+One way to do microphone recording in a web browser is using the
+JavaScript Web Audio API. You can obtain an audio stream from the
+microphone using the `getUserMedia()` function. Using a
+`MediaRecorder`, the audio can be saved as a Blob. When the recording
+is done, the Blob can be added to an HTML5 audio element, that can be
+played in the web browser.
 
-The audio file can be sent to a HTTP server as a base64 encoded string, and decoded and saved on the server.
+The audio file can be sent to a HTTP server as a base64 encoded
+string, and decoded and saved on the server.
 
-This method works when the user wants to record something, and only when done send it to the server. This could, for example, be a recording tool, where you read aloud and record a manuscript sentence presented in the browser.
+This method works when the user wants to record something, and only
+when done send it to the server. This could, for example, be a
+recording tool, where you read aloud and record a manuscript sentence
+presented in the browser.
 
 However, this method is not useful for streaming audio to the server.
 
@@ -114,20 +125,51 @@ However, this method is not useful for streaming audio to the server.
 
 \section{Streaming over a websocket}
 
-A websocket can be thought of as a bi-directional HTTP connection. Usually, when a client calls an HTTP server, there is a request from the client, and a response from the server, and that's it. Subsequent calls must establish new connections to the server.
+A websocket can be thought of as a bi-directional HTTP
+connection. Usually, when a client calls an HTTP server, there is a
+request from the client, and a response from the server, and that's
+it. Subsequent calls must establish new connections to the server.
 
-A websocket, on the other hand, is an HTTP connection that may stay open for any period of time, and on which both the client and the server may send data. Since a websocket is an upgraded HTTP connection, is has much of the same characteristics, such as guarantees against package loss, etc.
+A websocket, on the other hand, is an HTTP connection that may stay
+open for any period of time, and on which both the client and the
+server may send data. Since a websocket is an upgraded HTTP
+connection, is has much of the same characteristics, such as
+guarantees against package loss, etc.
 
-A difference between a websocket and a normal HTTP connection, is that there is not a well defined protocol for interaction between client and server (such as GET and POST, etc). After a websocket connection has been established, the client and the server may send text or binary data to each other in any form.
+A difference between a websocket and a normal HTTP connection, is that
+there is not a well defined protocol for interaction between client
+and server (such as GET and POST, etc). After a websocket connection
+has been established, the client and the server may send text or
+binary data to each other in any form.
 
 
 \section{Streaming using WebRTC}
 
-WebRTC is a peer-to-peer method for streaming audio and video. Since human cognition is more forgiving to missing samples than to latency, as little lag as possible is more important than being sure that the sound wave is complete and intact --- packet loss is tolerated.
+WebRTC (Web Real-Time Communication) is a peer-to-peer method for
+streaming audio and video. In other words, you can use it to stream
+audio and video directly between web-browsers (as long as there is
+some way of the browsers to find each other, for example using a STUN
+server).
 
-Under the hood, WebRTC takes care of things like echo-canceling and noise reduction.
+WebRTC is build on UDP (rather than HTTP). The WebRCT uses the Opus
+codec for audio (and V8 for video).
 
-WebRTC also includes a DataChannel API, that can be used for transporting data losslessly between peers. However, a websocket may do the job equally good, if you do not need peer-to-peer capabilities.
+Since human cognition is more forgiving to missing samples than to
+latency, as little lag as possible is more important than being sure
+that the original sound wave is complete and intact --- packet loss is
+tolerated. The original sound wave might not be possible to reproduce
+on the other end. Since speech is full of redundant information and
+human cognition is built for interpreting a noisy signal, this may not
+be a big issue for understanding speech sent over a bad network using
+WebRTC.
+
+Under the hood, WebRTC takes care of things like echo-canceling and
+noise reduction. 
+
+
+WebRTC also includes a DataChannel API, that can be used for
+transporting data losslessly between peers. However, a websocket may
+do the job equally good, if you do not need peer-to-peer capabilities.
 
 \subsection*{Pros}
 \begin{itemize}
@@ -199,6 +241,12 @@ We would like to be able to better control these settings, or at the very least 
 
 \begin{thebibliography}{9}
 
+\bibitem{highperfnetworking}
+  High Performance Browser Networking,
+  Ilya Grigorik,
+  O'Reilly,
+  2013
+  
 \bibitem{scriptprocessornode}
   https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode
 
