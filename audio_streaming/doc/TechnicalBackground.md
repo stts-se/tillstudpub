@@ -41,7 +41,7 @@ WebRTC also includes a DataChannel API, that can be used for transporting data l
 * Not "lossless" [TODO wording]
 * ...
 
-### Streaming using ScriptProcessorNode
+## Streaming using ScriptProcessorNode
 
 Before the AudioWorket was introduced into the Web Audio API, the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) could be used for streaming. This part of the Web Audio API has since been deprecated due to some critical design flaws. More information on the motivation behind the move to AudioWorklet can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
 
