@@ -33,26 +33,15 @@ Under the hood, WebRTC takes care of things like echo-canceling and noise reduct
 
 WebRTC also includes a DataChannel API, that can be used for transporting data losslessly between peers. However, a websocket may do the job equally good, if you do not need peer-to-peer capabilities.
 
-
-## Streaming technologies
-
-
-### AudioWorklet
-
-For streaming audio with JavaScript only (no external libraries) the Web Audio API and [AudioWorklet](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorklet) is the ??? ??? method recommended by ??? ???.
-
-TODO more background
-
-
 **Pros**
-* Designed to be "lossless" [TODO wording]
+* Supported by most browsers (?)
 * ...
 
 **Cons**
-* Not supported by all browsers (browser support listed here: https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode)
+* Not "lossless" [TODO wording]
 * ...
 
-### ScriptProcessorNode
+### Streaming using ScriptProcessorNode
 
 Before the AudioWorket was introduced into the Web Audio API, the [ScriptProcessorNode](https://developer.mozilla.org/en-US/docs/Web/API/ScriptProcessorNode) could be used for streaming. This part of the Web Audio API has since been deprecated due to some critical design flaws. More information on the motivation behind the move to AudioWorklet can be found here: https://hoch.io/assets/publications/icmc-2018-choi-audioworklet.pdf
 
@@ -69,21 +58,25 @@ TODO more background
 * ...
 
 
-### WebRTC
+## Streaming using AudioWorklet
 
-Background TODO
+For streaming audio with JavaScript only (no external libraries) the Web Audio API and [AudioWorklet](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorklet) is the ??? ??? method recommended by ??? ???.
+
+TODO more background
+
 
 **Pros**
-* Supported by most browsers (?)
+* Designed to be "lossless" [TODO wording]
 * ...
 
 **Cons**
-* Not "lossless" [TODO wording]
+* Not supported by all browsers (browser support listed here: https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletNode)
 * ...
 
 
 
-## Browser settings for audio streaming
+
+## Browser settings for audio and streaming
 
 There seems to be some settings in the browser(s), that are difficult to control or even access for reading. Examples:
 
