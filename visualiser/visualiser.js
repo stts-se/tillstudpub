@@ -21,28 +21,21 @@ Media stream: https://developer.mozilla.org/en-US/docs/Web/API/MediaStream:
 
 */
 
-var VISUALISER = {};
-
 const visualiserMicOnSrc = "mic_red_microphone-3404243_1280.png"
 
-//VISUALISER.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var VISUALISER = {};
 
 VISUALISER.init = function () {
-    VISUALISER.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    //set up the different audio nodes we will use for the app
-
-    VISUALISER.analyser = VISUALISER.audioCtx.createAnalyser();
-    VISUALISER.analyser.minDecibels = -90;
-    VISUALISER.analyser.maxDecibels = -10;
-    VISUALISER.analyser.smoothingTimeConstant = 0.85;
-
     // set up canvas context for visualizer    
     VISUALISER.canvas = document.querySelector('.visualiser');
     VISUALISER.canvasCtx = VISUALISER.canvas.getContext("2d");
 
     VISUALISER.updateCanvasSize();
-}
 
+    // draw the black rectangle
+    VISUALISER.canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+    VISUALISER.canvasCtx.fillRect(0, 0, VISUALISER.innerWidth, VISUALISER.innerHeight);
+}
 
 VISUALISER.updateCanvasSize = function () {
     VISUALISER.intendedWidth = document.querySelector('.visualiser-wrapper').clientWidth;
@@ -52,7 +45,13 @@ VISUALISER.updateCanvasSize = function () {
 }
 
 
-VISUALISER.visualise = function (stream, shouldVisualiseFunc) {
+VISUALISER.visualise = function (audioContext, stream, shouldVisualiseFunc) {
+    VISUALISER.audioCtx = audioContext;
+    VISUALISER.analyser = VISUALISER.audioCtx.createAnalyser();
+    VISUALISER.analyser.minDecibels = -90;
+    VISUALISER.analyser.maxDecibels = -10;
+    VISUALISER.analyser.smoothingTimeConstant = 0.85;
+
     let source = VISUALISER.audioCtx.createMediaStreamSource(stream);
     source.connect(VISUALISER.analyser);
     VISUALISER.innerWidth = VISUALISER.canvas.width;

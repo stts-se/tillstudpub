@@ -21,8 +21,6 @@ const audioWorkletMode = "audioworklet";
 let streamingMode;
 let streamingAPI
 
-const bigMicOnSrc = "images/mic_red_microphone-3404243_1280.png"
-
 let audioWS;
 
 let user = document.getElementById("user");
@@ -106,8 +104,7 @@ async function initStreamer(mode) {
     await navigator.mediaDevices.getUserMedia({ audio: true })
         // on success:
         .then(async function (stream) {
-            VISUALISER.init(isRecording);
-            VISUALISER.connect(stream);
+            VISUALISER.visualise(context, stream, isRecording);
 
             let audioSource = context.createMediaStreamSource(stream);
 	    const bitDepth = 16;
@@ -237,8 +234,6 @@ document.getElementById("recstart").addEventListener("click", async function () 
             else {
                 document.getElementById("recstop").disabled = false;
                 document.getElementById("recstart").disabled = true;
-                document.getElementById("audiofeedbacktextspan").innerText = "";
-                document.getElementById("bigmic").src = bigMicOnSrc;
                 console.log("recording started");
             }
         }
@@ -252,7 +247,6 @@ function disableEverything() {
     document.getElementById("recstop").disabled = true;
     document.getElementById("recstart").disabled = true;
     document.getElementById("audiofeedbacktextspan").innerText = "";
-    document.getElementById("bigmic").src = "";
 }
 
 document.getElementById("recstop").addEventListener("click", function () {
@@ -272,8 +266,6 @@ function recStop() {
 
     document.getElementById("recstop").disabled = true;
     document.getElementById("recstart").disabled = false;
-    document.getElementById("audiofeedbacktextspan").innerText = "";
-    document.getElementById("bigmic").src = "";
 
     //recorder.stop();
     audioWS.close();
@@ -295,7 +287,7 @@ function defaultEncoding() {
 window.onload = async function () {
     this.loadUserSettings();
     this.initSettings();
-    VISUALISER.init(isRecording);
+    VISUALISER.init();
 }
 
 window.onbeforeunload = function () {
