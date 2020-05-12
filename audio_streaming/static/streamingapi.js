@@ -59,12 +59,12 @@ class ScriptProcessorAPI extends StreamingAPI {
             if (!parent._isRecordingFunc()) return;
             //console.log("recorder.onaudioprocess", typeof e , e.inputBuffer.getChannelData(0).length);
             const buffer = e.inputBuffer.getChannelData(0);
-		    let sendable;
-		    if (parent._bitDepth === 16) {
-			sendable = parent.convertFloat32ToInt16(buffer);
-		    } else {
-			sendable = buffer;
-		    }
+	    let sendable;
+	    if (parent._bitDepth === 16) {
+		sendable = parent.convertFloat32ToInt16(buffer);
+	    } else {
+		sendable = buffer;
+	    }
             parent._audioWS.send(sendable);
             parent._bytesSent = parent._bytesSent + sendable.byteLength;
         }
@@ -81,6 +81,7 @@ class AudioWorkletAPI extends StreamingAPI {
         const connect = async function (context, audioSource) {
             await context.audioWorklet.addModule('processor.js');
             const recorder = new AudioWorkletNode(context, 'recorder-worklet');
+	    //console.log(context.destination);
             audioSource.connect(recorder).connect(context.destination);
 
             recorder.port.onmessage = function (e) {

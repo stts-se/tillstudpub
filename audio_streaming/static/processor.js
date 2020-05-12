@@ -1,17 +1,10 @@
 // Adapted from https://gist.github.com/flpvsk/047140b31c968001dc563998f7440cc1
 
 class RecorderWorkletProcessor extends AudioWorkletProcessor {
-  // static get parameterDescriptors() {
-  //   return [{
-  //     name: 'isRecording',
-  //     defaultValue: 0
-  //   }];
-  // }
-
     constructor() {
       super();
 	this._bufferSize = 2048;
-	//console.log("AudioWorkletProcessor bufferSize", this._bufferSize);
+	this._channels = 1;
 	this._buffer = new Float32Array(this._bufferSize);
 	this._initBuffer();
   }
@@ -57,22 +50,28 @@ class RecorderWorkletProcessor extends AudioWorkletProcessor {
     });
   }
 
-  process(inputs, outputs, parameters) {
-    // By default, the node has single input and output.
-    const input = inputs[0];
+    process(inputs, outputs, parameters) {
+	// By default, the node has single input and output.
+	const input = inputs[0];
 
-    const channel = input[0]; // TODO: why only use first channel? I can't play the audio using more channels
+	if (this._channelCount === 1) {
+	    const channel = input[0];
+	    for (let i = 0; i < channel.length; i++) {
+		this._appendToBuffer(channel[i]);
+	    }
+	} else {
+	    for (let ci = 0; ci < input.length; ci++) {
+		let channel = input[ci];
+		for (let i = 0; i < channel.length; i++) {
+		    this._appendToBuffer(channel[i]);
+		}
+	    }
+	}
+	
 
-    //for (let ci = 0; ci < input.length; ci++) {
-    //  const channel = input[ci];
-      for (let i = 0; i < channel.length; i++) {
-        this._appendToBuffer(channel[i]);
-      }
-   //}
+	return true;
 
-    return true;
-
-  }
+    }
 
 }
 

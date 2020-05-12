@@ -15,6 +15,7 @@ let micDetected = true;
 
 let context;
 let channelCount = 1;
+let audioEncoding = "pcm";
 
 const scriptProcessorMode = "scriptprocessor";
 const audioWorkletMode = "audioworklet";
@@ -206,7 +207,7 @@ document.getElementById("recstart").addEventListener("click", async function () 
                 'audio_config': {
                     'sample_rate': context.sampleRate,
                     'channel_count': channelCount,
-                    'encoding': defaultEncoding(),
+                    'encoding': audioEncoding,
                     'bit_depth': streamingAPI.bitDepth,
                 },
                 'streaming_method': streamingMode,
@@ -246,7 +247,6 @@ document.getElementById("recstart").addEventListener("click", async function () 
 function disableEverything() {
     document.getElementById("recstop").disabled = true;
     document.getElementById("recstart").disabled = true;
-    document.getElementById("audiofeedbacktextspan").innerText = "";
 }
 
 document.getElementById("recstop").addEventListener("click", function () {
@@ -273,16 +273,6 @@ function recStop() {
     streamingAPI.reset();
 };
 
-
-function defaultEncoding() {
-    // let browser = navigator.userAgent;
-    // if (browser.toLowerCase().indexOf("chrome") != -1) {
-    //     return "flac";
-    // } else if (browser.indexOf("mozilla") != -1 || browser.indexOf("firefox") != -1) {
-    //     return "pcm";
-    // }
-    return "pcm";
-}
 
 window.onload = async function () {
     this.loadUserSettings();
