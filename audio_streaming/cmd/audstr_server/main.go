@@ -28,7 +28,6 @@ var upgrader = websocket.Upgrader{}
 
 const outputDir = "data"
 
-var latestAudioRawFileName = filepath.Join(outputDir, "latest.raw")
 var latestAudioWavFileName = filepath.Join(outputDir, "latest.wav")
 var latestJSONFileName = filepath.Join(outputDir, "latest.json")
 var latestAudioFileMutex = &sync.Mutex{}
@@ -74,6 +73,7 @@ func parseFlags() config {
 	var cfg config
 	cfg.host = flag.String("host", "127.0.0.1", "Server host")
 	cfg.port = flag.String("port", "7651", "Server port")
+	cfg.saveRaw = flag.Bool("raw", false, "Save audio raw files")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", cmd)
@@ -87,6 +87,7 @@ func parseFlags() config {
 // server config
 type config struct {
 	host, port *string
+	saveRaw    *bool
 }
 
 func openDataWebsocket(w http.ResponseWriter, r *http.Request) {
@@ -271,17 +272,21 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 	defer audioStreamSender.Close() // ??
 	var err error
 
-	audioRawFileName := filepath.Join(outputDir, fmt.Sprintf("%s.raw", handshake.UUID.String()))
-	audioWavFileName := filepath.Join(outputDir, fmt.Sprintf("%s.wav", handshake.UUID.String()))
 	byteCount := 0
 
-	rawWriter, err := newBufferedFileWriter(audioRawFileName)
-	if err != nil {
-		log.Printf("Couldn't open raw audio file for writing: %v", err)
-		return
+	var rawWriter bufferedFileWriter
+	var audioRawFileName string
+	if *cfg.saveRaw {
+		audioRawFileName = filepath.Join(outputDir, fmt.Sprintf("%s.raw", handshake.UUID.String()))
+		rawWriter, err = newBufferedFileWriter(audioRawFileName)
+		if err != nil {
+			log.Printf("Couldn't open raw audio file for writing: %v", err)
+			return
+		}
 	}
 
 	wavHeader := createWavHeader(handshake.AudioConfig)
+	audioWavFileName := filepath.Join(outputDir, fmt.Sprintf("%s.wav", handshake.UUID.String()))
 
 	wavFile, err := os.Create(audioWavFileName)
 	if err != nil {
@@ -318,9 +323,11 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 
 		if len(bts) > 0 {
 			byteCount += len(bts)
-			if _, err := rawWriter.writer.Write(bts); err != nil {
-				log.Printf("Couldn't write raw audio to file: %v", err)
-				break
+			if *cfg.saveRaw {
+				if _, err := rawWriter.writer.Write(bts); err != nil {
+					log.Printf("Couldn't write raw audio to file: %v", err)
+					break
+				}
 			}
 
 			//--------------------- TODO -------------------------
@@ -344,21 +351,14 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 	// }
 	log.Printf("Saved wav audio file %s", audioWavFileName)
 
-	// save raw file
-	if err := rawWriter.close(); err != nil {
-		log.Printf("Couldn't save raw audio file: %v", err)
-		return
+	if *cfg.saveRaw {
+		// save raw file
+		if err := rawWriter.close(); err != nil {
+			log.Printf("Couldn't save raw audio file: %v", err)
+			return
+		}
+		log.Printf("Saved raw audio file %s (%v bytes)", audioRawFileName, byteCount)
 	}
-	log.Printf("Saved raw audio file %s (%v bytes)", audioRawFileName, byteCount)
-
-	// copy raw to latest.raw
-	latestAudioFileMutex.Lock()
-	if err := copyFile(audioRawFileName, latestAudioRawFileName); err != nil {
-		log.Printf("Couldn't copy raw audio file to %s: %v", latestAudioRawFileName, err)
-		return
-	}
-	log.Printf("Saved raw audio file %s", latestAudioRawFileName)
-	latestAudioFileMutex.Unlock()
 
 	// copy wav to latest.wav
 	latestAudioFileMutex.Lock()
