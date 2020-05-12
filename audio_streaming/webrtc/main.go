@@ -35,6 +35,10 @@ func receiveRecording(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	peerConnection.OnSignalingStateChange(func(state webrtc.SignalingState) {
+		fmt.Printf("Received signaling state change: %v\n", state)
+	})
+
 	peerConnection.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
 		fmt.Printf("Received peer connection state change: %v\n", state)
 	})
