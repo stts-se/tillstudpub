@@ -14,6 +14,9 @@ import (
 	"github.com/pion/webrtc/v2/pkg/media/oggwriter"
 )
 
+const sampleRate = 48000
+const channelCount = 2
+
 func stopRecording(w http.ResponseWriter, r *http.Request) {
 }
 
@@ -25,7 +28,7 @@ func receiveRecording(w http.ResponseWriter, r *http.Request) {
 
 	// Create a MediaEngine object to configure the supported codec
 	m := webrtc.MediaEngine{}
-	m.RegisterCodec(webrtc.NewRTPOpusCodec(webrtc.DefaultPayloadTypeOpus, 48000))
+	m.RegisterCodec(webrtc.NewRTPOpusCodec(webrtc.DefaultPayloadTypeOpus, sampleRate))
 
 	peerConnection, err := webrtc.NewAPI(webrtc.WithMediaEngine(m)).NewPeerConnection(webrtc.Configuration{})
 	if err != nil {
@@ -51,13 +54,13 @@ func receiveRecording(w http.ResponseWriter, r *http.Request) {
 		}
 		fileName := fmt.Sprintf("data/%s.ogg", uuid)
 
-		oggFile, err := oggwriter.New(fileName, 48000, 2)
+		oggFile, err := oggwriter.New(fileName, sampleRate, channelCount)
 		defer oggFile.Close()
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Printf("Got Opus track, writing to disk as %s (48 kHz, 2 channels) \n", fileName)
+		fmt.Printf("Got Opus track, writing to disk as %s (%v Hz, %v channels) \n", fileName, sampleRate, channelCount)
 
 		for {
 			rtpPacket, err := track.ReadRTP()

@@ -16,11 +16,11 @@
 	 navigator.mediaDevices.getUserMedia({audio: true})
 		  .then(stream => {
 		      theStream = stream;
-		      let tracks = stream.getAudioTracks();
+		      let tracks = theStream.getAudioTracks();
 		      for (let i=0;i<tracks.length;i++) {
 			  pc.addTrack(tracks[i]);
 		      }
-		      pc.createOffer().then(d => pc.setLocalDescription(d))
+		      pc.createOffer().then(d => pc.setLocalDescription(d));
 		  }).catch(window.alert)
 	 
 	 function stopRec() {
@@ -33,7 +33,7 @@
 	 
 	 function startRec() {
 	     console.log("opening recording");
-	     //pc.addStream(theStream);
+
 	     document.getElementById("recstart").disabled = true;
 	     document.getElementById("recstop").disabled = false;
 	     fetch('/start', {
@@ -44,8 +44,8 @@
 		 body: JSON.stringify(pc.pendingLocalDescription)
 	     })
 		 .then(response => response.json())
-		     .then(sdp => {
-			 console.log(sdp);
+		 .then(sdp => {
+		     console.log(sdp);
 		     pc.setRemoteDescription(sdp).catch(window.alert);
 		 })
 	 }
