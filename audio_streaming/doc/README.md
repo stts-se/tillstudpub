@@ -49,7 +49,7 @@ TODO (separate demo)
 
 The audio is saved as a wav file. The wav output is still under development, and may be faulty in some cases.
 
-If this happens regularly, the server can be started with an option to save the raw audio data in a `.raw` file. To play a recorded `.raw` file on Linux systems, run `play` with the correct parameters, e.g.
+If the wav output seems faulty, the server can be started with an option to save the raw audio data in a `.raw` file. To play a recorded `.raw` file on Linux systems, run `play` with the correct parameters, e.g.
 
  `play -e signed-integer -r 48000 -b 16 -c 1 <rawfile>`
 
@@ -60,7 +60,7 @@ Hints on what parameters to use can be found in the JSON files accompanying each
 
 # Audio quality and packet loss
 
-Currently, there seems to be some packet loss for both streaming methods used.
+Currently, there seems to be some packet loss for both streaming methods used. For AudioWorklet, the packet loss is small, but still...
 
 
 
