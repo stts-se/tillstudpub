@@ -17,8 +17,8 @@ import (
 const sampleRate = 48000
 const channelCount = 2
 
-func stopRecording(w http.ResponseWriter, r *http.Request) {
-}
+// func stopRecording(w http.ResponseWriter, r *http.Request) {
+// }
 
 func receiveRecording(w http.ResponseWriter, r *http.Request) {
 	sdp := webrtc.SessionDescription{}
@@ -113,7 +113,7 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { http.ServeFile(w, r, r.URL.Path[1:]) })
 	http.HandleFunc("/start", receiveRecording)
-	http.HandleFunc("/stop", stopRecording)
+	//http.HandleFunc("/stop", stopRecording)
 
 	port := 7659
 	fmt.Printf("Server has started on :%v\n", port)
