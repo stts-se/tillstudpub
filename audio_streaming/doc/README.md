@@ -13,44 +13,54 @@ There are two available clients for testing the application:
 1. JavaScript for browser use
 2. A `go` command line client
 
-The client opens a websocket for each recording, and sends a "handshake" message to the server. If the server is up and running, and the handshake is correct and valid, the server responds with the same handshake message, adding a unique identifier (UUID). Once this handshake is received by the client, the audio stream capture is started, and sent in chunks (typically 1024 or 2048 bytes each) to the server, using the open websocket.
+The client opens a websocket for each recording, and sends a "handshake" message to the server. If the server is up and running, and the handshake is correct and valid, the server responds with the same handshake message, adding a unique identifier (UUID). Once this handshake is received by the client, the audio stream capture is started. The audio input is processed in chunks of 2048 bytes, converted to 16-bit depth, and sent to the server using the open websocket.
 
 On the receiving end, the server continuously writes received bytes to a file buffer.
 
-When the user stops the recording, the audio capture is terminated, and the websocket is closed. When the server receives the close message over the websocket, the buffered audio data is saved to disk as a binary "raw" audio file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the `data` directory on the server. Each file is given their unique (UUID) file name, with the extensions `.raw` and `.json`. The last files created are copied to "latest.raw" and "latest.json", as a convenience for testing.
+When the user stops the recording, the audio capture is terminated, and the websocket is closed. When the server receives the close message over the websocket, the buffered audio data is saved to disk as a wav file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the `data` directory on the server. Each file is given their unique (UUID) file name, with the extensions `.wav` and `.json`. The last files created are copied to "latest.wav" and "latest.json", as a convenience for testing.
 
 
 # Supported streaming technologies
 
-More background on the different technologies can be found in the accompanying TechnicalOverview.md
+More background on the different technologies can be found in the accompanying technical_report.pdf
+
+## ScriptProcessorNode
+
+The ScriptProcessorNode was introduced to meet developers' need to process audio streams in the Web Audio API. Unlike other parts of the Web Audio API, the processing is run in the main thread, which can cause delays. It has since been deprecated and replaced by AudioWorklet (below).
+
 
 ## AudioWorklet
 
-The default settings for this application is to use the AudioWorklet
+The AudioWorklet has been developed to handle some critical design flaws in the ScriptProcessorNode.
 
-## ScriptProcessorNode
-TODO
+The default settings for this application is to use the AudioWorklet.
+
+The implementation in this demo has been tested with the following browsers:
+* Google Chrome - version 81 - supported, working
+* Opera - version 68 - supported, working
+* Firefox - version 75 - not supported
+* Firefox - beta version 76 - will be supported in version 76, currently not working 
+
 
 ## WebRTC
-TODO
+TODO (separate demo)
 
 # Saved audio format
 
-For now, we are saving the audio data as-is, in a "raw" file, and also as a "wav" file.
+The audio is saved as a wav file. The wav output is still under development, and may be faulty in some cases.
 
-The wav output is still under development, and may be faulty in some cases. If this happens, the raw file can be used to play the audio. To play a recorded `.raw` file on Linux systems, run `play` with the correct parameters, e.g.
+If this happens regularly, the server can be started with an option to save the raw audio data in a `.raw` file. To play a recorded `.raw` file on Linux systems, run `play` with the correct parameters, e.g.
 
  `play -e signed-integer -r 48000 -b 16 -c 1 <rawfile>`
-
-See also playraw_example.sh.
 
 On Windows, you can for example use the Import function in Audacity.
 
 Hints on what parameters to use can be found in the JSON files accompanying each `.raw` file.
 
-# Distortion
 
-Currently, there is some distortion especially in the beginning of the audio files. This needs to be investigated further. It is possible that this will change once we move over to using AudioWorkletN, but if not, this issue needs to be resolved.
+# Audio quality and packet loss
+
+Currently, there seems to be some packet loss for both streaming methods used.
 
 
 
@@ -62,17 +72,14 @@ See audio_streaming/README.md
 
 
 
-# TODO
+# Remaining issues
 
 * Investigate how to read and set audio configuration settings in the browser
 
-* Saving audio data with a wav header -- a first implementation exists, but it needs to be tested further
-
-* Are other options needed for what format the server should use? Once we have a wav file, we can always convert to another format if needed.
-
-* Investigate remaining spike/distortion issues
+* Investigate remaining packet loss issues
 
 
+---
 
 # Testing a browser's AudioWorklet compatibility
 

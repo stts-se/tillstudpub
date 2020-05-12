@@ -185,42 +185,34 @@ do the job equally good, if you do not need peer-to-peer capabilities.
 
 \section{Streaming using ScriptProcessorNode}
 
-Before the AudioWorket was introduced into the Web Audio API, the ScriptProcessorNode\cite{scriptprocessornode} could be used for streaming. This part of the Web Audio API has since been deprecated due to some critical design flaws. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
-
-Unfortunately, the AudioWorklet is not fully supported by Firefox yet (neither stable version 75 nor beta version 76 work as of April 29th, 2020). It works fine with Google Chrome (version 81) and Opera (version 68).
-
-TODO more background
+The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet developers' need to process audio streams in the Web Audio API. Unlike other parts of the Web Audio API, the processing is run in the main thread, which can cause delays. It has since been deprecated. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
 
 \subsection*{Pros}
 \begin{itemize}
 \item Supported by most browsers
-\item ...
   \end{itemize}
 
 \subsection*{Cons}
 \begin{itemize}
-\item Not "lossless" [TODO wording]
-\item ...
+\item Risk of packet loss and delays
 \end{itemize}
 
 
 \section{Streaming using AudioWorklet}
 
-For streaming audio with JavaScript only (no external libraries) the Web Audio API and AudioWorlet\cite{audioworklet} is the ??? ??? method recommended by ??? ???.
+The AudioWorklet was developed to handle some critical design flaws in the ScriptProcessorNode. The first implementation of the AudioWorklet was released 2018 for Chrome \cite{icmc}.
 
-TODO more background
+Unfortunately, the AudioWorklet is yet not fully supported by Firefox (neither stable version 75 nor beta version 76 work as of April 29th, 2020). According to the documentation, it should work with Firefox version 76. It works fine with Google Chrome (tested using version 81) and Opera (tested using version 68).
 
 
 \subsection*{Pros}
 \begin{itemize}
-\item Designed to be "lossless" [TODO wording]
-\item ...
+\item Processing run in a separate thread
   \end{itemize}
 
 \subsection*{Cons}
 \begin{itemize}
 \item Not supported by all browsers (see \cite{audioworklet})
-\item ...
 \end{itemize}
 
 
