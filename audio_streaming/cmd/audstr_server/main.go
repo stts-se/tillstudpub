@@ -28,6 +28,7 @@ var upgrader = websocket.Upgrader{}
 
 const outputDir = "data"
 
+var latestAudioRawFileName = filepath.Join(outputDir, "latest.raw")
 var latestAudioWavFileName = filepath.Join(outputDir, "latest.wav")
 var latestJSONFileName = filepath.Join(outputDir, "latest.json")
 var latestAudioFileMutex = &sync.Mutex{}
@@ -74,6 +75,7 @@ func parseFlags() config {
 	cfg.host = flag.String("host", "127.0.0.1", "Server host")
 	cfg.port = flag.String("port", "7651", "Server port")
 	cfg.saveRaw = flag.Bool("raw", false, "Save audio raw files")
+	cfg.noWav = flag.Bool("nowav", false, "Skip wav output")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", cmd)
@@ -86,8 +88,8 @@ func parseFlags() config {
 
 // server config
 type config struct {
-	host, port *string
-	saveRaw    *bool
+	host, port     *string
+	saveRaw, noWav *bool
 }
 
 func openDataWebsocket(w http.ResponseWriter, r *http.Request) {
@@ -285,19 +287,23 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 		}
 	}
 
-	wavHeader := createWavHeader(handshake.AudioConfig)
-	audioWavFileName := filepath.Join(outputDir, fmt.Sprintf("%s.wav", handshake.UUID.String()))
+	var wavWriter *wav.Writer
+	var audioWavFileName string
+	if !*cfg.noWav {
+		wavHeader := createWavHeader(handshake.AudioConfig)
+		audioWavFileName = filepath.Join(outputDir, fmt.Sprintf("%s.wav", handshake.UUID.String()))
 
-	wavFile, err := os.Create(audioWavFileName)
-	if err != nil {
-		log.Printf("Couldn't open wav audio file for writing: %v", err)
-		return
-	}
+		wavFile, err := os.Create(audioWavFileName)
+		if err != nil {
+			log.Printf("Couldn't open wav audio file for writing: %v", err)
+			return
+		}
 
-	wavWriter, err := wavHeader.NewWriter(wavFile)
-	if err != nil {
-		log.Printf("Couldn't create wav audio file writer: %v", err)
-		return
+		wavWriter, err = wavHeader.NewWriter(wavFile)
+		if err != nil {
+			log.Printf("Couldn't create wav audio file writer: %v", err)
+			return
+		}
 	}
 
 	log.Println("Audio stream open for input")
@@ -332,24 +338,35 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 
 			//--------------------- TODO -------------------------
 
-			if _, err := wavWriter.Write(bts); err != nil {
-				log.Printf("Couldn't write wav audio to file: %v", err)
-				break
+			if !*cfg.noWav {
+				if _, err := wavWriter.Write(bts); err != nil {
+					log.Printf("Couldn't write wav audio to file: %v", err)
+					break
+				}
 			}
 
 			//log.Printf("Wrote %v bytes of audio to file", len(bts))
 		}
 	}
 
-	if err := wavWriter.Close(); err != nil {
-		log.Printf("Couldn't close wav writer: %v", err)
-		return
+	if !*cfg.noWav {
+		if err := wavWriter.Close(); err != nil {
+			log.Printf("Couldn't close wav writer: %v", err)
+			return
+		}
+		log.Printf("Saved wav audio file %s", audioWavFileName)
+
+		// copy wav to latest.wav
+		latestAudioFileMutex.Lock()
+		if err := copyFile(audioWavFileName, latestAudioWavFileName); err != nil {
+			log.Printf("Couldn't copy wav audio file to %s: %v", latestAudioWavFileName, err)
+			return
+		}
+		log.Printf("Saved wav audio file %s", latestAudioWavFileName)
+		latestAudioFileMutex.Unlock()
+	} else {
+		os.Remove(latestAudioWavFileName)
 	}
-	// if err := wavFile.Close(); err != nil {
-	// 	log.Printf("Couldn't close wav file handle: %v", err)
-	// 	return
-	// }
-	log.Printf("Saved wav audio file %s", audioWavFileName)
 
 	if *cfg.saveRaw {
 		// save raw file
@@ -358,16 +375,18 @@ func receiveAudioStream(handshake *audiostreaming.Handshake, audioStreamSender *
 			return
 		}
 		log.Printf("Saved raw audio file %s (%v bytes)", audioRawFileName, byteCount)
+		// copy wav to latest.wav
+		latestAudioFileMutex.Lock()
+		if err := copyFile(audioRawFileName, latestAudioRawFileName); err != nil {
+			log.Printf("Couldn't copy raw audio file to %s: %v", latestAudioRawFileName, err)
+			return
+		}
+		log.Printf("Saved raw audio file %s", latestAudioRawFileName)
+		latestAudioFileMutex.Unlock()
+	} else {
+		os.Remove(latestAudioRawFileName)
 	}
 
-	// copy wav to latest.wav
-	latestAudioFileMutex.Lock()
-	if err := copyFile(audioWavFileName, latestAudioWavFileName); err != nil {
-		log.Printf("Couldn't copy wav audio file to %s: %v", latestAudioWavFileName, err)
-		return
-	}
-	log.Printf("Saved wav audio file %s", latestAudioWavFileName)
-	latestAudioFileMutex.Unlock()
 }
 
 var cfg config
