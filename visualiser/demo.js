@@ -30,7 +30,6 @@ window.onload = async function () {
         console.log("navigator.mediaDevices.getUserMedia was called")
 	let audioCtx = window.AudioContext || window.webkitAudioContext;
 	let context = new audioCtx();
-        VISUALISER.init();
         VISUALISER.visualise(context, stream, shouldVisualise);
     });
 
