@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+    <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="layout.css">
+	<link rel="stylesheet" type="text/css" href="../look.css">
+	<title>STTS PromptRec | Create project</title>
+    </head>
+    <body id="body" class="selected-font grid-container">
+
+	<div class="grid-pagetitle">
+	    <span class="pagename">STTS Promptrec | Create project</span>
+	</div>
+	
+	<div class="grid-config">
+	    Project <input id="projectname" value=""/>&nbsp;&nbsp;
+	</div>
+	
+	<div class="grid-main hidden" id="main">
+	    <div>
+		<div class="visualiser-wrapper">
+		    <canvas class="visualiser" width="640" height="100"></canvas> 
+		</div>		
+	    </div>
+	    <br/>
+	    <span>
+		<button class="btn" disabled="disabled" id="promptplay">play prompt</button>
+		<audio id="promptaudio" class="hidden" controls></audio>
+	    </span>
+	    <button id="recstart" class="btn" disabled="disabled">start rec</button>
+	    <button id="recstop" class="btn" disabled="disabled">stop rec</button>
+	    <button id="recplay" class="btn" disabled="disabled">play rec</button>
+	    <button id="recsave" class="btn" disabled="disabled">save rec</button>
+	    <p>
+		<audio class="hidden" id="recaudio" controls></audio>
+	    </p>
+	</div>	    
+	
+	<div class="grid-messages">
+	    <div><div class="label">Messages</div>
+		<div id="messages"></div>
+	    </div>
+	</div>	    
+
+	<div class="grid-footer">
+	    <span>© STTS Södermalms talteknologiservice AB 2019-<script>document.write(new Date().getFullYear())</script></span> | <a href="http://stts.se">stts.se</a> 
+	</div>	    
+
+
+	<script src="../visualiser.js"></script>
+	<script src="../audio.js"></script>
+	<script src="project.js"></script>
+    </body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+    <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="layout.css">
+	<link rel="stylesheet" type="text/css" href="look.css">
+	<title>STTS PromptRec | Recording session</title>
+    </head>
+    <body id="body" class="selected-font grid-container">
+
+	<div class="grid-pagetitle">
+	    <span class="pagename">STTS Promptrec | Record session</span>
+	</div>
+	
+	<div class="grid-config">
+	    <div>
+		Project (<span id="projectcount">0</span>) <select style="min-width: 150px" class="selected-font dropdown" id="projectname"></select>
+		&nbsp;&nbsp;
+		Session <input id="sessionname" value=""/>&nbsp;&nbsp;
+		User <input id="username" value=""/>&nbsp;&nbsp;
+		<button disabled class="btn" id="sessionstart">Start session</button>
+		<button disabled class="btn" id="sessionclose">Close session</button>
+	    </div>
+	    <div style="margin-top: 20px" id="autooptions">
+		<button class="btn" id="autooptions_toggle_visibility">Show auto options</button>
+		<span id="autooptionscontent" class="hidden">
+		    <input type="checkbox" id="autoall"><label for="autoall" title="Switch on/off all auto options">All</label>
+		    <input type="checkbox" id="autorec"><label for="autorec" title="Autostart recording">Start recording</label>
+		    <input type="checkbox" id="autostop"><label for="autostop" title="Autostop recording">Stop recording</label>
+		    <input type="checkbox" id="autoreplay"><label for="autoreplay" title="Auto replay recording">Replay recording</label>
+		    <input type="checkbox" id="autosend"><label for="autosend" title="Autosend recording on stop">Send on stop</label>
+		    <input type="checkbox" id="autonext"><label for="autonext" title="Go to next after send">Next after send</label>
+		</span>
+	    </div>
+	</div>
+	
+	<div class="grid-main hidden" id="main">
+	    <div><div class="label" id="opensessioninfo">No open session</div>
+		<div style="position:relative; height: 120px; width: 500px" class="visualiser-wrapper">
+		    <canvas style="position:absolute; top:0px; left:0px; width: 100%; height: 120px" class="visualiser"></canvas>
+		    <span style="padding-top: 10px; padding-bottom: 10px; text-align: center; position:absolute; top:0px; left:0px; width: 100%; height: 120px">
+			<image id="visualisermic" style="height: 100px" src=""></image>
+		    </span>
+		</div>
+
+		<!-- <div style="position:relative; height: 120px; width: 500px" class="visualiser-wrapper">
+		     <canvas style="position:absolute; top:0px; left:0px; width: 100%; height: 120px" class="visualiser"></canvas>
+		     <span style="padding-top: 10px; padding-bottom: 10px; text-align: center; position:absolute; top:0px; left:0px; width: 100%; height: 120px">
+		     <image id="visualisermic" style="height: 100px" src=""></image>
+		     </span>
+		     </div> -->
+
+	    </div>
+	    <br/>
+	    <div class="grid-prompt">
+
+		<div class="grid-prompt-playback-label">Prompt</div>
+		<div class="grid-prompt-playback">
+		    <audio id="promptaudio" class="hidden" controls></audio>
+		    <button class="btn" disabled="disabled" id="prevprompt" title="Previous prompt (Ctrl-Left)">&laquo;</button>
+		    <button class="btn" disabled="disabled" id="nextprompt" title="Next prompt">&raquo;</button>
+		    <!-- progress bar -->
+		    <span>
+			<span style="width: 25%">
+			    <span id="promptindex"></span>/<span id="promptcount"></span>
+			</span>
+			<span id="promptstarsdone" style="font-size: 130%"></span><span id="promptstarsthis" style="text-decoration: underline #007bff; color: #007bff; font-size: 130%"></span><span style="color: grey; font-size: 130%"" id="promptstarsremaining"></span>
+		    </span>
+		</div>
+
+		<div id="promptinstructionslabel" class="grid-prompt-instructions-label">Instructions</div>
+		<div class="grid-prompt-instructions slidein">
+		    <span id="promptinstructions" style="font-style: italic"></span>
+		</div>
+		
+		<div class="grid-prompt-text-label">Text</div>
+		<div class="grid-prompt-text slidein">
+		    <span class="hidden"><span id="promptid"></span>: </span>
+		    <span id="prompttext" style="font-size:150%"></span>
+		</div>
+		
+		<div class="grid-prompt-record-label">Record</div>
+		<div class="grid-prompt-record">
+		    <button id="recstart" class="btn" disabled="disabled" title="Start recording">&#128308;</button>
+		    <button id="recstop" class="btn" disabled="disabled" title="Stop recording">&#9633;</button>
+		    <button id="recplay" class="btn" disabled="disabled" title="Play recording">&#8883;</button>
+		    <button id="recsave" class="btn" disabled="disabled" title="Save recording">&#128190;</button>
+		    <button id="recsaveandnext" class="btn" disabled="disabled" title="Save and get next">&#128190;/&raquo;</button>
+		    <audio class="hidden" id="recaudio" controls></audio>
+		</div>
+	    </div>	    
+	</div>
+	
+	<div class="grid-messages">
+	    <hr/>
+	    <div><div class="label">Messages</div>
+		<div id="messages"></div>
+	    </div>
+	</div>	    
+
+	<div class="grid-footer">
+	    <em><span>© STTS Södermalms talteknologiservice AB 2019-<script>document.write(new Date().getFullYear())</script></span> | <a href="http://stts.se">stts.se</a> </em>
+	</div>	    
+
+
+	<script src="visualiser.js"></script>
+	<script src="audio.js"></script>
+	<script src="main.js"></script>
+	<script src="lib/vad/vad.js"></script>
+    </body>
+</html>

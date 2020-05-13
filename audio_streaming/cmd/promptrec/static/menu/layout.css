@@ -1,0 +1,21 @@
+.grid-container{
+    display:grid;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: auto;
+    grid-gap:5pt;
+}
+
+.grid-project {
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.grid-session {
+    grid-row: 2;
+    grid-column: 1;
+}
+
+.grid-footer {
+    grid-row: 3;
+    grid-column: 1;
+}

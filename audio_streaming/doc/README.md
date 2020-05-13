@@ -42,6 +42,18 @@ The implementation in this demo has been tested with the following browsers:
 * Firefox - beta version 76 - will be supported in version 76, currently not working 
 
 
+## PromptRec
+
+We have included a simple demo for recording text prompts.
+
+Start server:
+$ cd cmd/promptrec/
+$ go run .
+
+Point your browser to http://localhost:3092, choose project, session and user name, and start recording
+Output files are saved in the projects folder
+
+
 ## WebRTC
 
 We have included a very simple demo of streaming using WebRTC.
