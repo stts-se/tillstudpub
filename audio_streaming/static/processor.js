@@ -4,7 +4,7 @@ class RecorderWorkletProcessor extends AudioWorkletProcessor {
     constructor() {
       super();
 	this._bufferSize = 2048;
-	this._channels = 1;
+	this._channelCount = 1;
 	this._buffer = new Float32Array(this._bufferSize);
 	this._initBuffer();
   }
@@ -66,8 +66,7 @@ class RecorderWorkletProcessor extends AudioWorkletProcessor {
 		    this._appendToBuffer(channel[i]);
 		}
 	    }
-	}
-	
+	}	
 
 	return true;
 

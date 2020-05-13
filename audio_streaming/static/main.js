@@ -16,7 +16,7 @@ let micDetected = true;
 let context;
 const channelCount = 1;
 const audioEncoding = "pcm";
-const bitDepth = 32;
+const bitDepth = 16;
 
 const scriptProcessorMode = "scriptprocessor";
 const audioWorkletMode = "audioworklet";
