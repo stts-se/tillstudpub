@@ -22,7 +22,7 @@ When the user stops the recording, the audio capture is terminated, and the webs
 
 # Supported streaming technologies
 
-More background on the different technologies can be found in the accompanying technical_report.pdf
+More background on the different technologies can be found in the accompanying technical report.
 
 ## ScriptProcessorNode
 
