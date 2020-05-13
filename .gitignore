@@ -1,5 +1,7 @@
 *~
 
+dist
+
 doc/*.aux
 doc/*.dvi
 doc/*.log
