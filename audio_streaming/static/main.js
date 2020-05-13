@@ -14,8 +14,9 @@ let recorder;
 let micDetected = true;
 
 let context;
-let channelCount = 1;
-let audioEncoding = "pcm";
+const channelCount = 1;
+const audioEncoding = "pcm";
+const bitDepth = 32;
 
 const scriptProcessorMode = "scriptprocessor";
 const audioWorkletMode = "audioworklet";
@@ -108,7 +109,6 @@ async function initStreamer(mode) {
             VISUALISER.visualise(context, stream, isRecording);
 
             let audioSource = context.createMediaStreamSource(stream);
-	    const bitDepth = 16;
             if (streamingMode == scriptProcessorMode) {
                 streamingAPI = new ScriptProcessorAPI(context, audioSource, bitDepth, isRecording);
             } else if (streamingMode == audioWorkletMode) {

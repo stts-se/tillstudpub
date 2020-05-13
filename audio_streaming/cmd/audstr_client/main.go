@@ -122,7 +122,7 @@ func doHandshakes(c *websocket.Conn) error {
 				SampleRate:   *sampleRate,
 				Encoding:     *encoding,
 				ChannelCount: *channelCount,
-				//SignificantBits: *significantBits,
+				BitDepth:     *bitDepth,
 			},
 			Timestamp:       time.Now().String(),
 			StreamingMethod: "gocli",
@@ -149,6 +149,7 @@ func doHandshakes(c *websocket.Conn) error {
 
 var channelCount, sampleRate *int
 var encoding, userName, project, session *string
+var bitDepth *int
 
 func main() {
 
@@ -157,7 +158,7 @@ func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [flags] audioFile\n", cmd)
 		fmt.Fprintf(os.Stderr, " to record from stdin, use audioFile -\n")
-		fmt.Fprintf(os.Stderr, "\nSample usage: rec -r 48000 -t raw -c 1 - 2> /dev/null  | %s -channels 1 -sample_rate 48000 -encoding linear16 -host 127.0.0.1 -port 7651 -\n", cmd)
+		fmt.Fprintf(os.Stderr, "\nSample usage: rec -r 48000 -t raw -c 1 - 2> /dev/null  | %s -channels 1 -sample_rate 48000 -encoding linear16 -host 127.0.0.1 -port 7651 -bit_depth 16 -\n", cmd)
 		fmt.Fprintf(os.Stderr, "\nFlags\n")
 		flag.PrintDefaults()
 		os.Exit(1)
@@ -173,7 +174,7 @@ func main() {
 	channelCount = flag.Int("channels", 1, "Number of channels")
 	sampleRate = flag.Int("sample_rate", 48000, "Sample rate")
 	encoding = flag.String("encoding", "linear16", "Audio encoding")
-	//significantBits = flag.Int("sigbits", 16, "significant bits")
+	bitDepth = flag.Int("bit_depth", 16, "Bit depth")
 	userName = flag.String("user", defaultUser, "User name")
 	session = flag.String("session", "", "Session name")
 	project = flag.String("project", "", "Project name")

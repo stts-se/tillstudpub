@@ -258,15 +258,15 @@ func createWavHeader(audioConfig *audiostreaming.AudioConfig) wav.File {
 	// }
 
 	// Create the headers for our new mono file
-	// TODO: problematic conversion int => unitNN ?
 	res := wav.File{
 		Channels:        uint16(audioConfig.ChannelCount),
 		SampleRate:      uint32(audioConfig.SampleRate),
 		SignificantBits: uint16(audioConfig.BitDepth), // TODO: Significant Bits = Bit Depth?
 	}
-	if audioConfig.Encoding == "pcm" {
+	if audioConfig.Encoding == "pcm" || audioConfig.Encoding == "linear16" {
 		res.AudioFormat = uint16(1)
 	}
+	log.Printf("Created wav header: %#v", res)
 	return res
 }
 
