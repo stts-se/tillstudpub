@@ -2,6 +2,6 @@
 
 dist
 
-doc/*.aux
-doc/*.dvi
-doc/*.log
+*.aux
+*.dvi
+*.log
