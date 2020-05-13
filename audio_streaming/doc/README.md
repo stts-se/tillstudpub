@@ -43,7 +43,18 @@ The implementation in this demo has been tested with the following browsers:
 
 
 ## WebRTC
-TODO (separate demo)
+
+We have included a very simple demo of streaming using WebRTC.
+
+Start server:
+$ cd cmd/webrtc_demo/
+$ go run .
+
+Point your browser to http://localhost:7659 and start recording
+Output files are saved in the data folder
+
+Source: https://github.com/pion/webrtc-voicemail
+
 
 # Saved audio format
 
