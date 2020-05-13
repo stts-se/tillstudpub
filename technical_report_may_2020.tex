@@ -95,25 +95,25 @@ streaming and technical challenges with different methods.
 
 One way to do microphone recording in a web browser is using the
 JavaScript Web Audio API. You can obtain an audio stream from the
-microphone using the `getUserMedia()` function. Using a
-`MediaRecorder`, the audio can be saved as a Blob. When the recording
+microphone using the {\tt getUserMedia()} function. Using a
+{\tt MediaRecorder}, the audio can be saved as a Blob. When the recording
 is done, the Blob can be added to an HTML5 audio element, that can be
 played in the web browser.
 
-The audio file can be sent to a HTTP server as a base64 encoded
-string, and decoded and saved on the server.
+The audio file can be sent to a HTTP server (typically as a base64 encoded
+string), and saved on the server.
 
 This method works when the user wants to record something, and only
 when done send it to the server. This could, for example, be a
 recording tool, where you read aloud and record a manuscript sentence
-presented in the browser.
+presented in the browser, such as the current {\tt promprec} demo.
 
 However, this method is not useful for streaming audio to the server.
 
 \subsection*{Pros}
 \begin{itemize}
 \item The audio format is known
-\item Little latency and packet loss(?)
+\item A complete audio file is created before sending it over the network
 \end{itemize}
 
 \subsection*{Cons}
