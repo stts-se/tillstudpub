@@ -11,5 +11,6 @@ Output files are saved in the projects folder.
 
 If you prefer precompiled executables command from a [published release](https://github.com/stts-se/tillstudpub/releases):
 
-     cd promptrec
-     ./promptrec_server
+    $ unzip audio_demo.zip
+    $ cd promptrec
+    $ ./promptrec_server

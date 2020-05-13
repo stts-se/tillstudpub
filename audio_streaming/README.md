@@ -68,7 +68,11 @@ To start the server, change directory to `audio_streaming` and run
 
  `go run cmd/audstr_server/main.go`
 
-If you prefer precompiled executables, use the `audstr_server` command from a published release: https://github.com/stts-se/tillstudpub/releases.
+If you prefer precompiled executables command from a [published release](https://github.com/stts-se/tillstudpub/releases):
+
+    $ unzip audio_demo.zip
+    $ cd audio_streaming
+    $ ./audstr_server
 
 Clients:
 
@@ -82,7 +86,12 @@ You can use the Go client to stream audio output via the sox `play` command:
 
    `rec -r 48000 -t raw -c 1 - 2> /dev/null  | go run cmd/audstr_client/main.go -channels 1 -sample_rate 48000 -encoding linear16 -host 127.0.0.1 -port 7651 -`
 
-Instead of using `go run`, you can use the `audstr_client` command from a published release: https://github.com/stts-se/tillstudpub/releases.
+Instead of using `go run`, you can use the `audstr_client` command [published release](https://github.com/stts-se/tillstudpub/releases):
+
+    $ unzip audio_demo.zip
+    $ cd audio_streaming
+    $ ./audstr_client
+
 
 End the recording with `CTRL-c`.
 
