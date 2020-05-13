@@ -24,6 +24,7 @@ document.getElementById("recstop").addEventListener("click", function () {
 });
 
 window.onload = async function () {
+    VISUALISER.init();
     let mediaAccess = navigator.mediaDevices.getUserMedia({ 'audio': true, 'video': false });
     mediaAccess.then(function (stream) {
         console.log("navigator.mediaDevices.getUserMedia was called")
