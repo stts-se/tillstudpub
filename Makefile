@@ -30,8 +30,10 @@ webrtc: init
 zip: init audio_streaming promptrec webrtc
 	mkdir -p dist
 	cp README.md dist
-	cd dist; zip -q -r audio_demo.zip audio_streaming promptrec webrtc_demo README.md; \
-	rm -fr audio_streaming webrtc_demo promptrec README.md
+	cp technical_report_may_2020.tex dist
+	@cd dist; pdflatex technical_report_may_2020.tex
+	cd dist; zip -q -r audio_demo.zip audio_streaming promptrec webrtc_demo technical_report_may_2020.pdf README.md; \
+	rm -fr audio_streaming webrtc_demo promptrec README.md technical_report.*
 	@echo "Output build saved in dist/audio_demo.zip"
 
 clean:
