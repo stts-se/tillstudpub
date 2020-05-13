@@ -86,10 +86,10 @@
 \cfoot{\thepage (\pageref{LastPage})}  
 
 
+\section{Introduction}
 In this document, we describe the background for the
 `audio\_streaming' demo application, available methods for audio
 streaming and technical challenges with different methods.
-
 
 \section{Recording a complete file before sending to the server}
 
@@ -205,7 +205,7 @@ The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet develop
 
 The AudioWorklet was developed to handle some critical design flaws in the ScriptProcessorNode. The first implementation of the AudioWorklet was released 2018 for Chrome \cite{icmc}.
 
-Unfortunately, the AudioWorklet is yet not fully supported by Firefox (neither stable version 75 nor beta version 76 work as of April 29th, 2020). According to the documentation, it should work with Firefox version 76. It works fine with Google Chrome (tested using version 81) and Opera (tested using version 68).
+Unfortunately, the AudioWorklet is yet not fully supported by Firefox (neither stable version 75 nor beta version 76 work as of April 29th, 2020). According to the documentation, it should work with Firefox (stable) version 76. It works fine with Google Chrome (tested using version 81) and Opera (tested using version 68).
 
 
 \subsection*{Pros}
