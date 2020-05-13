@@ -93,9 +93,7 @@ Recorded audio is saved in the `data` folder in the `audio_streaming` directory.
 
 # Remaining issues
 
-* Investigate how to read and set audio configuration settings in the browser
-
-* Investigate remaining packet loss issues
+* Investigate remaining packet loss 
 
 
 ---
