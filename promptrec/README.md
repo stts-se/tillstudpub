@@ -9,3 +9,7 @@ Point your browser to http://localhost:3092, choose project, session and user na
 
 Output files are saved in the projects folder.
 
+If you prefer precompiled executables command from a [published release](https://github.com/stts-se/tillstudpub/releases):
+
+     cd promptrec
+     ./promptrec_server
