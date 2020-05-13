@@ -91,7 +91,11 @@
 In this document, we describe the background for some demo
 applications using the web audio API for microphone recording in the
 browser.  Different methods for recording in the browser and sending
-the resultng audio to a server are presented.
+the resulting audio to a server are listed below.
+
+There is audio processing built into the browser, and there is a
+JavaScript web audio API (but the audio processing itself is probably not
+implemented in JavaScript).
 
 There are different ways to capture the audio in the browser, and
 different ways to transporting the audio to a server.
@@ -104,11 +108,18 @@ TODO: List the different methods explained below
 \section{Recording a complete file before sending to the server}
 
 One way to do microphone recording in a web browser is using the
-JavaScript Web Audio API. You can obtain an audio stream from the
-microphone using the {\tt getUserMedia()} function. Using a
-{\tt MediaRecorder}, the audio can be saved as a Blob. When the recording
-is done, the Blob can be added to an HTML5 audio element, that can be
-played in the web browser.
+JavaScript Web Audio API to create an audio file in the browser. You
+can obtain an audio stream from the microphone using the {\tt
+  getUserMedia()} function. Using a {\tt MediaRecorder}, the audio can
+be saved as a {\tt Blob}, ``a file-like object of immutable, raw
+data'' \cite{blob}. When the recording is done, the {\tt Blob} can be
+added to an HTML5 audio element, that can be played using the web
+browser.
+
+The audio file might be of different encodings, depending on
+the browser, so you need to pass his information on to the server
+(unless you convert to a common format in the browser, but this may be
+non-trivial).
 
 The audio file can be sent to a HTTP server (typically as a base64 encoded
 string), and saved on the server.
@@ -286,7 +297,7 @@ There seems to be some settings in the browser(s), that are difficult to control
   
 \bibitem{webrtcsupport}
   https://en.wikipedia.org/wiki/WebRTC\#Support
-
+  
 \bibitem{}
   \textit{Investigation into low latency live video streaming performance of WebRTC},\newline
   Jakob Tideström,
@@ -295,6 +306,10 @@ There seems to be some settings in the browser(s), that are difficult to control
   Sweden,
   2019,\newline
   http://www.diva-portal.se/smash/get/diva2:1304486/FULLTEXT01.pdf
+
+
+\bibitem{blob}
+  https://developer.mozilla.org/en-US/docs/Web/API/Blob
   
 \end{thebibliography}
 
