@@ -10,7 +10,8 @@ audio_streaming: init
 	GOOS=linux GOARCH=amd64 go build -o ../dist/audio_streaming/audstr_client cmd/audstr_client/*go; \
 	GOOS=windows GOARCH=amd64 go build -o ../dist/audio_streaming/audstr_server.exe cmd/audstr_server/*go; \
 	GOOS=windows GOARCH=amd64 go build -o ../dist/audio_streaming/audstr_client.exe cmd/audstr_client/*go; \
-	cp -r static ../dist/audio_streaming
+	cp -r static ../dist/audio_streaming; \
+	cp README.md ../dist/audio_streaming
 
 promptrec: init
 	cd promptrec; \
@@ -23,6 +24,7 @@ promptrec: init
 	echo "03	tulpan	 Säg en tredje blomma" >> dist/promptrec/projects/demo-blommor/text.txt
 	echo "04	nejlika	 Säg en blomma en fjärde och sista gång" >> dist/promptrec/projects/demo-blommor/text.txt
 	cp -r promptrec/static dist/promptrec
+	cp promptrec/README.md dist/promptrec
 
 webrtc: init
 	cd webrtc_demo; \
