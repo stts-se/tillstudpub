@@ -17,9 +17,10 @@ Initialize:
 
     VISUALISER.init();
     
-Connect to a [media stream](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) and a function that is used to turn visualisation on/off:
+Create an [audio context](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext), and connect to a [media stream](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream) and a function that is used to turn visualisation on/off:
 
-    VISUALISER.visualise(stream, shouldVisualiseFunc);
+
+VISUALISER.visualise(audioContext, stream, shouldVisualiseFunc);
 
 
 ## Demo
