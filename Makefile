@@ -17,7 +17,11 @@ promptrec: init
 	GOOS=linux GOARCH=amd64 go build -o ../dist/promptrec/promptrec_server *go; \
 	GOOS=windows GOARCH=amd64 go build -o ../dist/promptrec/promptrec_server.exe *go
 	mkdir -p dist/promptrec/projects/demo-blommor
-	cp promptrec/projects/demo-blommor/text.txt dist/promptrec/projects/demo-blommor
+	echo -n "" >| dist/promptrec/projects/demo-blommor/text.txt
+	echo "01	lilja	 Säg en första blomma" >> dist/promptrec/projects/demo-blommor/text.txt
+	echo "02	ros	 Säg en blomma till" >> dist/promptrec/projects/demo-blommor/text.txt
+	echo "03	tulpan	 Säg en tredje blomma" >> dist/promptrec/projects/demo-blommor/text.txt
+	echo "04	nejlika	 Säg en blomma en fjärde och sista gång" >> dist/promptrec/projects/demo-blommor/text.txt
 	cp -r promptrec/static dist/promptrec
 
 webrtc: init
@@ -31,7 +35,7 @@ zip: init audio_streaming promptrec webrtc
 	mkdir -p dist
 	cp README.md dist
 	cp technical_report_may_2020.tex dist
-	@cd dist; pdflatex technical_report_may_2020.tex
+	@cd dist; pdflatex technical_report_may_2020.tex; pdflatex technical_report_may_2020.tex
 	cd dist; zip -q -r audio_demo.zip audio_streaming promptrec webrtc_demo technical_report_may_2020.pdf README.md; \
 	rm -fr audio_streaming webrtc_demo promptrec README.md technical_report.*
 	@echo "Output build saved in dist/audio_demo.zip"
