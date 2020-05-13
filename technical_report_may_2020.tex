@@ -116,13 +116,13 @@ data'' \cite{blob}. When the recording is done, the {\tt Blob} can be
 added to an HTML5 audio element, that can be played using the web
 browser.
 
+The audio file can be sent to a HTTP server (typically as a base64 encoded
+string), and saved on the server.
+
 The audio files might be of different encodings, depending on
 the browser, so you need to pass his information on to the server
 (unless you convert to a common format in the browser, but this may be
 non-trivial).
-
-The audio file can be sent to a HTTP server (typically as a base64 encoded
-string), and saved on the server.
 
 This method works when the user wants to record something, and only
 when done send it to the server. This could, for example, be a
