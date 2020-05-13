@@ -1,0 +1,59 @@
+<!-- SOURCE: https://github.com/pion/webrtc-voicemail -->
+<html>
+    <head>
+    </head>
+
+    <body>
+	<h1> WebRTC Demo </h1>
+	<button id="recstart" onclick="window.startRec()"> Start </button>
+	<button id="recstop" disabled="disabled" onclick="window.stopRec()"> Stop </button>
+	<span id="info"/>
+	
+	<script>
+	 let debugVar;
+
+	 let pc;
+	 let theStream;
+	 
+	 navigator.mediaDevices.getUserMedia({audio: true})
+		  .then(stream => {
+		      theStream = stream;
+		      pc = new RTCPeerConnection();
+		      let tracks = theStream.getAudioTracks();
+		      for (let i=0;i<tracks.length;i++) {
+			  pc.addTrack(tracks[i]);
+		      }
+		      pc.createOffer().then(d => pc.setLocalDescription(d));
+		  }).catch(window.alert)
+
+	 function stopRec() {
+	     console.log("stopping recording");
+	     theStream.getTracks().forEach(track => track.stop());
+	     pc.close();
+	     //document.getElementById("recstart").disabled = false;
+	     document.getElementById("recstop").disabled = true;
+	     document.getElementById("info").innerText = "Reload the page to start a new recording";
+	 }
+	 
+	 function startRec() {
+	     console.log("opening recording");
+	     document.getElementById("recstart").disabled = true;
+	     document.getElementById("recstop").disabled = false;
+	     document.getElementById("info").innerText = "";
+
+	     fetch('/start', {
+		 method: 'POST',
+		 headers: {
+		     'Content-Type': 'application/json'
+		 },
+		 body: JSON.stringify(pc.pendingLocalDescription)
+	     })
+		 .then(response => response.json())
+		 .then(sdp => {
+		     console.log(sdp);
+		     pc.setRemoteDescription(sdp).catch(window.alert);
+		 })
+	 }
+	</script>
+    </body>
+</html>
