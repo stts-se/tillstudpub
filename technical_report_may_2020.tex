@@ -156,11 +156,14 @@ server may send data. Since a websocket is an upgraded HTTP
 connection, is has much of the same characteristics, such as
 guarantees against package loss, etc.
 
+After a websocket connection has been established, the
+client and the server may send text or binary data to each other in
+any form.
+
 A difference between a websocket and a normal HTTP connection, is that
 there is not a well defined protocol for interaction between client
-and server (such as GET and POST, etc). After a websocket connection
-has been established, the client and the server may send text or
-binary data to each other in any form.
+and server (such as GET and POST, etc). You have to create your own
+protocol. 
 
 
 \section{Streaming using WebRTC}
