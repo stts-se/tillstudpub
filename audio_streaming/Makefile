@@ -19,8 +19,8 @@ audstr_server.exe: cmd/audstr_server/*go
 audstr_client.exe: cmd/audstr_client/*go 
 	GOOS=windows GOARCH=amd64 go build -o audstr_client.exe cmd/audstr_client/*go
 
-zip: audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe static/* README.md
-	zip -q audio_streaming.zip audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe static/* README.md
+zip: audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe static  README.md
+	zip -q -r audio_streaming.zip audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe static README.md
 	rm audstr_server audstr_client audstr_server_mac audstr_client_mac audstr_server.exe audstr_client.exe
 
 clean:
