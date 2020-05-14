@@ -21,6 +21,8 @@ If you prefer precompiled executables command from a [published release](https:/
     $ ./promptrec_server
 
 
+The precompiled release includes a demo project for testing. If you start the server outside of a release, your initial project list may be empty, and you need to create a new project.
+
 ## Define a new project
 
 Project data is stored in the `projects` folder. To create a new project, create a folder inside the `projects` folder. The folder name will be the name of the project. Inside the project folder, create a text file `text.txt` with the prompt texts, one prompt per line on the following format:
