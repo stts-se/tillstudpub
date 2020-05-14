@@ -159,6 +159,7 @@ However, this method is not useful for streaming audio to the server.
 \begin{itemize}
 \item The audio format is known
 \item A complete audio file is created before sending it over the network
+\item No built-in packet/data loss (compared to streaming) [TODO???]
 \end{itemize}
 
 \subsection*{Cons}
@@ -170,14 +171,13 @@ However, this method is not useful for streaming audio to the server.
 
 \section{Streaming using ScriptProcessorNode}
 
-The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet developers' need to process audio streams in the Web Audio API. Unlike other parts of the Web Audio API, the processing is run in the main thread, which can cause delays. It has since been deprecated. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
+The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet developers' need to write custom code for audio processing in the Web Audio API. For performance, most processing components of the Web Audio API are run in a separate thread, but the ScriptProcessorNode is run in the main thread, which can cause delays. It has since been deprecated. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
 
 In the example application, the audio data are converted from floats to 16 bit integers in the browser.
 
 \subsection*{Pros}
 \begin{itemize}
 \item Supported by most browsers
-\item \ldots
 \end{itemize}
 
 \subsection*{Cons}
@@ -189,9 +189,9 @@ In the example application, the audio data are converted from floats to 16 bit i
 
 \section{Streaming using AudioWorklet}
 
-The AudioWorklet was developed to handle some design flaws in the ScriptProcessorNode. The first implementation of the AudioWorklet was released 2018 for Chrome \cite{icmc}.
+The AudioWorklet was developed to cope with the design flaws in its predecessor, ScriptProcessorNode. The first implementation of the AudioWorklet was released 2018 for Chrome \cite{icmc}.
 
-Unfortunately, the AudioWorklet is yet not fully supported by Firefox (neither stable version 75 nor beta version 76 work as of April 29th, 2020). According to the documentation, it should work with Firefox (stable) version 76. It works fine with Google Chrome (tested using version 81) and Opera (tested using version 68).
+Unfortunately, the AudioWorklet is yet not fully supported by Firefox, but according to the documentation, it should work with Firefox upcoming version 76. We have it tested and working with Google Chrome (v81) and Opera (v68).
 
 In the example application, the audio data are converted from floats to 16 bit integers in the browser.
 
@@ -204,7 +204,7 @@ In the example application, the audio data are converted from floats to 16 bit i
 \subsection*{Cons}
 \begin{itemize}
 \item Not supported by all browsers (see \cite{audioworklet})
-\item \ldots
+\item Packet/data loss can occur [TODO???]
 \end{itemize}
 
 
@@ -263,14 +263,12 @@ job equally good, if you do not need peer-to-peer capabilities.
 \subsection*{Pros}
 \begin{itemize}
 \item Supported by most browsers \cite{webrtcsupport}
-\item \ldots
 \end{itemize}
 
 \subsection*{Cons}
 \begin{itemize}
 \item Risk of packet loss
 \item Little risk of latency
-\item \ldots
 \end{itemize}
 
 
@@ -330,7 +328,7 @@ There seems to be some settings in the browser(s), that are difficult to control
   
 \bibitem{}
   \textit{Investigation into low latency live video streaming performance of WebRTC},\newline
-  Jakob Tideström,
+  Jakob Tidestrï¿½m,
   In degree project computer science and engineering, second cycle, \newline
   Stockholm,
   Sweden,
