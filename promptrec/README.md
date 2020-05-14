@@ -20,7 +20,7 @@ The precompiled release includes a demo project for testing, `demo-blommor`. If 
 
 ## Data structure
 
-Project data is stored in the `projects` folder.
+Project data is stored in the `projects` folder, using the following file structure:
 
     projects/
        <projectname>/
