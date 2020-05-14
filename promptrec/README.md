@@ -7,12 +7,7 @@ $ go run .
 
 Point your browser to http://localhost:3092, choose a project, enter session and user name, and start recording.
 
-Output files are saved in the `projects` folder:
-
-    projectname/
-      sessionname/
-        username/
-          audiofiles and accompanying jsonfiles
+Output files are saved in the `projects` folder (one folder per project).
 
 If you prefer precompiled executables command from a [published release](https://github.com/stts-se/tillstudpub/releases):
 
@@ -22,6 +17,18 @@ If you prefer precompiled executables command from a [published release](https:/
 
 
 The precompiled release includes a demo project for testing. If you start the server outside of a release, your initial project list may be empty, and you need to create a new project.
+
+## Data structure
+
+Project data is stored in the `projects` folder.
+
+    projects/
+       <projectname>/
+         text.txt
+         <sessionname>/
+           <username>/
+             user's audio files and accompanying json files with metadata
+
 
 ## Define a new project
 
