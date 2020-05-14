@@ -97,11 +97,11 @@ There is audio processing built into the browser, and there is a
 JavaScript web audio API (but the audio processing itself is probably not
 implemented in JavaScript).
 
-There are different ways to capture the audio in the browser, and
+There are different ways to capture audio in the browser, and
 different ways to transporting the audio to a server.
 
 This document is accompanied by some example applications at
-github.com/stts-se/tillstudpub. These consist of a small client-server
+github.com/stts-se/tillstudpub. These consist of small client-server
 examples, run in the browser, from wich the audio is sent to a server
 and saved to disk. All examples work in recent versions of Chrome, but
 may not work in other browsers.
@@ -115,12 +115,12 @@ found at github.com/stts-se/tillstudpub/releases.
   recordings are saved on the server.
 
 \item {\tt audio\_streaming} streams microphone audio from the browser
-  to a server. There are two different methods used in the browser, one
+  to a server. There are two competing methods, one
   using { \tt ScriptProcessorNode}, the other using {\tt
     AudioWorklet}, a more recent approch.
 
-\item {\tt webrtc\_demo} a sketchy example of using the WebRTC
-  protocal for streaming audio to a server. Not a fully functioning
+\item {\tt webrtc\_demo} is a sketchy example of using the WebRTC
+  protocol for streaming audio to a server. Not a fully functioning
   application, and based on an example of the Pion WebRTC implementation.
   See pion.ly and github.com/pion.
   
@@ -166,6 +166,45 @@ However, this method is not useful for streaming audio to the server.
 \item The audio format cannot be changed (it is controlled by the browser)
 \item Not for streaming
 \end{itemize}
+
+
+\section{Streaming using ScriptProcessorNode}
+
+The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet developers' need to process audio streams in the Web Audio API. Unlike other parts of the Web Audio API, the processing is run in the main thread, which can cause delays. It has since been deprecated. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
+
+\subsection*{Pros}
+\begin{itemize}
+\item Supported by most browsers
+\item \ldots
+\end{itemize}
+
+\subsection*{Cons}
+\begin{itemize}
+\item Can have performance and quality issues
+\item Deprecated
+\end{itemize}
+
+
+\section{Streaming using AudioWorklet}
+
+The AudioWorklet was developed to handle some design flaws in the ScriptProcessorNode. The first implementation of the AudioWorklet was released 2018 for Chrome \cite{icmc}.
+
+Unfortunately, the AudioWorklet is yet not fully supported by Firefox (neither stable version 75 nor beta version 76 work as of April 29th, 2020). According to the documentation, it should work with Firefox (stable) version 76. It works fine with Google Chrome (tested using version 81) and Opera (tested using version 68).
+
+
+\subsection*{Pros}
+\begin{itemize}
+\item Processing run in a separate thread
+\item Less latency than ScriptProcessorNode
+\end{itemize}
+
+\subsection*{Cons}
+\begin{itemize}
+\item Not supported by all browsers (see \cite{audioworklet})
+\item \ldots
+\end{itemize}
+
+
 
 \section{Streaming over a websocket}
 
@@ -230,45 +269,6 @@ job equally good, if you do not need peer-to-peer capabilities.
 \item Little risk of latency
 \item \ldots
 \end{itemize}
-
-\section{Streaming using ScriptProcessorNode}
-
-The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet developers' need to process audio streams in the Web Audio API. Unlike other parts of the Web Audio API, the processing is run in the main thread, which can cause delays. It has since been deprecated. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
-
-\subsection*{Pros}
-\begin{itemize}
-\item Supported by most browsers
-\item \ldots
-\end{itemize}
-
-\subsection*{Cons}
-\begin{itemize}
-\item Risk of packet loss and latency
-\item Deprecated
-\item \ldots
-\end{itemize}
-
-
-\section{Streaming using AudioWorklet}
-
-The AudioWorklet was developed to handle some critical design flaws in the ScriptProcessorNode. The first implementation of the AudioWorklet was released 2018 for Chrome \cite{icmc}.
-
-Unfortunately, the AudioWorklet is yet not fully supported by Firefox (neither stable version 75 nor beta version 76 work as of April 29th, 2020). According to the documentation, it should work with Firefox (stable) version 76. It works fine with Google Chrome (tested using version 81) and Opera (tested using version 68).
-
-
-\subsection*{Pros}
-\begin{itemize}
-\item Processing run in a separate thread
-\item Less latency than ScriptProcessorNode
-\item \ldots
-\end{itemize}
-
-\subsection*{Cons}
-\begin{itemize}
-\item Not supported by all browsers (see \cite{audioworklet})
-\item \ldots
-\end{itemize}
-
 
 
 
