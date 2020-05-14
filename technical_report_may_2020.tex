@@ -91,7 +91,7 @@
 In this document, we describe the background for some demo
 applications using the web audio API for microphone recording in the
 browser.  Different methods for recording in the browser and sending
-the resulting audio to a server are listed below.
+the resulting audio to a server are listed below. 
 
 There is audio processing built into the browser, and there is a
 JavaScript web audio API (but the audio processing itself is probably not
@@ -100,9 +100,33 @@ implemented in JavaScript).
 There are different ways to capture the audio in the browser, and
 different ways to transporting the audio to a server.
 
-\bigskip
+This document is accompanied by some example applications at
+github.com/stts-se/tillstudpub. These consist of a small client-server
+examples, run in the browser, from wich the audio is sent to a server
+and saved to disk. All examples work in recent versions of Chrome, but
+may not work in other browsers.
 
-TODO: List the different methods explained below 
+Precompiled versions for Linux and Windows are
+found at github.com/stts-se/tillstudpub/releases.
+
+
+\begin{enumerate}
+\item {\tt promptrec} presents the user with text to read aloud. The
+  recordings are saved on the server.
+
+\item {\tt audio\_streaming} streams microphone audio from the browser
+  to a server. There are two different methods used in the browser, one
+  using { \tt ScriptProcessorNode}, the other using {\tt
+    AudioWorklet}, a more recent approch.
+
+\item {\tt webrtc\_demo} a sketchy example of using the WebRTC
+  protocal for streaming audio to a server. Not a fully functioning
+  application, and based on an example of the Pion WebRTC implementation.
+  See pion.ly and github.com/pion.
+  
+\end{enumerate}
+
+
 
 
 \section{Recording a complete file before sending to the server}
