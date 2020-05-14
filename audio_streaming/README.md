@@ -55,9 +55,9 @@ On Windows, you can for example use the Import function in Audacity.
 Hints on what parameters to use can be found in the JSON files accompanying each `.raw` file.
 
 
-# Audio quality and packet loss
+# Audio quality and data loss
 
-Currently, there seems to be some packet loss for both streaming methods used. For AudioWorklet, the packet loss is small, but still...
+Currently, there seems to be some data loss for both streaming methods used. For AudioWorklet, the data loss is small, but it does happen.
 
 
 
@@ -102,7 +102,7 @@ Recorded audio is saved in the `data` folder in the `audio_streaming` directory.
 
 # Remaining issues
 
-* Investigate remaining packet loss 
+* Investigate remaining data loss 
 
 
 ---
