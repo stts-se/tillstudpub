@@ -39,7 +39,7 @@ The implementation in this demo has been tested with the following browsers:
 * Google Chrome - version 81 - supported, working
 * Opera - version 68 - supported, working
 * Firefox - version 75 - not supported
-* Firefox - beta version 76 - will be supported in version 76, currently not working 
+* Firefox - beta version 76 - not working, but will be supported in version 76
 
 
 # Saved audio format
