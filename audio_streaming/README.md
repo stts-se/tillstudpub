@@ -1,6 +1,6 @@
 # Overview
 
-`audio_streaming` is a simple proof of concept application for streaming user microphone audio from a client to a server. The audio is saved in the server as a binary "raw" audio file, along with a JSON file, containing relevant metadata about the recording.
+`audio_streaming` is a simple proof of concept application for streaming user microphone audio from a client to a server. The audio is saved in the server as a wav audio file, along with a JSON file, containing relevant metadata about the recording.
 
 In this document, we describe the application itself and how it works.
 
