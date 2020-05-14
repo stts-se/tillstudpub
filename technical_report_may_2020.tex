@@ -172,6 +172,8 @@ However, this method is not useful for streaming audio to the server.
 
 The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet developers' need to process audio streams in the Web Audio API. Unlike other parts of the Web Audio API, the processing is run in the main thread, which can cause delays. It has since been deprecated. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
 
+In the example application, the audio data are converted from floats to 16 bit integers in the browser.
+
 \subsection*{Pros}
 \begin{itemize}
 \item Supported by most browsers
@@ -191,6 +193,7 @@ The AudioWorklet was developed to handle some design flaws in the ScriptProcesso
 
 Unfortunately, the AudioWorklet is yet not fully supported by Firefox (neither stable version 75 nor beta version 76 work as of April 29th, 2020). According to the documentation, it should work with Firefox (stable) version 76. It works fine with Google Chrome (tested using version 81) and Opera (tested using version 68).
 
+In the example application, the audio data are converted from floats to 16 bit integers in the browser.
 
 \subsection*{Pros}
 \begin{itemize}
