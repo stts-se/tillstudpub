@@ -99,12 +99,6 @@ End the recording with `CTRL-c`.
 Recorded audio is saved in the `data` folder in the `audio_streaming` directory. The last recorded file is always saved in raw format as `data/latest.raw`, and with a wav header: `data/latest.wav` (the wav header is work in progress).
 
 
-
-# Remaining issues
-
-* Investigate remaining data loss 
-
-
 ---
 
 # Testing a browser's AudioWorklet compatibility
