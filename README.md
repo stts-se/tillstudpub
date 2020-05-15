@@ -1,5 +1,5 @@
 # tillstudpub
-Public resources for TillStud and related projects
+Resources for TillStud and related projects
 
 * visualiser/
 
