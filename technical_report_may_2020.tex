@@ -171,9 +171,20 @@ However, this method is not useful for streaming audio to the server.
 
 \section{Streaming using ScriptProcessorNode}
 
-The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet developers' need to write custom code for audio processing in the Web Audio API. For performance, most processing components of the Web Audio API are run in a separate thread, but the ScriptProcessorNode is run in the main thread, which can cause delays. It has since been deprecated. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
+The ScriptProcessorNode\cite{scriptprocessornode} was introduced to
+meet developers' need to write custom code for audio processing in the
+Web Audio API. This is an audio processing module that gives access to
+an input and an output buffer. Between these, you can put your own code
+to do audio processing of the audio data stream.
 
-In the example application, the audio data are converted from floats to 16 bit integers in the browser.
+For performance, most processing components of the Web
+Audio API are run in a separate thread, but the ScriptProcessorNode is
+run in the main thread, which can cause delays. It has since been
+deprecated. More information on the motivation behind the move to
+AudioWorklet can be found in \cite{icmc}.
+
+In the example application, the audio data are converted from floats
+to 16 bit integers in the browser.
 
 \subsection*{Pros}
 \begin{itemize}
@@ -189,11 +200,22 @@ In the example application, the audio data are converted from floats to 16 bit i
 
 \section{Streaming using AudioWorklet}
 
-The AudioWorklet was developed to cope with the design flaws in its predecessor, ScriptProcessorNode. The first implementation of the AudioWorklet was released 2018 for Chrome \cite{icmc}.
+The AudioWorklet was developed to cope shortcomings of its
+predecessor, ScriptProcessorNode. The first implementation of the
+AudioWorklet was released 2018 for Chrome \cite{icmc}.
 
-Unfortunately, the AudioWorklet is yet not fully supported by Firefox, but according to the documentation, it should work with Firefox upcoming version 76. We have it tested and working with Google Chrome (v81) and Opera (v68).
+The AudioWorklet works much in the same way as the
+ScriptProcessorNode, in that it takes an input and output stream, in
+between which you can insert audio processing.
 
-In the example application, the audio data are converted from floats to 16 bit integers in the browser.
+
+Unfortunately, the AudioWorklet is yet not fully supported by Firefox,
+but according to the documentation, it should work with Firefox
+upcoming version 76. We have it tested and working with Google Chrome
+(v81) and Opera (v68).
+
+In the example application, the audio data are converted from floats
+to 16 bit integers in the browser.
 
 \subsection*{Pros}
 \begin{itemize}
