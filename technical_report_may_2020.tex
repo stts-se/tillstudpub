@@ -68,7 +68,7 @@
 
 
 %\usepackage{amssymb}
-\title{ Microphone capture in the web browser }
+\title{ Microphone capture in the web browser \\ \em -- draft -- }
 
 
 \author{ \stts \\
@@ -104,13 +104,22 @@ There are different ways to capture audio in the browser, and
 different ways to transporting the audio to a server.
 
 This document is accompanied by some example applications at
-github.com/stts-se/tillstudpub. These consist of small client-server
-examples, run in the browser, from wich the audio is sent to a server
+\begin{quote}
+  \tt http://github.com/stts-se/tillstudpub    
+\end{quote}
+
+
+
+These consist of small client-server
+examples, run in the browser, from which the audio is sent to a server
 and saved to disk. All examples work in recent versions of Chrome, but
 may not work in other browsers.
 
-Precompiled versions for Linux and Windows are
-found at github.com/stts-se/tillstudpub/releases.
+Precompiled versions for Linux and Windows are found at 
+\begin{quote}
+\tt http://github.com/stts-se/tillstudpub/releases
+\end{quote}
+
 
 
 \begin{enumerate}
@@ -120,7 +129,7 @@ found at github.com/stts-se/tillstudpub/releases.
 \item {\tt audio\_streaming} streams microphone audio from the browser
   to a server. There are two competing methods, one
   using { \tt ScriptProcessorNode}, the other using {\tt
-    AudioWorklet}, a more recent approch.
+    AudioWorklet}, a more recent approach.
 
 \item {\tt webrtc\_demo} is a sketchy example of using the WebRTC
   protocol for streaming audio to a server. Not a fully functioning
@@ -154,7 +163,7 @@ non-trivial).
 This method works when the user wants to record something, and only
 when done send it to the server. This could, for example, be a
 recording tool, where you read aloud and record a manuscript sentence
-presented in the browser, such as the current {\tt promprec} demo.
+presented in the browser, such as the current {\tt promptrec} demo.
 
 However, this method is not useful for streaming audio to the server.
 
@@ -204,7 +213,7 @@ audio and video directly between web-browsers (as long as there is
 some way of the browsers to find each other, for example using a STUN
 server).
 
-WebRTC is build on UDP (rather than HTTP). The WebRCT uses the Opus
+WebRTC is build on UDP (rather than HTTP). The WebRTC uses the Opus
 codec for audio (and V8 for video).
 
 Since human cognition is more forgiving to missing samples than to
@@ -309,13 +318,13 @@ to 16 bit integers in the browser.
 There seems to be some settings in the browser(s), that are difficult to control. Examples:
 
 \begin{description}
-\item[Sample rate] Can be retrived but not changed
-\item[Channel count] The value can be set, but we are not sure how it's used. The wav library currently used on the server side only supports mono.
+\item[Sample rate] Can be retrieved but not changed
+\item[Channel count] The demo applications are intended for mono
 \item[Audio encoding]\ \\[-14pt]
   \begin{description}
   \item[\em{AudioWorklet/ScriptProcessorNode}] For streaming, a browser's recording is by definition 32bit PCM. We have chosen to convert to 16bit PCM before sending to server.
   \item[\em{WebRTC}] OPUS
-  \item[\em{ Non-streaming}] The browser controls the encoding, but the used encoding can be retreived.
+  \item[\em{ Non-streaming}] The browser controls the encoding, but the used encoding can be retrieved.
     
   \end{description}
 
@@ -371,7 +380,7 @@ more complicated to get running than just writing a piece of JavaScript.
   
 \bibitem{}
   \textit{Investigation into low latency live video streaming performance of WebRTC},\newline
-  Jakob Tidestr�m,
+  Jakob Tidestr\"om,
   In degree project computer science and engineering, second cycle, \newline
   Stockholm,
   Sweden,
