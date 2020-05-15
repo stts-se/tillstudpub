@@ -85,6 +85,9 @@
 %  \cfoot{\thepage}
 \cfoot{\thepage (\pageref{LastPage})}  
 
+\tableofcontents
+
+\newpage
 
 \section{Introduction}
 
@@ -159,7 +162,6 @@ However, this method is not useful for streaming audio to the server.
 \begin{itemize}
 \item The audio format is known
 \item A complete audio file is created before sending it over the network
-\item No built-in packet/data loss (compared to streaming) [TODO???]
 \end{itemize}
 
 \subsection*{Cons}
@@ -169,7 +171,78 @@ However, this method is not useful for streaming audio to the server.
 \end{itemize}
 
 
-\section{Streaming using ScriptProcessorNode}
+\section{Network streaming}
+
+In the example applications, two methods are used for streaming: WebSocket for the {\tt audio\_streaming} application, and a simple demo of WebRTC.
+
+\subsection{WebSocket}
+
+When a client calls an HTTP server, there is a request from the
+client, and a response from the server, and that's it. Subsequent
+calls must establish new connections to the server.
+
+A WebSocket, on the other hand, is a TCP connection that may stay open
+for any period of time, and on which both the client and the server
+may send data. A WebSocket connection is created by upgrading from an
+HTTP connection, and it also has much of the same characteristics,
+such as guarantees against package loss, etc.
+
+After a WebSocket connection has been established, the
+client and the server may send text or binary data to each other in
+any form.
+
+A difference between a WebSocket and an HTTP connection, is that
+there is not a well defined protocol for interaction between client
+and server (such as GET and POST, etc). You have to create your own
+protocol. 
+
+\subsection{WebRTC}
+
+WebRTC (Web Real-Time Communication) \cite{webrtc} is a peer-to-peer method for
+streaming audio and video. In other words, you can use it to stream
+audio and video directly between web-browsers (as long as there is
+some way of the browsers to find each other, for example using a STUN
+server).
+
+WebRTC is build on UDP (rather than HTTP). The WebRCT uses the Opus
+codec for audio (and V8 for video).
+
+Since human cognition is more forgiving to missing samples than to
+latency, as little lag as possible is more important than being sure
+that the original sound wave is complete and intact --- packet loss is
+tolerated. The original sound wave might not be possible to reproduce
+on the other end. Since speech is full of redundant information and
+human cognition is built for interpreting a noisy signal, this may not
+be a big issue for understanding speech sent over a bad network using
+WebRTC.
+
+Under the hood, WebRTC takes care of things like echo-canceling and
+noise reduction. 
+
+
+WebRTC also includes a DataChannel API, that can be used for
+transporting data without packet loss. However, a WebSocket may do the
+job equally good, if you do not need peer-to-peer capabilities.
+
+\subsection*{Pros}
+\begin{itemize}
+\item Supported by most browsers \cite{webrtcsupport}
+\end{itemize}
+
+\subsection*{Cons}
+\begin{itemize}
+\item Risk of packet loss
+\item Little risk of latency
+\end{itemize}
+
+
+\section{Web Audio API processing}
+
+The Web Audio API makes it possible to do advanced audio processing in the web browser.
+
+In the {\tt audio\_streaming} demo, it is used to access the audio stream, convert to int16, and send over the network continuously.
+
+\subsection{ScriptProcessorNode}
 
 The ScriptProcessorNode\cite{scriptprocessornode} was introduced to
 meet developers' need to write custom code for audio processing in the
@@ -198,7 +271,7 @@ to 16 bit integers in the browser.
 \end{itemize}
 
 
-\section{Streaming using AudioWorklet}
+\subsection{AudioWorklet}
 
 The AudioWorklet was developed to cope shortcomings of its
 predecessor, ScriptProcessorNode. The first implementation of the
@@ -226,72 +299,8 @@ to 16 bit integers in the browser.
 \subsection*{Cons}
 \begin{itemize}
 \item Not supported by all browsers (see \cite{audioworklet})
-\item Packet/data loss can occur [TODO???]
 \end{itemize}
 
-
-
-\section{Streaming over a websocket}
-
-A websocket can be thought of as a bi-directional HTTP
-connection. Usually, when a client calls an HTTP server, there is a
-request from the client, and a response from the server, and that's
-it. Subsequent calls must establish new connections to the server.
-
-A websocket, on the other hand, is an HTTP connection that may stay
-open for any period of time, and on which both the client and the
-server may send data. Since a websocket is an upgraded HTTP
-connection, is has much of the same characteristics, such as
-guarantees against package loss, etc.
-
-After a websocket connection has been established, the
-client and the server may send text or binary data to each other in
-any form.
-
-A difference between a websocket and a normal HTTP connection, is that
-there is not a well defined protocol for interaction between client
-and server (such as GET and POST, etc). You have to create your own
-protocol. 
-
-
-\section{Streaming using WebRTC}
-
-WebRTC (Web Real-Time Communication) \cite{webrtc} is a peer-to-peer method for
-streaming audio and video. In other words, you can use it to stream
-audio and video directly between web-browsers (as long as there is
-some way of the browsers to find each other, for example using a STUN
-server).
-
-WebRTC is build on UDP (rather than HTTP). The WebRCT uses the Opus
-codec for audio (and V8 for video).
-
-Since human cognition is more forgiving to missing samples than to
-latency, as little lag as possible is more important than being sure
-that the original sound wave is complete and intact --- packet loss is
-tolerated. The original sound wave might not be possible to reproduce
-on the other end. Since speech is full of redundant information and
-human cognition is built for interpreting a noisy signal, this may not
-be a big issue for understanding speech sent over a bad network using
-WebRTC.
-
-Under the hood, WebRTC takes care of things like echo-canceling and
-noise reduction. 
-
-
-WebRTC also includes a DataChannel API, that can be used for
-transporting data without packet loss. However, a websocket may do the
-job equally good, if you do not need peer-to-peer capabilities.
-
-\subsection*{Pros}
-\begin{itemize}
-\item Supported by most browsers \cite{webrtcsupport}
-\end{itemize}
-
-\subsection*{Cons}
-\begin{itemize}
-\item Risk of packet loss
-\item Little risk of latency
-\end{itemize}
 
 
 
@@ -301,12 +310,12 @@ There seems to be some settings in the browser(s), that are difficult to control
 
 \begin{description}
 \item[Sample rate] Can be retrived but not changed
-\item[Channel count] We can set this value, but are not sure how it's used. The wav library currently used on the server side only supports mono.
+\item[Channel count] The value can be set, but we are not sure how it's used. The wav library currently used on the server side only supports mono.
 \item[Audio encoding]\ \\[-14pt]
   \begin{description}
   \item[\em{AudioWorklet/ScriptProcessorNode}] For streaming, a browser's recording is by definition 32bit PCM. We have chosen to convert to 16bit PCM before sending to server.
   \item[\em{WebRTC}] OPUS
-  \item[\em{ Non-streaming}] The browser controls the encoding, but the value can be retreived.
+  \item[\em{ Non-streaming}] The browser controls the encoding, but the used encoding can be retreived.
     
   \end{description}
 
