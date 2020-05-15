@@ -38,6 +38,3 @@ To create a new project, create a folder inside the `projects` folder. The folde
 2. prompt text (to be read)
 3. instructions, if any (directed to the user, about the prompt or how it should be read)
 
-## Dependencies
-
-ffmpeg

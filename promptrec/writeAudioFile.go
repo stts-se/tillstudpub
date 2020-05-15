@@ -79,20 +79,20 @@ func writeAudioFile(audioDir string, input SessionAudioInput) (string, error) {
 
 	// (2) ALWAYS convert to wav 16kHz MONO
 	// ffmpegConvert function is defined in ffmpegConvert.go
-	audioFileWav := strings.TrimSuffix(audioFile, "."+ext)
-	audioFileWav = fmt.Sprintf("%s.%s", audioFileWav, cleanExt(audioExt))
-	err = ffmpegConvert(audioFile, audioFileWav, false)
-	if err != nil {
-		msg := fmt.Sprintf("writeAudioFile failed converting from %s to %s : %v", audioFile, audioFileWav, err)
-		log.Print(msg)
-		return "", fmt.Errorf(msg)
-	}
-	log.Printf("[writeAudioFile] Saved %s", audioFileWav)
+	// audioFileWav := strings.TrimSuffix(audioFile, "."+ext)
+	// audioFileWav = fmt.Sprintf("%s.%s", audioFileWav, cleanExt(audioExt))
+	// err = ffmpegConvert(audioFile, audioFileWav, false)
+	// if err != nil {
+	// 	msg := fmt.Sprintf("writeAudioFile failed converting from %s to %s : %v", audioFile, audioFileWav, err)
+	// 	log.Print(msg)
+	// 	return "", fmt.Errorf(msg)
+	// }
+	// log.Printf("[writeAudioFile] Saved %s", audioFileWav)
 
 	// if !validAudioFileExtension(audioExt) {
 	// 	msg := fmt.Sprintf("writeAudioFile unknown default extension: %s", audioExt)
 	// 	log.Print(msg)
 	// 	return "", fmt.Errorf(msg)
 	// }
-	return audioFileWav, nil
+	return audioFile, nil
 }
