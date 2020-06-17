@@ -1,5 +1,5 @@
 # tillstudpub
-Resources for TillStud and related projects
+Assorted stuff for capturing michrophobe audio in the browser
 
 * visualiser/
 
