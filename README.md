@@ -1,5 +1,5 @@
 # tillstudpub
-Assorted stuff for capturing michrophobe audio in the browser
+Assorted stuff for capturing michrophone audio in the browser
 
 * visualiser/
 
