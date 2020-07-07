@@ -42,6 +42,28 @@ This folder contains code and documentation for the development of a first recor
     - If streaming to ASR server, sends corresponding ASR result to user client over WebSocket
     - Keeps track of clients
 
+## Websocket protocol
+
+1. JSON formatted message types
+
+       - connection request from client to server
+       - connection confirmation from server to client
+       - close request from client to server
+       - error/warning/logging message from client to server
+       - error/warning/logging message from server to client
+       - keepalive(?)
+ 
+   Suggested protocol:
+
+       label string {handshake, close, message, keepalive} required
+       level string {info, warning, error} optional
+       content string {} required
+  
+     
+2. Raw audio data     
+   Streamed audio is sent "raw" -- no json or metadata, just raw bytes over an existing websocket connection.
+     
+
 ## Simple flow chart
 
 ![Simple flow chart](rispik_chart.png)
