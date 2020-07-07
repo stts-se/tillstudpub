@@ -36,7 +36,7 @@ This folder contains code and documentation for the development of a first recor
     - Serves client and admin GUI
     - Waits for WebSocket calls
     - Reads streaming audio over WebSocket
-    - Saves streamin audio locally (or on remote location?)
+    - Saves streaming audio locally (or on remote location?)
     - Saves meta data along with audio
     - Optionally streams incoming audio stream to stand-alone ASR server
     - If streaming to ASR server, sends corresponding ASR result to user client over WebSocket
