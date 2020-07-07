@@ -46,8 +46,8 @@ This folder contains code and documentation for the development of a first recor
 
 1. JSON formatted message types
 
-       - connection request from client to server
-       - connection confirmation from server to client
+       - connection/handshake request from client to server
+       - connection/handshake confirmation from server to client
        - close request from client to server
        - error/warning/logging message from client to server
        - error/warning/logging message from server to client
