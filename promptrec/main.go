@@ -943,10 +943,10 @@ func main() {
 		port = os.Args[2]
 	}
 
-	if !ffmpegEnabled() {
-		log.Printf("Exiting! %s is required! Please install.", ffmpegCmd)
-		os.Exit(1)
-	}
+	// if !ffmpegEnabled() {
+	// 	log.Printf("Exiting! %s is required! Please install.", ffmpegCmd)
+	// 	os.Exit(1)
+	// }
 
 	if err := clearSessions(); err != nil {
 		log.Fatalf("Couldn't clear sessions : %v", err)

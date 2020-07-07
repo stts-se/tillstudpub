@@ -1,5 +1,5 @@
 # tillstudpub
-Public resources for TillStud and related projects
+Assorted stuff for capturing michrophone audio in the browser
 
 * visualiser/
 

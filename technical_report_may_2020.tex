@@ -68,7 +68,7 @@
 
 
 %\usepackage{amssymb}
-\title{ Microphone capture in the web browser }
+\title{ Microphone capture in the web browser \\ \em -- draft -- }
 
 
 \author{ \stts \\
@@ -85,6 +85,9 @@
 %  \cfoot{\thepage}
 \cfoot{\thepage (\pageref{LastPage})}  
 
+\tableofcontents
+
+\newpage
 
 \section{Introduction}
 
@@ -101,13 +104,22 @@ There are different ways to capture audio in the browser, and
 different ways to transporting the audio to a server.
 
 This document is accompanied by some example applications at
-github.com/stts-se/tillstudpub. These consist of small client-server
-examples, run in the browser, from wich the audio is sent to a server
+\begin{quote}
+  \tt http://github.com/stts-se/tillstudpub    
+\end{quote}
+
+
+
+These consist of small client-server
+examples, run in the browser, from which the audio is sent to a server
 and saved to disk. All examples work in recent versions of Chrome, but
 may not work in other browsers.
 
-Precompiled versions for Linux and Windows are
-found at github.com/stts-se/tillstudpub/releases.
+Precompiled versions for Linux and Windows are found at 
+\begin{quote}
+\tt http://github.com/stts-se/tillstudpub/releases
+\end{quote}
+
 
 
 \begin{enumerate}
@@ -117,7 +129,7 @@ found at github.com/stts-se/tillstudpub/releases.
 \item {\tt audio\_streaming} streams microphone audio from the browser
   to a server. There are two competing methods, one
   using { \tt ScriptProcessorNode}, the other using {\tt
-    AudioWorklet}, a more recent approch.
+    AudioWorklet}, a more recent approach.
 
 \item {\tt webrtc\_demo} is a sketchy example of using the WebRTC
   protocol for streaming audio to a server. Not a fully functioning
@@ -151,7 +163,7 @@ non-trivial).
 This method works when the user wants to record something, and only
 when done send it to the server. This could, for example, be a
 recording tool, where you read aloud and record a manuscript sentence
-presented in the browser, such as the current {\tt promprec} demo.
+presented in the browser, such as the current {\tt promptrec} demo.
 
 However, this method is not useful for streaming audio to the server.
 
@@ -159,7 +171,6 @@ However, this method is not useful for streaming audio to the server.
 \begin{itemize}
 \item The audio format is known
 \item A complete audio file is created before sending it over the network
-\item No built-in packet/data loss (compared to streaming) [TODO???]
 \end{itemize}
 
 \subsection*{Cons}
@@ -169,70 +180,37 @@ However, this method is not useful for streaming audio to the server.
 \end{itemize}
 
 
-\section{Streaming using ScriptProcessorNode}
+\section{Network streaming}
 
-The ScriptProcessorNode\cite{scriptprocessornode} was introduced to meet developers' need to write custom code for audio processing in the Web Audio API. For performance, most processing components of the Web Audio API are run in a separate thread, but the ScriptProcessorNode is run in the main thread, which can cause delays. It has since been deprecated. More information on the motivation behind the move to AudioWorklet can be found in \cite{icmc}.
+In the example applications, two methods are used for streaming: WebSocket for the {\tt audio\_streaming} application, and a simple demo of WebRTC.
 
-In the example application, the audio data are converted from floats to 16 bit integers in the browser.
+\subsection{WebSocket}
 
-\subsection*{Pros}
-\begin{itemize}
-\item Supported by most browsers
-\end{itemize}
+When a client calls an HTTP server, there is a request from the
+client, and a response from the server, and that's it. Subsequent
+calls must establish new connections to the server.
 
-\subsection*{Cons}
-\begin{itemize}
-\item Can have performance and quality issues
-\item Deprecated
-\end{itemize}
+A WebSocket, on the other hand, is a TCP connection that may stay open
+for any period of time, and on which both the client and the server
+may send data. A WebSocket connection is created by upgrading from an
+HTTP connection, and it also has much of the same characteristics,
+such as guarantees against package loss, etc.
 
-
-\section{Streaming using AudioWorklet}
-
-The AudioWorklet was developed to cope with the design flaws in its predecessor, ScriptProcessorNode. The first implementation of the AudioWorklet was released 2018 for Chrome \cite{icmc}.
-
-Unfortunately, the AudioWorklet is yet not fully supported by Firefox, but according to the documentation, it should work with Firefox upcoming version 76. We have it tested and working with Google Chrome (v81) and Opera (v68).
-
-In the example application, the audio data are converted from floats to 16 bit integers in the browser.
-
-\subsection*{Pros}
-\begin{itemize}
-\item Processing run in a separate thread
-\item Less latency than ScriptProcessorNode
-\end{itemize}
-
-\subsection*{Cons}
-\begin{itemize}
-\item Not supported by all browsers (see \cite{audioworklet})
-\item Packet/data loss can occur [TODO???]
-\end{itemize}
-
-
-
-\section{Streaming over a websocket}
-
-A websocket can be thought of as a bi-directional HTTP
-connection. Usually, when a client calls an HTTP server, there is a
-request from the client, and a response from the server, and that's
-it. Subsequent calls must establish new connections to the server.
-
-A websocket, on the other hand, is an HTTP connection that may stay
-open for any period of time, and on which both the client and the
-server may send data. Since a websocket is an upgraded HTTP
-connection, is has much of the same characteristics, such as
-guarantees against package loss, etc.
-
-After a websocket connection has been established, the
+After a WebSocket connection has been established, the
 client and the server may send text or binary data to each other in
 any form.
 
-A difference between a websocket and a normal HTTP connection, is that
+A difference between a WebSocket and an HTTP connection, is that
 there is not a well defined protocol for interaction between client
 and server (such as GET and POST, etc). You have to create your own
 protocol. 
 
+\subsection{WebRTC}
 
-\section{Streaming using WebRTC}
+
+%https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC/Peer-to-peer_communications_with_WebRTC
+
+
 
 WebRTC (Web Real-Time Communication) \cite{webrtc} is a peer-to-peer method for
 streaming audio and video. In other words, you can use it to stream
@@ -240,7 +218,7 @@ audio and video directly between web-browsers (as long as there is
 some way of the browsers to find each other, for example using a STUN
 server).
 
-WebRTC is build on UDP (rather than HTTP). The WebRCT uses the Opus
+WebRTC is build on UDP (rather than HTTP). The WebRTC uses the Opus
 codec for audio (and V8 for video).
 
 Since human cognition is more forgiving to missing samples than to
@@ -257,7 +235,7 @@ noise reduction.
 
 
 WebRTC also includes a DataChannel API, that can be used for
-transporting data without packet loss. However, a websocket may do the
+transporting data without packet loss. However, a WebSocket may do the
 job equally good, if you do not need peer-to-peer capabilities.
 
 \subsection*{Pros}
@@ -272,24 +250,110 @@ job equally good, if you do not need peer-to-peer capabilities.
 \end{itemize}
 
 
+\section{Web Audio API processing}
+
+The Web Audio API makes it possible to do advanced audio processing in the web browser.
+
+In the {\tt audio\_streaming} demo, it is used to access the audio stream, convert to int16, and send over the network continuously.
+
+\subsection{ScriptProcessorNode}
+
+The ScriptProcessorNode\cite{scriptprocessornode} was introduced to
+meet developers' need to write custom code for audio processing in the
+Web Audio API. This is an audio processing module that gives access to
+an input and an output buffer. Between these, you can put your own code
+to do audio processing of the audio data stream.
+
+For performance, most processing components of the Web
+Audio API are run in a separate thread, but the ScriptProcessorNode is
+run in the main thread, which can cause delays. It has since been
+deprecated. More information on the motivation behind the move to
+AudioWorklet can be found in \cite{icmc}.
+
+In the example application, the audio data are converted from floats
+to 16 bit integers in the browser.
+
+\subsection*{Pros}
+\begin{itemize}
+\item Supported by most browsers
+\end{itemize}
+
+\subsection*{Cons}
+\begin{itemize}
+\item Can have performance and quality issues
+\item Deprecated
+\end{itemize}
+
+
+\subsection{AudioWorklet}
+
+The AudioWorklet was developed to cope shortcomings of its
+predecessor, ScriptProcessorNode. The first implementation of the
+AudioWorklet was released 2018 for Chrome \cite{icmc}.
+
+The AudioWorklet works much in the same way as the
+ScriptProcessorNode, in that it takes an input and output stream, in
+between which you can insert audio processing.
+
+
+Unfortunately, the AudioWorklet is yet not fully supported by Firefox,
+but according to the documentation, it should work with Firefox
+upcoming version 76. We have it tested and working with Google Chrome
+(v81) and Opera (v68).
+
+In the example application, the audio data are converted from floats
+to 16 bit integers in the browser.
+
+\subsection*{Pros}
+\begin{itemize}
+\item Processing run in a separate thread
+\item Less latency than ScriptProcessorNode
+\end{itemize}
+
+\subsection*{Cons}
+\begin{itemize}
+\item Not supported by all browsers (see \cite{audioworklet})
+\end{itemize}
+
+
+
 
 \section{Browser settings for audio and streaming}
 
 There seems to be some settings in the browser(s), that are difficult to control. Examples:
 
 \begin{description}
-\item[Sample rate] Can be retrived but not changed
-\item[Channel count] We can set this value, but are not sure how it's used. The wav library currently used on the server side only supports mono.
+\item[Sample rate] Can be retrieved but not changed
+\item[Channel count] The demo applications are intended for mono
 \item[Audio encoding]\ \\[-14pt]
   \begin{description}
   \item[\em{AudioWorklet/ScriptProcessorNode}] For streaming, a browser's recording is by definition 32bit PCM. We have chosen to convert to 16bit PCM before sending to server.
   \item[\em{WebRTC}] OPUS
-  \item[\em{ Non-streaming}] The browser controls the encoding, but the value can be retreived.
+  \item[\em{ Non-streaming}] The browser controls the encoding, but the used encoding can be retrieved.
     
   \end{description}
 
 \end{description}
 
+
+\section{WebAssembly}
+
+A side note: WebAssembly (Wasm) can be used instead of JavaScript to
+write browser audio software. The benefits may include better
+performance, and being able to program in general purpose languages
+that compiles to WebAssembly, instead of JavaScript. (This makes it
+easy to use the same code on both client and server.)
+
+A drawback is that WebAssembly is relatively new, and that it can be
+more complicated to get running than just writing a piece of JavaScript.
+
+
+
+\section{Future possibility: WebTransport}
+
+There is a new browser-server protocol that could be a
+future replacement for WebSockets, called WebTransport:
+https://wicg.github.io/web-transport/.
 
 
 \begin{thebibliography}{9}
@@ -328,7 +392,7 @@ There seems to be some settings in the browser(s), that are difficult to control
   
 \bibitem{}
   \textit{Investigation into low latency live video streaming performance of WebRTC},\newline
-  Jakob Tidestr�m,
+  Jakob Tidestr\"om,
   In degree project computer science and engineering, second cycle, \newline
   Stockholm,
   Sweden,

@@ -6,18 +6,18 @@ In this document, we describe the application itself and how it works.
 
 # Technical description of the application
 
-The communication between the client and the server is performed using websockets.
+The communication between the client and the server is performed using WebSockets.
 
 There are two available clients for testing the application:
 
 1. JavaScript for browser use
 2. A `go` command line client
 
-The client opens a websocket for each recording, and sends a "handshake" message to the server. If the server is up and running, and the handshake is correct and valid, the server responds with the same handshake message, adding a unique identifier (UUID). Once this handshake is received by the client, the audio stream capture is started. The audio input is processed in chunks of 2048 bytes, converted to 16-bit depth, and sent to the server using the open websocket.
+The client opens a WebSocket connection for each recording, and sends a "handshake" message to the server. If the server is up and running, and the handshake is correct and valid, the server responds with the same handshake message, adding a unique identifier (UUID). Once this handshake is received by the client, the audio stream capture is started. The audio input is processed in chunks of 2048 bytes, converted to 16-bit depth, and sent to the server using the open WebSocket.
 
 On the receiving end, the server continuously writes received bytes to a file buffer.
 
-When the user stops the recording, the audio capture is terminated, and the websocket is closed. When the server receives the close message over the websocket, the buffered audio data is saved to disk as a wav file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the `data` directory on the server. Each file is given their unique (UUID) file name, with the extensions `.wav` and `.json`. The last files created are copied to "latest.wav" and "latest.json", as a convenience for testing.
+When the user stops the recording, the audio capture is terminated, and the WebSocket is closed. When the server receives the close message over the WebSocket, the buffered audio data is saved to disk as a wav file, along with a JSON file containing relevant metadata about the recording, including the audio parameters needed to play the file. The files are stored in the `data` directory on the server. Each file is given their unique (UUID) file name, with the extensions `.wav` and `.json`. The last files created are copied to "latest.wav" and "latest.json", as a convenience for testing.
 
 
 # Supported streaming technologies
@@ -53,11 +53,6 @@ If the wav output seems faulty, the server can be started with an option to save
 On Windows, you can for example use the Import function in Audacity.
 
 Hints on what parameters to use can be found in the JSON files accompanying each `.raw` file.
-
-
-# Audio quality and data loss
-
-Currently, there seems to be some data loss for both streaming methods used. For AudioWorklet, the data loss is small, but it does happen.
 
 
 
@@ -97,12 +92,6 @@ End the recording with `CTRL-c`.
 
 
 Recorded audio is saved in the `data` folder in the `audio_streaming` directory. The last recorded file is always saved in raw format as `data/latest.raw`, and with a wav header: `data/latest.wav` (the wav header is work in progress).
-
-
-
-# Remaining issues
-
-* Investigate remaining data loss 
 
 
 ---

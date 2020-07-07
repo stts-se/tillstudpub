@@ -5,3 +5,4 @@ dist
 *.aux
 *.dvi
 *.log
+*.toc
