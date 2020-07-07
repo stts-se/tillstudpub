@@ -68,3 +68,7 @@ This folder contains code and documentation for the development of a first recor
 ![Simple flow chart](rispik_chart.png)
 
 
+## Features skipped for later
+    - Editable ASR result text area
+    - Chat panel (to chat with other connected users)
+    
