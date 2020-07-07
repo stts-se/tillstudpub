@@ -5,7 +5,7 @@ This folder contains code and documentation for the development of a first recor
 
 # Description
 
-## User Clients
+## User Web Clients
 
     - HTML5 + CSS Grid, following separate layout spec.
     - Simple login: USER + SESSION
@@ -20,6 +20,10 @@ This folder contains code and documentation for the development of a first recor
     - Client streams audio to server over WebSocket
     - Client listens for ASR response on WebSocket
     
+
+## CLI client
+    - Stream audio (live from mic using "rec" (SoX) or from audio file) from command line to server via WebSocket
+    - Read ASR result over WebSocket
 
 ## Admin client
 
@@ -37,3 +41,5 @@ This folder contains code and documentation for the development of a first recor
     - Optionally streams incoming audio stream to stand-alone ASR server
     - If streaming to ASR server, sends corresponding ASR result to user client over WebSocket
     - Keeps track of clients
+
+
