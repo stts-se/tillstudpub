@@ -13,18 +13,19 @@ This folder contains code and documentation for the development of a first recor
     - Start/stop rec buttons
     - Audio input meter
     - Server ASR result text area, that scrolls down, pushing earlier results at bottom of list 
-    - Client starts audio recording
     - Client connects to server over WebSocket
     - Client-server handshake (wearing gloves, of course)
+    - Client starts audio recording
     - Client streams audio to server over WebSocket
     - Client listens for ASR response on WebSocket
     
 
 ## CLI client
+
     - Stream audio (live from mic using "rec" (SoX) or from audio file) from command line to server via WebSocket
     - Read ASR result over WebSocket
 
-## Admin client
+## Admin client(?)
 
     - Simple log page, to which server sends log messages over WebSocket
     - File listings?
