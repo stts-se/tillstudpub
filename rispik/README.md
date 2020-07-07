@@ -16,7 +16,7 @@ This folder contains code and documentation for the development of a first recor
     - Editable ASR result text area
     - Client starts audio recording
     - Client connects to server over WebSocket
-    - Client-Server handshake (wearing gloves, of course)
+    - Client-server handshake (wearing gloves, of course)
     - Client streams audio to server over WebSocket
     - Client listens for ASR response on WebSocket
     
