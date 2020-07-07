@@ -44,6 +44,6 @@ This folder contains code and documentation for the development of a first recor
 
 ## Simple flow chart
 
-![Simple flow chart](rispik chart.png)
+![Simple flow chart](rispik_chart.png)
 
 
