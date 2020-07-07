@@ -13,7 +13,6 @@ This folder contains code and documentation for the development of a first recor
     - Start/stop rec buttons
     - Audio input meter
     - Server ASR result text area, that scrolls down, pushing earlier results at bottom of list 
-    - Editable ASR result text area
     - Client starts audio recording
     - Client connects to server over WebSocket
     - Client-server handshake (wearing gloves, of course)
