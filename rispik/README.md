@@ -42,4 +42,8 @@ This folder contains code and documentation for the development of a first recor
     - If streaming to ASR server, sends corresponding ASR result to user client over WebSocket
     - Keeps track of clients
 
+## Simple flow chart
+
+![Simple flow chart](docs/rispik_chart_20200707.png)
+
 
