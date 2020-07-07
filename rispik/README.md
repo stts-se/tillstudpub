@@ -71,4 +71,4 @@ This folder contains code and documentation for the development of a first recor
 ## Features skipped for later
     - Editable ASR result text area
     - Chat panel (to chat with other connected users)
-    
+    - MQTT will not be added in the initial alfa version, but we will design the code so that it is relatively easy to plug in later on
