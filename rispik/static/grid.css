@@ -65,6 +65,7 @@
 .editor{
     grid-column:2/12;
     grid-row:4/7;
+    border:#333 1px solid;
 }
 
 
@@ -79,7 +80,7 @@
 }
 
 .respeaker_online{
-    grid-column:10/13;
+    grid-column:10/12;
     grid-row:7;
 }
 
@@ -87,6 +88,7 @@
 .asr_result{
     grid-column:2/12;
     grid-row:8/14;
+    border:#333 1px solid;
 }
 
 
