@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>rIspIk</title>
+
+<link rel="stylesheet" href="grid.css">
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- header row -->
+    <div class="logo">Logo</div>
+    <div class="app_name">TillStud &#8212; skrivtolkning för alla</div>
+    <div class="home">Hem</div>
+    <div class="settings">Inställningar</div>
+    <div class="account">Konto</div>
+    <div class="icon">Ikon</div>
+
+    <!-- respeaker switch -->
+    <div class="respeaker_switch_radio">
+      <input type = "radio"
+                 name = "respeaker_switch"
+                 id = "supportSpeaker"
+                 value = "support"
+                 checked = "checked" />
+          <label for = "supportSpeaker">Stödskrivtolk</label>
+          <input type = "radio"
+                 name = "respeaker_switch"
+                 id = "respeaker"
+                 value = "respeaker" />
+	  <label for = "respeaker">Återtalare</label>
+    </div>
+
+
+    <div class="switch_info"> &#9202; Senast byte: 9 minuter sedan</div>
+
+    <div class="editor_header">Textanvändarnas vy. [NL: VAD ÄR DET HÄR?]</div>
+    <div class="editor"> [NÅGON FORM AV REDIGERINGSFÖNSTER] </div>
+    <div class="asr_result_header">
+      Återtalad text. <input type="radio">Rätta</input>. Skriv: Rad# + enter, Ord# + enter
+    </div>
+
+    <div class="asr_online">
+      <input type="radio">Taligenkännaren: uppkopplad</input>
+    </div>
+    
+    <div class="respeaker_online">
+      <input type="radio">Återtalaren: uppkopplad</input>
+    </div>
+
+    <div class="asr_result">Detta är den text som skapas via återtal och taligenkännaren.</div>
+
+    <div class="chat">Du, 09:55:
+      <p>
+	Hej, jag har problem med miken, vänta lite...
+      <p>
+	Återtextaren, 09:56:
+      <p>
+	OK!
+    </div>
+
+    <div class="chat_input">Skriv ett meddelande till Återtalaren</div>
+    
+  </div>
+</body>
+</html>
