@@ -1,3 +1,19 @@
+.greendot {
+    height: 14px;
+    width: 14px;
+    background-color: green;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.reddot {
+    height: 14px;
+    width: 14px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
 .wrapper{
     display:grid;
     grid-template-columns:repeat(12, 1fr);

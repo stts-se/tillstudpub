@@ -3,7 +3,7 @@
 <head>
   <title>rIspIk</title>
 
-<link rel="stylesheet" href="grid.css">
+<link rel="stylesheet" href="editor_layout_draft.css">
 </head>
 <body>
   <div class="wrapper">
@@ -22,12 +22,14 @@
                  name = "respeaker_switch"
                  id = "supportSpeaker"
                  value = "support"
-                 checked = "checked" />
+                 checked = "checked"
+                 disabled = "disabled" />
           <label for = "supportSpeaker">Stödskrivtolk</label>
           <input type = "radio"
                  name = "respeaker_switch"
                  id = "respeaker"
-                 value = "respeaker" />
+                 value = "respeaker"
+                 disabled = "disabled" />
 	  <label for = "respeaker">Återtalare</label>
     </div>
 
@@ -41,11 +43,11 @@
     </div>
 
     <div class="asr_online">
-      <input type="radio">Taligenkännaren:uppkopplad</input>
+      <span class="greendot"></span> Taligenkännaren:uppkopplad
     </div>
     
     <div class="respeaker_online">
-      <input type="radio">Återtalaren:uppkopplad</input>
+      <span class="greendot"></span> Återtalaren:uppkopplad
     </div>
 
     <div class="asr_result">Detta är den text som skapas via återtal och taligenkännaren.</div>
