@@ -23,13 +23,13 @@
     align-items:stretch;
 }
 
-.wrapper > div{
-    background:#eee;
-    padding:1em;
-}
-.wrapper > div:nth-child(odd){
-    background:#ddd;
-}
+/* .wrapper > div{ */
+/*     background:#eee; */
+/*     padding:1em; */
+/* } */
+/* .wrapper > div:nth-child(odd){ */
+/*     background:#ddd; */
+/* } */
 
 .logo{
     /*align-self:start;*/
