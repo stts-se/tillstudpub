@@ -24,6 +24,7 @@
 }
 
 .logo{
+    align-self: center;
     grid-column:1;
     grid-row:1;
 }
