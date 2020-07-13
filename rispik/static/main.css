@@ -62,7 +62,7 @@
     padding-right: 20px;
 }
 
-.visualiser {
+#visualiser {
     grid-column:2/9;
     grid-row:3/6;
 }

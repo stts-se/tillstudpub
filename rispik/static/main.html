@@ -26,7 +26,7 @@
         <span><span class="smallcaps">Roll: </span>Återtalare</span>
     </div>
  
-    <div class="visualiser">
+    <div id="visualiser">
         <div class="smallcaps">Visualisering av ljud</div>
         <div style="margin: 10pt; background-color: black; position:relative; height: 120px; width: 500px" class="visualiser-wrapper">
             <canvas style="position:absolute; top:0px; left:0px; width: 100%; height: 120px" class="visualiser"></canvas>
@@ -43,8 +43,8 @@
     </div>
 
     <div class="audio_buttons">
-        <span class="btn">Start</span>
-        <span class="btn disabled">Stopp</span>
+        <span id="recstart" class="btn">Start</span>
+        <span id="recstop" disabled="disabled" class="btn">Stopp</span>
     </div>
 
     <div class="connection_status">
@@ -95,5 +95,6 @@
   </div>
 </body>
 
-<!-- <script src="visualiser.js"></script> -->
+<script src="main.js"></script>
+<script src="visualiser.js"></script>
 </html>
