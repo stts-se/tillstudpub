@@ -79,7 +79,8 @@ VISUALISER.visualise = function (audioContext, stream, shouldVisualiseFunc) {
             for (let i = 0; i < bufferLengthAlt; i++) {
                 barHeight = dataArrayAlt[i];
 
-                VISUALISER.canvasCtx.fillStyle = 'rgb(' + (barHeight + 100) + ',50,50)';
+                //VISUALISER.canvasCtx.fillStyle = 'rgb(' + (barHeight - 500) + ',100,100)';
+                VISUALISER.canvasCtx.fillStyle = '#0b6623';
                 VISUALISER.canvasCtx.fillRect(x, VISUALISER.innerHeight - barHeight / 2, barWidth, barHeight / 2);
 
                 x += barWidth + 1;
