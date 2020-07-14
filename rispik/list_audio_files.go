@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
+	//"log"
 	"path/filepath"
 	"strings"
 
@@ -12,7 +12,7 @@ import (
 )
 
 // TODO remove
-const outputDir = "data"
+//const outputDir = "data"
 
 func listAudioFiles(dataPath string) ([]protocol.Handshake, error) {
 	var res []protocol.Handshake
