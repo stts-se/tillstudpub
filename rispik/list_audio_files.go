@@ -79,14 +79,14 @@ func filterSession(sessionName string, files []protocol.Handshake) []protocol.Ha
 }
 
 // TODO remove
-func main() {
+// func main() {
 
-	fileList, err := listAudioFiles(outputDir)
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
+// 	fileList, err := listAudioFiles(outputDir)
+// 	if err != nil {
+// 		log.Fatalf("%v", err)
+// 	}
 
-	fileList = filterSession("ddd", fileList)
+// 	fileList = filterSession("ddd", fileList)
 
-	log.Printf("%#v\n", fileList)
-}
+// 	log.Printf("%#v\n", fileList)
+// }
