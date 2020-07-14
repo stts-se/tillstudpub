@@ -150,7 +150,6 @@ async function initStreamer() {
             streamingAPI = new AudioWorkletAPI(context, audioSource, bitDepth, isRecording);
             
 	    console.log("initStreamer created");
-            //streamingAPI.connect(context,audioSource);
         })
         // on error:
         .catch(function (err) {

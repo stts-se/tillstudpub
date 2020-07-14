@@ -12,11 +12,12 @@ class AudioWorkletAPI {
             const recorder = new AudioWorkletNode(context, 'recorder-worklet');
             //console.log(context.destination);
             audioSource.connect(recorder).connect(context.destination);
+            console.log("AudioWorkletAPI connected to audioSource");
 
             recorder.port.onmessage = function (e) {
                 if (!parent._isRecordingFunc()) return;
                 if (e.data.eventType === 'data') {
-                    //console.log("recorder.ondata", typeof e.data , e.data.audioBuffer.length);
+                    //console.log("AudioWorkletAPI recorder.onmessage(data)", typeof e.data , e.data.audioBuffer.length);
                     const buffer = e.data.audioBuffer;
                     let sendable;
                     if (parent._bitDepth === 16) {
@@ -40,7 +41,7 @@ class AudioWorkletAPI {
     }
 
     set websocket(audioWS) {
-        console.log("set websocket called");
+        console.log("AudioWorkletAPI set websocket called");
         this._audioWS = audioWS;
         console.log(this._audioWS);
     }
