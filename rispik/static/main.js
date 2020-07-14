@@ -172,21 +172,26 @@ function isRecording() {
 // TODO: dummy values
 function loadUserSettings() { // TEMPLATE
 // TODO: dummy values
-    project.value = "rispik"
-    session.value = "test_recording"
-    user.value = "test_user"
+    //project.value = "rispik"
+    //session.value = "test_recording"
+    //user.value = "test_user"
+    
+
+    project.value = document.getElementById("project").innerText;
+    session.value = document.getElementById("session").innerText;
+    user.value = document.getElementById("user").innerText;
     
     // TODO: Save settings between sessions
-    let urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('project')) {
-        project.value = urlParams.get("project");
-    }
-    if (urlParams.has('session')) {
-        session.value = urlParams.get("session");
-    }
-    if (urlParams.has('user')) {
-        user.value = urlParams.get("user");
-    }
+    // let urlParams = new URLSearchParams(window.location.search);
+    // if (urlParams.has('project')) {
+    //     project.value = urlParams.get("project");
+    // }
+    // if (urlParams.has('session')) {
+    //     session.value = urlParams.get("session");
+    // }
+    // if (urlParams.has('user')) {
+    //     user.value = urlParams.get("user");
+    // }
 
     console.log("Settings");
     console.log("- project:", project.value);
