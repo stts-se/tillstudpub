@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,6 +15,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/stts-se/tillstudpub/rispik/logger"
 	"github.com/stts-se/tillstudpub/rispik/protocol"
 
 	"github.com/gorilla/mux"
@@ -36,7 +36,7 @@ var latestJSONFileMutex = &sync.Mutex{}
 
 // print serverMsg to server log, and return an http error with clientMsg and the specified error code (http.StatusInternalServerError, etc)
 func httpError(w http.ResponseWriter, serverMsg string, clientMsg string, errCode int) {
-	log.Println(serverMsg)
+	logger.Error(serverMsg)
 	http.Error(w, clientMsg, errCode)
 }
 
@@ -51,20 +51,20 @@ func readFile(fName string) ([]string, error) {
 func copyFile(fromFile, toFile string) error {
 	sourceFile, err := os.Open(fromFile)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 	defer sourceFile.Close()
 
 	newFile, err := os.Create(toFile)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 	defer newFile.Close()
 
 	if _, err := io.Copy(newFile, sourceFile); err != nil {
 		return err
 	}
-	//log.Printf("Copied %d bytes.", bytesCopied)
+	//logger.Debug("Copied %d bytes.", bytesCopied)
 	return nil
 }
 
@@ -99,11 +99,11 @@ func openDataWebsocket(w http.ResponseWriter, r *http.Request) {
 		httpError(w, msg, "Failed to upgrade to ws", http.StatusBadRequest)
 		return
 	}
-	log.Println("Registered audio stream sender socket")
+	logger.Infof("Registered audio stream sender socket")
 
 	handshake, err := initialiseAudioStream(conn)
 	if err != nil {
-		log.Fatal(err) // TODO
+		logger.Fatal(err) // TODO
 	}
 
 	go receiveAudioStream(&handshake, conn)
@@ -182,7 +182,7 @@ func readMessageFromSocket(socket *websocket.Conn) (protocol.Message, string, er
 }
 
 func initialiseAudioStream(conn *websocket.Conn) (protocol.Handshake, error) {
-	log.Printf("Opened audio stream")
+	logger.Info("Opened audio stream")
 
 	var handshake protocol.Handshake
 	var id uuid.UUID
@@ -207,7 +207,7 @@ func initialiseAudioStream(conn *websocket.Conn) (protocol.Handshake, error) {
 	if msg.Label != "handshake" {
 		return handshake, fmt.Errorf("received non-handshake message from websocket")
 	}
-	log.Printf("Received handshake from client: %s", js)
+	logger.Infof("Received handshake from client: %s", js)
 
 	handshake = *msg.Handshake
 	handshake.UUID = &id
@@ -222,12 +222,12 @@ func initialiseAudioStream(conn *websocket.Conn) (protocol.Handshake, error) {
 	if err := writer.close(); err != nil {
 		return handshake, fmt.Errorf("couldn't save json file : %v", err)
 	}
-	log.Printf("Saved json file %s", jsonFileName)
+	logger.Infof("Saved json file %s", jsonFileName)
 	latestJSONFileMutex.Lock()
 	if err := copyFile(jsonFileName, latestJSONFileName); err != nil {
 		return handshake, fmt.Errorf("couldn't copy json file to %s : %v", latestJSONFileName, err)
 	}
-	log.Printf("Saved audio file %s", latestJSONFileName)
+	logger.Infof("Saved audio file %s", latestJSONFileName)
 
 	latestJSONFileMutex.Unlock()
 
@@ -235,7 +235,7 @@ func initialiseAudioStream(conn *websocket.Conn) (protocol.Handshake, error) {
 	if err != nil {
 		return handshake, fmt.Errorf("received non-handshake message from websocket : %v", err)
 	}
-	log.Printf("Sent handshake message to client: %s", js)
+	logger.Infof("Sent handshake message to client: %s", js)
 
 	if msg.Error != "" {
 		return handshake, fmt.Errorf("received non-handshake message from websocket : %s", msg.Error)
@@ -266,7 +266,7 @@ func createWavHeader(audioConfig *protocol.AudioConfig) wav.File {
 	if audioConfig.Encoding == "pcm" || audioConfig.Encoding == "linear16" {
 		res.AudioFormat = uint16(1)
 	}
-	log.Printf("Created wav header: %#v", res)
+	logger.Infof("Created wav header: %#v", res)
 	return res
 }
 
@@ -282,7 +282,7 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 		audioRawFileName = filepath.Join(outputDir, fmt.Sprintf("%s.raw", handshake.UUID.String()))
 		rawWriter, err = newBufferedFileWriter(audioRawFileName)
 		if err != nil {
-			log.Printf("Couldn't open raw audio file for writing: %v", err)
+			logger.Errorf("Couldn't open raw audio file for writing: %v", err)
 			return
 		}
 	}
@@ -295,35 +295,35 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 
 		wavFile, err := os.Create(audioWavFileName)
 		if err != nil {
-			log.Printf("Couldn't open wav audio file for writing: %v", err)
+			logger.Errorf("Couldn't open wav audio file for writing: %v", err)
 			return
 		}
 
 		wavWriter, err = wavHeader.NewWriter(wavFile)
 		if err != nil {
-			log.Printf("Couldn't create wav audio file writer: %v", err)
+			logger.Errorf("Couldn't create wav audio file writer: %v", err)
 			return
 		}
 	}
 
-	log.Println("Audio stream open for input")
+	logger.Infof("Audio stream open for input")
 
 	for {
 		mType, bts, err := audioStreamSender.ReadMessage()
 		if err != nil {
 			if err != nil {
-				log.Printf("Could not read from websocket: %v", err)
+				logger.Errorf("Could not read from websocket: %v", err)
 				break
 			}
 		}
 
 		if mType == websocket.CloseMessage {
-			log.Println("Recevied close from client")
+			logger.Infof("Recevied close from client")
 			break
 		}
 
 		if mType != websocket.BinaryMessage {
-			log.Printf("Skipping non-binary message from websocket")
+			logger.Infof("Skipping non-binary message from websocket")
 			continue
 		}
 
@@ -331,7 +331,7 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 			byteCount += len(bts)
 			if *cfg.saveRaw {
 				if _, err := rawWriter.writer.Write(bts); err != nil {
-					log.Printf("Couldn't write raw audio to file: %v", err)
+					logger.Errorf("Couldn't write raw audio to file: %v", err)
 					break
 				}
 			}
@@ -340,29 +340,29 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 
 			if !*cfg.noWav {
 				if _, err := wavWriter.Write(bts); err != nil {
-					log.Printf("Couldn't write wav audio to file: %v", err)
+					logger.Errorf("Couldn't write wav audio to file: %v", err)
 					break
 				}
 			}
 
-			//log.Printf("Wrote %v bytes of audio to file", len(bts))
+			//logger.Infof("Wrote %v bytes of audio to file", len(bts))
 		}
 	}
 
 	if !*cfg.noWav {
 		if err := wavWriter.Close(); err != nil {
-			log.Printf("Couldn't close wav writer: %v", err)
+			logger.Errorf("Couldn't close wav writer: %v", err)
 			return
 		}
-		log.Printf("Saved wav audio file %s", audioWavFileName)
+		logger.Infof("Saved wav audio file %s", audioWavFileName)
 
 		// copy wav to latest.wav
 		latestAudioFileMutex.Lock()
 		if err := copyFile(audioWavFileName, latestAudioWavFileName); err != nil {
-			log.Printf("Couldn't copy wav audio file to %s: %v", latestAudioWavFileName, err)
+			logger.Errorf("Couldn't copy wav audio file to %s: %v", latestAudioWavFileName, err)
 			return
 		}
-		log.Printf("Saved wav audio file %s", latestAudioWavFileName)
+		logger.Infof("Saved wav audio file %s", latestAudioWavFileName)
 		latestAudioFileMutex.Unlock()
 	} else {
 		os.Remove(latestAudioWavFileName)
@@ -371,17 +371,17 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 	if *cfg.saveRaw {
 		// save raw file
 		if err := rawWriter.close(); err != nil {
-			log.Printf("Couldn't save raw audio file: %v", err)
+			logger.Errorf("Couldn't save raw audio file: %v", err)
 			return
 		}
-		log.Printf("Saved raw audio file %s (%v bytes)", audioRawFileName, byteCount)
+		logger.Infof("Saved raw audio file %s (%v bytes)", audioRawFileName, byteCount)
 		// copy wav to latest.wav
 		latestAudioFileMutex.Lock()
 		if err := copyFile(audioRawFileName, latestAudioRawFileName); err != nil {
-			log.Printf("Couldn't copy raw audio file to %s: %v", latestAudioRawFileName, err)
+			logger.Errorf("Couldn't copy raw audio file to %s: %v", latestAudioRawFileName, err)
 			return
 		}
-		log.Printf("Saved raw audio file %s", latestAudioRawFileName)
+		logger.Infof("Saved raw audio file %s", latestAudioRawFileName)
 		latestAudioFileMutex.Unlock()
 	} else {
 		os.Remove(latestAudioRawFileName)
@@ -416,9 +416,9 @@ func main() {
 	}
 
 	//fmt.Fprintf(os.Stderr, "Server started on %s\n", srv.Addr)
-	log.Printf("Server started on %s\n", srv.Addr)
+	logger.Infof("Server started on %s\n", srv.Addr)
 
-	log.Fatal(srv.ListenAndServe())
+	logger.Fatal(srv.ListenAndServe())
 	fmt.Println("No fun")
 
 }
