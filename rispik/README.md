@@ -68,6 +68,9 @@ This folder contains code and documentation for the development of a first recor
 
 ![Simple flow chart](rispik_chart.png)
 
+## Suggested editor layout as of 2020-07-09
+
+![Suggested layout](rispik_layout.png)
 
 ## Features skipped for later
     - Editable ASR result text area
