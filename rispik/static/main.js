@@ -60,9 +60,6 @@ const channelCount = 1;
 const audioEncoding = "pcm";
 const bitDepth = 16;
 
-const scriptProcessorMode = "scriptprocessor";
-const audioWorkletMode = "audioworklet";
-let streamingMode;
 let streamingAPI
 
 let audioWS;
@@ -131,8 +128,8 @@ function sleep(ms) {
 // END: UTIL
 
 
-async function initStreamer(mode) {
-    console.log("initStreamer called with " + mode + " mode");
+async function initStreamer() {
+    console.log("initStreamer called");
     if (!navigator.mediaDevices.getUserMedia)
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia || navigator.msGetUserMedia;
@@ -149,19 +146,10 @@ async function initStreamer(mode) {
         // on success:
         .then(async function (stream) {
             VISUALISER.visualise(context, stream, isRecording);
-
             let audioSource = context.createMediaStreamSource(stream);
-            if (streamingMode == scriptProcessorMode) {
-                streamingAPI = new ScriptProcessorAPI(context, audioSource, bitDepth, isRecording);
-            } else if (streamingMode == audioWorkletMode) {
-                streamingAPI = new AudioWorkletAPI(context, audioSource, bitDepth, isRecording);
-            } else {
-                const msg = "Invalid streaming mode: " + streamingMode
-                logMessage("error", msg);
-                alert("Couldn't initialize recorder: " + msg);
-                disableEverything();
-            }
-	    console.log("initStreamer created " + mode + " streamer:", streamingAPI, "(1)");
+            streamingAPI = new AudioWorkletAPI(context, audioSource, bitDepth, isRecording);
+            
+	    console.log("initStreamer created");
             //streamingAPI.connect(context,audioSource);
         })
         // on error:
@@ -204,24 +192,6 @@ function loadUserSettings() { // TEMPLATE
     console.log("- project:", project.value);
     console.log("- session:", session.value);
     console.log("- user:", user.value);
-
-    let streamingModeUsage = "Available streaming modes: " + audioWorkletMode + " (default) or " + scriptProcessorMode;
-    streamingMode = audioWorkletMode;
-    // streaming mode
-    if (urlParams.has('mode')) {
-        streamingMode = urlParams.get("mode");
-    }
-    if (streamingMode.toLowerCase() === scriptProcessorMode) {
-    } else if (streamingMode.toLowerCase() === audioWorkletMode) {
-    } else {
-        alert("Invalid mode: " + streamingMode + "\n" + streamingModeUsage);
-        disableEverything();
-    }
-
-    // log settings
-    console.log("- mode:", streamingMode);
-    console.log("Options can be set using URL params, e.g. http://localhost:7651/?mode=STREAMINGMODE");
-    console.log(streamingModeUsage);
 }
 
 function initSettings() {
@@ -232,7 +202,7 @@ function initSettings() {
 document.getElementById("recstart").addEventListener("click", async function () {
     // init audio context/recorder first time recstart is clicked (it has to be initialized after user gesture, in order to work in Chrome)
     if (context === undefined || context === null) {
-	let ok = await initStreamer(streamingMode);
+	let ok = await initStreamer();
         if (!ok) {
             return;
         }
@@ -258,7 +228,6 @@ document.getElementById("recstart").addEventListener("click", async function () 
                     'encoding': audioEncoding,
                     'bit_depth': streamingAPI.bitDepth,
                 },
-                'streaming_method': streamingMode,
                 'user_agent': navigator.userAgent,
                 'timestamp': new Date().toISOString(),
                 'user_name': user.value,

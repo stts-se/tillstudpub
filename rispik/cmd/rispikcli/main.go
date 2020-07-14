@@ -124,12 +124,11 @@ func doHandshakes(c *websocket.Conn) error {
 				ChannelCount: *channelCount,
 				BitDepth:     *bitDepth,
 			},
-			Timestamp:       time.Now().String(),
-			StreamingMethod: "gocli",
-			UserAgent:       "gocli",
-			UserName:        *userName,
-			Session:         *session,
-			Project:         *project,
+			Timestamp: time.Now().String(),
+			UserAgent: "gocli",
+			UserName:  *userName,
+			Session:   *session,
+			Project:   *project,
 		},
 	}
 	if err := writeMessageToSocket(msg, c); err != nil {

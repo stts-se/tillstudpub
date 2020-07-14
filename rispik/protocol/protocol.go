@@ -24,9 +24,8 @@ type Handshake struct {
 	// sent from client to server
 	AudioConfig *AudioConfig `json:"audio_config"`
 
-	StreamingMethod string `json:"streaming_method"`
-	UserAgent       string `json:"user_agent"`
-	Timestamp       string `json:"timestamp"`
+	UserAgent string `json:"user_agent"`
+	Timestamp string `json:"timestamp"`
 
 	UserName string `json:"user_name"`
 	Project  string `json:"project"`
