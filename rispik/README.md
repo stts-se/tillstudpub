@@ -70,7 +70,7 @@ This folder contains code and documentation for the development of a first recor
 
 ## Suggested editor layout as of 2020-07-09
 
-![Suggested layout](rispik_layout.png)
+![Suggested layout](rispik_layout-2.png)
 
 ## Features skipped for later
     - Editable ASR result text area
