@@ -159,33 +159,21 @@ function isRecording() {
     return document.getElementById("recstop").disabled === false;
 }
 
-function loadUserSettings() { // TEMPLATE
-    project.value = document.getElementById("project").innerText;
-    session.value = document.getElementById("session").innerText;
-    user.value = document.getElementById("user").innerText;
-
-    // TODO: Save settings between sessions
-    let urlParams = new URLSearchParams(window.location.search);
-    // if (urlParams.has('project')) {
-    //     project.value = urlParams.get("project");
-    // }
-    // if (urlParams.has('session')) {
-    //     session.value = urlParams.get("session");
-    // }
-    // if (urlParams.has('user')) {
-    //     user.value = urlParams.get("user");
-    // }
+function loadUserSettings() {
+    project.innerHTML = localStorage.getItem("project");
+    session.innerHTML = localStorage.getItem("session");
+    user.innerHTML = localStorage.getItem("user");
 
     console.log("Settings");
-    console.log("- project:", project.value);
-    console.log("- session:", session.value);
-    console.log("- user:", user.value);
+    console.log("- project:", project.innerHTML);
+    console.log("- session:", session.innerHTML);
+    console.log("- user:", user.innerHTML);
 
     let streamingModeUsage = "Available streaming modes: " + audioWorkletMode + " (default) or " + scriptProcessorMode;
     streamingMode = audioWorkletMode;
     // streaming mode
-    if (urlParams.has('mode')) {
-        streamingMode = urlParams.get("mode");
+    if (localStorage.getItem('mode')) {
+        streamingMode = localStorage.getItem("mode");
     }
     if (streamingMode.toLowerCase() === scriptProcessorMode) {
     } else if (streamingMode.toLowerCase() === audioWorkletMode) {
@@ -196,7 +184,8 @@ function loadUserSettings() { // TEMPLATE
 
     // log settings
     console.log("- mode:", streamingMode);
-    console.log("Options can be set using URL params, e.g. http://localhost:7651/?mode=STREAMINGMODE");
+    //console.log("Options can be set using URL params, e.g. " + baseURLWithProtocol + "?mode=STREAMINGMODE");
+    console.log("Options can be set using localStorage.setItem('mode', STREAMINGMODE);");
     console.log(streamingModeUsage);
 }
 
@@ -237,9 +226,9 @@ document.getElementById("recstart").addEventListener("click", async function () 
                 'streaming_method': streamingMode,
                 'user_agent': navigator.userAgent,
                 'timestamp': new Date().toISOString(),
-                'user_name': user.value,
-                'project': project.value,
-                'session': session.value,
+                'user_name': user.innerHTML,
+                'project': project.innerHTML,
+                'session': session.innerHTML,
             },
         };
         console.log("sending handshake to server", handshake);
@@ -316,7 +305,7 @@ window.onunload = function () {
     // TODO: can we do something here? close the session?
 }
 
-document.addEventListener("keydown",  function(evt) {// TEMPLATE FOR KEYBOARD SHORTCUTS
+document.addEventListener("keydown", function (evt) {// TEMPLATE FOR KEYBOARD SHORTCUTS
     //console.log("keypress", evt);
 
     // start/stop recording

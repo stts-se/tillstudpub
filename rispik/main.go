@@ -405,6 +405,11 @@ func main() {
 
 	r.HandleFunc("/ws/register", openDataWebsocket)
 
+	// code in login.go
+	r.HandleFunc("/list/users", listUsers)
+	r.HandleFunc("/list/projects", listProjects)
+	r.HandleFunc("/list/sessions", listSessions)
+
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
 
 	r.StrictSlash(true)

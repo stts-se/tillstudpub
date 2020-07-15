@@ -40,59 +40,20 @@
     grid-row:1;
 }
 
-#menu{
-    grid-column:9/12;
-    grid-row:1;
-    text-align: right;
-}
-
-#connection_status{
-    grid-column:2/9;
-    grid-row:7;
-}
-#connection_status > span {
-    padding-right: 20px;
-}
-
-#asr_result{
-    grid-column:2/9;
-    grid-row:8/14;
-    border:#333 1px solid;
-}
-
-#session_info {
-    grid-column:2/9;
+#role{
+    grid-column:2/12;
     grid-row:2;
 }
-#session_info > span {
-    padding-right: 5px;
+
+#respeaker_settings{
+    grid-column:2/12;
+    grid-row:3;
 }
 
-#visualiser {
-    grid-column:2/9;
-    grid-row:3/6;
-}
-#audio_buttons {
-    grid-column:2/9;
-    grid-row:6;
+#respeaker_settings > select{
+    margin-left: 20px;
 }
 
-#system_messages{
-    grid-column:9/12;
-    grid-row:2/8;
-    border:#333 1px solid;
+#login {
+    margin-left: 10px;
 }
-
-#chat{
-    grid-column:9/12;
-    grid-row:8/13;
-    border:#333 1px solid;
-}
-
-#chat_input{
-    grid-column:9/12;
-    grid-row:13;
-    border:#333 1px solid;
-}
-
-

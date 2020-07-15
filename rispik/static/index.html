@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>rIspIk login</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- header row -->
+        <div id="logo"><img src="tillstud_logo.png" alt="TillStudlogo" width="90" height="80"></div>
+        <div id="title">TillStud &#8212; skrivtolkning för alla</div>
+
+        <div id="role" class="smallcaps"> Roll
+            <span class="nosmallcaps">
+                <input type="radio" name="choice" id="role_respeaker" value="respeaker" group="role" checked><label
+                    for="role_respeaker">Återtalare</label>
+                <input type="radio" name="choice" id="role_admin" value="admin" group="role"> <label
+                    for="role_admin">Administratör</label>
+            </span>
+      
+            <span id="login" class="btn disabled" disabled="disabled">Logga in</span>
+        </div>
+
+        <div id="respeaker_settings">
+            <select id="user"></select>
+            <select id="project"></select>
+            <select id="session"></select>
+        </div>
+
+      
+
+    </div>
+</body>
+
+
+<script src="login.js"></script>
+
+
+</html>
