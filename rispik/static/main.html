@@ -9,23 +9,23 @@
 </head>
 
 <body>
-    <div class="wrapper">
+    <div id="wrapper">
 
         <!-- header row -->
-        <div class="logo"><img src="tillstud_logo.png" alt="TillStudlogo" width="90" height="80"></div>
-        <div class="title">TillStud &#8212; skrivtolkning för alla</div>
-        <div class="menu">
-            <span class="btn">Hem</span>
-            <span class="btn">Inställningar</span>
-            <span class="btn">Konto</span>
-            <span class="btn disabled" style="border: none; color: black">Ikon</span>
+        <div id="logo"><img src="tillstud_logo.png" alt="TillStudlogo" width="90" height="80"></div>
+        <div id="title">TillStud &#8212; skrivtolkning för alla</div>
+        <div id="menu">
+            <span class="btn disabled">Hem</span>
+            <span class="btn disabled">Inställningar</span>
+            <span class="btn disabled">Konto</span>
+            <span class="btn disabled" style="border: none; background-color: transparent; color: black">Ikon</span>
         </div>
 
-        <div class="session_info">
+        <div id="session_info">
             <span class="smallcaps">Användare: </span><span id="user">nisse</span>
             <span class="smallcaps">Projekt: </span><span id="project">tillstud_demo</span>
             <span class="smallcaps">Session: </span><span id="session">demo_session</span>
-            <span class="smallcaps">Roll: </span><span id="roll">Återtalare</span>
+            <span class="smallcaps">Roll: </span><span id="role">Återtalare</span>
         </div>
 
         <div id="visualiser">
@@ -41,18 +41,18 @@
             </div>
         </div>
 
-        <div class="audio_buttons">
+        <div id="audio_buttons">
             <span id="recstart" class="btn">Start</span>
-            <span id="recstop" disabled="disabled" class="btn">Stopp</span>
+            <span id="recstop" disabled="disabled" class="btn disabled">Stopp</span>
         </div>
 
-        <div class="connection_status">
+        <div id="connection_status">
             <span><span class="greendot"></span> Taligenkännaren: uppkopplad</span>
             <span><span class="greendot"></span> Återtalaren: uppkopplad</span>
             <span>Sessionslängd: X minuter</span>
         </div>
 
-        <div class="asr_result">
+        <div id="asr_result">
             <div class="smallcaps">Resultat från taligenkännaren</div>
             <div style="height: 93%; overflow-y:scroll;">
                 <!--
@@ -63,9 +63,9 @@
             </div>
         </div>
 
-        <div class="server_messages">
-            <div class="smallcaps">Meddelanden från servern</div>
-            <div style="height: 93%; overflow-y:scroll;">
+        <div id="system_messages">
+            <div class="smallcaps">Systemmeddelanden</div>
+            <div id="system_message_list" style="height: 93%; overflow-y:scroll;">
                 <!--
                     <p>09:50:01: Session handshake accepted
                     <p>09:50:06: ASR server status: OK
@@ -73,8 +73,8 @@
             </div>
         </div>
 
-        <div class="chat">
-            <div class="smallcaps">Chattfönster (platshållare, ej i funktion)</div>
+        <div id="chat" class="not-supported">
+            <div class="smallcaps">Chattfönster (platshållare, stöds ej f n)</div>
             <div style="height: 92%; overflow-y:scroll;">
                 <!-- <p>
                     Du, 09:55:<br />
@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        <div class="chat_input">Skriv ett meddelande till Stödtolken</div>
+        <input id="chat_input" class="not-supported" disabled="disabled" placeholder="Skriv ett meddelande till Stödtolken (stöds ej f n)"></input>
 
     </div>
 </body>

@@ -13,14 +13,18 @@ function shouldVisualise() {
 
 document.getElementById("recstart").addEventListener("click", function () {
     console.log("start recording");
-    document.getElementById("recstop").disabled = false;
-    document.getElementById("recstart").disabled = true;
+    document.getElementById("recstop").classList.remove("disabled");
+    document.getElementById("recstop").removeAttribute("disabled");
+    document.getElementById("recstart").classList.add("disabled");
+    document.getElementById("recstart").setAttribute("disabled", "disabled");
 });
 
 document.getElementById("recstop").addEventListener("click", function () {
     console.log("stopped recording");
-    document.getElementById("recstop").disabled = true;
-    document.getElementById("recstart").disabled = false;
+    document.getElementById("recstart").classList.remove("disabled");
+    document.getElementById("recstart").removeAttribute("disabled");
+    document.getElementById("recstop").classList.add("disabled");
+    document.getElementById("recstop").setAttribute("disabled", "disabled");
 });
 
 window.onload = async function () {
@@ -72,57 +76,31 @@ let session = document.getElementById("session");
 let project = document.getElementById("project");
 
 // START: UTIL
-function addClass(element, theClass) {
-    element.setAttribute("class", element.getAttribute("class") + " " + theClass);
-}
-
-function addStyle(element, theStyle) {
-    element.setAttribute("style", element.getAttribute("style") + "; " + theStyle);
-}
-
-function removeStyle(element, theStyle) {
-    let allS = element.getAttribute("style");
-    if (nonEmptyString(allS)) {
-        let newSs = [];
-        let allSs = allS.split(/ *; +/);
-        for (let i = 0; i < allSs.length; i++) {
-            const thisS = allSs[i];
-            let key = thisS.split(/ *: */)[0].trim();
-            if (key !== theStyle) {
-                newSs.push(thisS);
-            }
-        }
-        element.setAttribute("style", newSs.join(" "));
-    }
-}
-
-function removeClass(element, theClass) {
-    let allC = element.getAttribute("class");
-    if (nonEmptyString(allC)) {
-        let newCs = [];
-        let allCs = allC.split(/ +/);
-        for (let i = 0; i < allCs.length; i++) {
-            const thisC = allCs[i];
-            if (thisC !== theClass) {
-                newCs.push(thisC);
-            }
-        }
-        element.setAttribute("class", newCs.join(" "));
-    }
-}
 
 function nonEmptyString(s) {
     return s !== undefined && s !== null && s.trim().length > 0;
 }
 
-function logMessage(title, text, stacktrace) {
+function timestampHHMMSS(date) {
+    let hh = date.getHours();
+    if (hh < 10) hh = "0" + hh;
+    let mm = date.getMinutes();
+    if (mm < 10) mm = "0" + mm;
+    let ss = date.getSeconds();
+    if (ss < 10) ss = "0" + ss;
+    return hh + ":" + mm + ":" + ss;
+}
+
+function logMessage(source, title, text, stacktrace) {
+    let ts = timestampHHMMSS(new Date());
+    console.log("logMessage", ts, source, title, text);
     if (stacktrace !== undefined) {
         //const stack = new Error().stack;
-        console.log("logMessage", title, text, stacktrace.stack);
-    } else {
-        console.log("logMessage", title, text);
+        console.log("logMessage stack", ts, stacktrace.stack);
     }
-    document.getElementById("messages").textContent = title + ": " + text;
+    let p = document.createElement("p");
+    p.innerText = ts + " " + source + " " + title + ": " + text;
+    document.getElementById("system_message_list").appendChild(p);
 }
 
 function sleep(ms) {
@@ -157,7 +135,7 @@ async function initStreamer(mode) {
                 streamingAPI = new AudioWorkletAPI(context, audioSource, bitDepth, isRecording);
             } else {
                 const msg = "Invalid streaming mode: " + streamingMode
-                logMessage("error", msg);
+                logMessage("client", "error", msg);
                 alert("Couldn't initialize recorder: " + msg);
                 disableEverything();
             }
@@ -168,7 +146,7 @@ async function initStreamer(mode) {
         .catch(function (err) {
             console.log("error from getUserMedia", err);
             micDetected = false;
-            logMessage("error", "No microphone detected. Please verify that your microphone is properly connected.");
+            logMessage("client", "error", "No microphone detected. Please verify that your microphone is properly connected.");
             alert("Couldn't initialize recorder: " + err.message + "\n\nPlease verify that your microphone is properly connected.");
             disableEverything();
             return false;
@@ -268,14 +246,14 @@ document.getElementById("recstart").addEventListener("click", async function () 
         audioWS.send(JSON.stringify(handshake));
     }
     audioWS.onerror = function () {
-        logMessage("error", "Couldn't open data socket");
+        logMessage("client", "error", "Couldn't open data socket");
     }
     audioWS.onmessage = function (evt) { // TODO: messages should be sent over a separate message channel
         let resp = JSON.parse(evt.data);
         if (resp["label"] === "handshake") {
             console.log("received streaming handshake from server", resp);
             if (resp["error"] != undefined && resp["error"] != "") {
-                logMessage("error", "received error from server handshake: " + resp["error"]);
+                logMessage("server", "error", "received error from server handshake: " + resp["error"]);
                 recStop();
             }
             else {
@@ -293,6 +271,8 @@ document.getElementById("recstart").addEventListener("click", async function () 
 function disableEverything() {
     document.getElementById("recstop").disabled = true;
     document.getElementById("recstart").disabled = true;
+    document.getElementById("recstop").classList.add("disabled");
+    document.getElementById("recstart").classList.add("disabled");
 }
 
 document.getElementById("recstop").addEventListener("click", function () {
@@ -306,7 +286,6 @@ function recStop() {
         console.log(msg);
         alert(msg);
     }
-    //logMessage("info", "recording stopped");
     console.log("recording stopped");
     console.log("sent " + streamingAPI.byteCount + " bytes in total");
 

@@ -1,6 +1,6 @@
 /* LAYOUT */
 
-.wrapper{
+#wrapper{
     padding: 10px;
     display:grid;
     grid-template-columns:repeat(12, 1fr);
@@ -18,47 +18,53 @@
     text-align: left;
 }
 
-.wrapper > div {
-    /* background: #eee; */
+#wrapper * {
     padding: 2pt;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    /* font-size: 1rem; */
+    font-size: 11pt;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
 }
 
-.logo{
+#logo{
     align-self: center;
     grid-column:1;
     grid-row:1;
 }
 
-.title{
+#title{
     grid-column:2/6;
     grid-row:1;
 }
 
-.menu{
+#menu{
     grid-column:9/12;
     grid-row:1;
     text-align: right;
 }
 
-.connection_status{
+#connection_status{
     grid-column:2/9;
     grid-row:7;
 }
-.connection_status > span {
+#connection_status > span {
     padding-right: 20px;
 }
 
-.asr_result{
+#asr_result{
     grid-column:2/9;
     grid-row:8/14;
     border:#333 1px solid;
 }
 
-.session_info {
+#session_info {
     grid-column:2/9;
     grid-row:2;
 }
-.session_info > span {
+#session_info > span {
     padding-right: 20px;
 }
 
@@ -66,24 +72,24 @@
     grid-column:2/9;
     grid-row:3/6;
 }
-.audio_buttons {
+#audio_buttons {
     grid-column:2/9;
     grid-row:6;
 }
 
-.server_messages{
+#system_messages{
     grid-column:9/12;
     grid-row:2/8;
     border:#333 1px solid;
 }
 
-.chat{
+#chat{
     grid-column:9/12;
     grid-row:8/13;
     border:#333 1px solid;
 }
 
-.chat_input{
+#chat_input{
     grid-column:9/12;
     grid-row:13;
     border:#333 1px solid;
@@ -154,4 +160,12 @@ img.disabled {
     line-height: 1.5;
     color: #212529;
     text-align: left;
+}
+
+.disabled {
+    background-color: #DCDCDC;
+}
+
+.not-supported {
+    background-color: #F5F5F5;
 }
