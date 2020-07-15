@@ -313,9 +313,11 @@ document.addEventListener("keydown", function (evt) {// TEMPLATE FOR KEYBOARD SH
     //console.log("keypress", evt);
 
     // start/stop recording
-    // registerShortcut("Alt-S", "start/stopp")
-    if (evt.altKey && evt.key === "s") {
-        console.log("start-stopp?");
+    // registerShortcut("Ctrl-Y", "start/stopp")
+    if (evt.ctrlKey && evt.key === "y") {
+        //console.log("start-stopp");
+        document.getElementById("recstart").title="Ctrl-Y";
+        document.getElementById("recstop").title="Ctrl-Y";
         if (!document.getElementById("recstart").disabled) {
             document.getElementById("recstart").click();
         } else if (!document.getElementById("recstop").disabled) {
