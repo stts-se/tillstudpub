@@ -316,8 +316,17 @@ window.onunload = function () {
     // TODO: can we do something here? close the session?
 }
 
-document.addEventListener("keydown", function (evt) { // TEMPLATE FOR KEYBOARD SHORTCUTS
-    //console.log("window.keydown", evt.keyCode);
-    // if (evt.keyCode === keyCodeSpace) {
-    // }
+document.addEventListener("keydown",  function(evt) {// TEMPLATE FOR KEYBOARD SHORTCUTS
+    //console.log("keypress", evt);
+
+    // start/stop recording
+    // registerShortcut("Alt-S", "start/stopp")
+    if (evt.altKey && evt.key === "s") {
+        console.log("start-stopp?");
+        if (!document.getElementById("recstart").disabled) {
+            document.getElementById("recstart").click();
+        } else if (!document.getElementById("recstop").disabled) {
+            document.getElementById("recstop").click();
+        }
+    }
 });
