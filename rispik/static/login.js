@@ -20,30 +20,37 @@ function toggleSettingsPerRole() {
 }
 
 function fillSelect(relativeURL, title, selectID) {
-    let users = fetch(baseURLWithProtocol + relativeURL)
+    //console.log("fillSelect called", selectID)
+    let select = document.getElementById(selectID);
+    fetch(baseURLWithProtocol + relativeURL)
         .then(response => response.json())
         .then(data => {
-            document.getElementById(selectID).innerHTML = "";
+            select.innerHTML = "";
             let option = document.createElement("option");
             option.innerText = title;
-            document.getElementById(selectID).appendChild(option);
-            for (let i=0;i<data.length;i++) {
+            select.options.add(option);
+            for (let i = 0; i < data.length; i++) {
                 const val = data[i];
                 let option = document.createElement("option");
                 option.innerText = val;
+                select.options.add(option);
                 if (i === 0 && !document.getElementById(selectID).selectedIndex)
-                    option.selected = true;
-                document.getElementById(selectID).appendChild(option);
+                    select.options.selectedIndex = i + 1;
+            }
+            //console.log("fillSelect completed", selectID, select.options);
+            let urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has(selectID)) {
+                setSelectedOption(selectID, urlParams.get(selectID));
+            } else if (localStorage.getItem("project")) {
+                setSelectedOption(selectID, localStorage.getItem(selectID));
             }
         })
         .catch(error => {
             console.log("Couldn't list " + selectID + "s", error);
         });
-
 }
 
 document.getElementById("login").addEventListener("click", function (evt) {
-
     if (evt.target.getAttribute("disabled")) return;
 
     if (respeaker.checked) {
@@ -85,53 +92,36 @@ function enableLogin(evt) {
 }
 
 function setSelectedOption(selectID, value) {
-    console.log("setSelectedOption", selectID, value);
-    let options = document.getElementById(selectID).getElementsByTagName("option");
+    //console.log("setSelectedOption", selectID, value);
+    let select = document.getElementById(selectID);
+    let options = select.children;
     let foundValue = false;
     for (let i = 0; i < options.length; i++) {
-        if (options[i].value === value)
-            options[i].checked = true;
+        if (options[i].value === value) {
+            select.selectedIndex = i;
             foundValue = true;
+        }
     }
     if (!foundValue) {
         let option = document.createElement("option");
         option.innerText = value;
         option.checked = true;
-        document.getElementById(selectID).appendChild(option);
+        select.options.add(option);
+        select.selectedIndex = options.length-1;
     }
+    //console.log("setSelectedOption new index", document.getElementById(selectID).selectedIndex);
 }
 
 window.onload = function () {
-    fillSelect("/list/users", "Användare", "user");
-    fillSelect("/list/projects", "Projekt", "project");
-    fillSelect("/list/sessions", "Session", "session");
-
     let selects = document.getElementsByTagName("select");
     for (let i = 0; i < selects.length; i++) {
         let select = selects[i];
         select.addEventListener("change", enableLogin);
     }
 
-    let urlParams = new URLSearchParams(window.location.search);
-    if (localStorage.getItem("project")) {
-        setSelectedOption("project", localStorage.getItem("project"));
-    }
-    if (urlParams.has('project')) {
-        setSelectedOption("project", urlParams.get("project"));
-    }
-    if (localStorage.getItem("session")) {
-        setSelectedOption("session", localStorage.getItem("session"));
-    }
-    if (urlParams.has('session')) {
-        setSelectedOption("session", urlParams.get("session"));
-    }
-    if (localStorage.getItem("user")) {
-        setSelectedOption("user", localStorage.getItem("user"));
-    }
-    if (urlParams.has('user')) {
-        setSelectedOption("user", urlParams.get("user"));
-    }
+    fillSelect("/list/users", "Användare", "user");
+    fillSelect("/list/projects", "Projekt", "project");
+    fillSelect("/list/sessions", "Session", "session");
 
     enableLogin();
-
 }

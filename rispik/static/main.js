@@ -160,6 +160,10 @@ function isRecording() {
 }
 
 function loadUserSettings() {
+    if (!localStorage.getItem("project") || !localStorage.getItem("session") || !localStorage.getItem("user")) {
+        alert("Du är inte inloggad. Du kommer nu att skickas vidare till inloggningssidan för att logga in.");
+        window.location.replace(baseURLWithProtocol);
+    }
     project.innerHTML = localStorage.getItem("project");
     session.innerHTML = localStorage.getItem("session");
     user.innerHTML = localStorage.getItem("user");
@@ -185,7 +189,7 @@ function loadUserSettings() {
     // log settings
     console.log("- mode:", streamingMode);
     //console.log("Options can be set using URL params, e.g. " + baseURLWithProtocol + "?mode=STREAMINGMODE");
-    console.log("Options can be set using localStorage.setItem('mode', STREAMINGMODE);");
+    console.log("Options can be set using localStorage.setItem('mode', STREAMINGMODE)");
     console.log(streamingModeUsage);
 }
 
