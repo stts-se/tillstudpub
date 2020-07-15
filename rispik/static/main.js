@@ -293,6 +293,11 @@ function recStop() {
 
 
 window.onload = async function () {
+    if (!typeof (Storage)) {
+        alert("Your browser does not support localStorage.");
+        return;
+    }
+
     this.loadUserSettings();
     this.initSettings();
     VISUALISER.init();

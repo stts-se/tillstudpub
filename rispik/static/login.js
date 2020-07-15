@@ -108,12 +108,17 @@ function setSelectedOption(selectID, value) {
         option.innerText = value;
         option.checked = true;
         select.options.add(option);
-        select.selectedIndex = options.length-1;
+        select.selectedIndex = options.length - 1;
     }
     //console.log("setSelectedOption new index", document.getElementById(selectID).selectedIndex);
 }
 
 window.onload = function () {
+    if (!typeof (Storage)) {
+        alert("Your browser does not support localStorage.");
+        return;
+    }
+
     let selects = document.getElementsByTagName("select");
     for (let i = 0; i < selects.length; i++) {
         let select = selects[i];
