@@ -1,97 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>rIspIk</title>
-  <meta charset="utf-8">
+    <title>rIspIk</title>
+    <meta charset="utf-8">
 
-<link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="main.css">
 </head>
+
 <body>
-  <div class="wrapper">
+    <div class="wrapper">
 
-    <!-- header row -->
-    <div class="logo"><img src="tillstud_logo.png" alt="TillStudlogo" width="90" height="80"></div>
-    <div class="title">TillStud &#8212; skrivtolkning för alla</div>
-    <div class="menu">
-        <span class="btn">Hem</span>
-        <span class="btn">Inställningar</span>
-        <span class="btn">Konto</span>
-        <span class="btn disabled" style="border: none; color: black">Ikon</span>
-    </div>
-    
-    <div class="session_info">
-        <span class="smallcaps">Användare: </span><span id="user">nisse</span>
-        <span class="smallcaps">Projekt: </span><span id="project">tillstud_demo</span>
-        <span class="smallcaps">Session: </span><span id="session">demo_session</span>
-        <span class="smallcaps">Roll: </span><span id="roll">Återtalare</span>
-    </div>
- 
-    <div id="visualiser">
-        <div class="smallcaps">Visualisering av ljud</div>
-        <div style="margin: 10pt; background-color: black; position:relative; height: 120px; width: 500px" class="visualiser-wrapper">
-            <canvas style="position:absolute; top:0px; left:0px; width: 100%; height: 120px" class="visualiser"></canvas>
-            <span style="padding-top: 10px; padding-bottom: 10px; text-align: center; position:absolute; top:0px; left:0px; width: 100%; height: 120px">
-                <image id="visualisermic" style="height: 100px;" src="mic_red_microphone-3404243_1280.png"></image>
-            </span>
+        <!-- header row -->
+        <div class="logo"><img src="tillstud_logo.png" alt="TillStudlogo" width="90" height="80"></div>
+        <div class="title">TillStud &#8212; skrivtolkning för alla</div>
+        <div class="menu">
+            <span class="btn">Hem</span>
+            <span class="btn">Inställningar</span>
+            <span class="btn">Konto</span>
+            <span class="btn disabled" style="border: none; color: black">Ikon</span>
         </div>
-    </div>
 
-    <div class="audio_buttons">
-        <span id="recstart" class="btn">Start</span>
-        <span id="recstop" disabled="disabled" class="btn">Stopp</span>
-    </div>
-
-    <div class="connection_status">
-      <span><span class="greendot"></span> Taligenkännaren: uppkopplad</span>
-      <span><span class="greendot"></span> Återtalaren: uppkopplad</span>
-      <span>Sessionslängd: X minuter</span>
-    </div>
-
-    <div class="asr_result">
-        <div class="smallcaps">Resultat från taligenkännaren</div>
-        <div style="height: 93%; overflow-y:scroll;">
-           <p>
-                Idag ska vi testa att spela in 
-            </p>
-
-            <p>
-                Nu pratar jag så får vi se hur taligenkännaren uppfattar det jag säger
-            </p>
-
-            <p>
-                Vi har ingen stödtolk och ingen student med vid det här inspelningstillfället
-            </p>
+        <div class="session_info">
+            <span class="smallcaps">Användare: </span><span id="user">nisse</span>
+            <span class="smallcaps">Projekt: </span><span id="project">tillstud_demo</span>
+            <span class="smallcaps">Session: </span><span id="session">demo_session</span>
+            <span class="smallcaps">Roll: </span><span id="roll">Återtalare</span>
         </div>
-    </div>
 
-    <div class="server_messages">
-        <div class="smallcaps">Meddelanden från servern</div>
-        <div style="height: 93%; overflow-y:scroll;">
-            <p>09:50:01: Session handshake accepted
-            <p>09:50:06: ASR server status: OK
+        <div id="visualiser">
+            <div class="smallcaps">Visualisering av ljud</div>
+            <div style="margin: 10pt; background-color: black; position:relative; height: 120px; width: 500px"
+                class="visualiser-wrapper">
+                <canvas style="position:absolute; top:0px; left:0px; width: 100%; height: 120px"
+                    class="visualiser"></canvas>
+                <span
+                    style="padding-top: 10px; padding-bottom: 10px; text-align: center; position:absolute; top:0px; left:0px; width: 100%; height: 120px">
+                    <image id="visualisermic" style="height: 100px;" src="mic_red_microphone-3404243_1280.png"></image>
+                </span>
+            </div>
         </div>
-    </div>
 
-    <div class="chat">
-        <div class="smallcaps">Chattfönster</div>
-        <div style="height: 92%; overflow-y:scroll;">
-           <p>
-            Du, 09:55:<br/>
-	        Hej, jag har problem med miken, vänta lite...
-            <p>
-	        Stödtolken, 09:56:<br/>
-            OK!
+        <div class="audio_buttons">
+            <span id="recstart" class="btn">Start</span>
+            <span id="recstop" disabled="disabled" class="btn">Stopp</span>
         </div>
-    </div>
 
-    <div class="chat_input">Skriv ett meddelande till Stödtolken</div>
-    
-  </div>
+        <div class="connection_status">
+            <span><span class="greendot"></span> Taligenkännaren: uppkopplad</span>
+            <span><span class="greendot"></span> Återtalaren: uppkopplad</span>
+            <span>Sessionslängd: X minuter</span>
+        </div>
+
+        <div class="asr_result">
+            <div class="smallcaps">Resultat från taligenkännaren</div>
+            <div style="height: 93%; overflow-y:scroll;">
+                <!--
+                <p> Idag ska vi testa att spela in </p>
+                <p> Nu pratar jag så får vi se hur taligenkännaren uppfattar det jag säger </p>
+                <p> Vi har ingen stödtolk och ingen student med vid det här inspelningstillfället </p>
+                -->
+            </div>
+        </div>
+
+        <div class="server_messages">
+            <div class="smallcaps">Meddelanden från servern</div>
+            <div style="height: 93%; overflow-y:scroll;">
+                <!--
+                    <p>09:50:01: Session handshake accepted
+                    <p>09:50:06: ASR server status: OK
+                -->
+            </div>
+        </div>
+
+        <div class="chat">
+            <div class="smallcaps">Chattfönster (platshållare, ej i funktion)</div>
+            <div style="height: 92%; overflow-y:scroll;">
+                <!-- <p>
+                    Du, 09:55:<br />
+                    Hej, jag har problem med miken, vänta lite...
+                <p>
+                    Stödtolken, 09:56:<br />
+                    OK! -->
+            </div>
+        </div>
+
+        <div class="chat_input">Skriv ett meddelande till Stödtolken</div>
+
+    </div>
 </body>
 
 
 <script src="visualiser.js"></script>
-<script src="audioworklet.js"></script>
+<script src="streamingapi.js"></script>
 <script src="main.js"></script>
 
 
