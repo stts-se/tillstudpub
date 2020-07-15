@@ -44,6 +44,7 @@ function fillSelect(relativeURL, title, selectID) {
             } else if (localStorage.getItem("project")) {
                 setSelectedOption(selectID, localStorage.getItem(selectID));
             }
+            enableLogin();
         })
         .catch(error => {
             console.log("Couldn't list " + selectID + "s", error);
@@ -122,6 +123,4 @@ window.onload = function () {
     fillSelect("/list/users", "Användare", "user");
     fillSelect("/list/projects", "Projekt", "project");
     fillSelect("/list/sessions", "Session", "session");
-
-    enableLogin();
 }
