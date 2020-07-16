@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log" //TODO: remove
 	"net/http"
 	"os"
 	"path/filepath"
@@ -88,6 +89,142 @@ func parseFlags() config {
 type config struct {
 	host, port     *string
 	saveRaw, noWav *bool
+}
+
+// socket for listing audio files saved on server for particular project/user/session
+func listAudioFilesForUser(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		msg := fmt.Sprintf("failed to upgrade to ws: %v", err)
+		httpError(w, msg, "Failed to upgrade to ws", http.StatusInternalServerError)
+		return
+	}
+	//TODO
+	log.Println("Registered file listing sender socket")
+
+	var res protocol.FileListingRequest
+	mType, bts, err := conn.ReadMessage()
+	if err != nil {
+		log.Printf("listAudioFileForUser(): could not read from websocket : %v", err)
+
+		// TODO send error to client
+
+		return //res, "", fmt.Errorf("listAudioFileForUser(): could not read from websocket : %v", err)
+	}
+	if mType == websocket.TextMessage {
+		if err := json.Unmarshal(bts, &res); err != nil {
+			//TODO
+			log.Printf("listAudioFileForUser(): could not parse json : %v", err)
+			return //res, "", fmt.Errorf("listAudioFileForUser(): could not parse json : %v", err)
+		}
+
+		log.Printf("got client request %#v", res)
+
+		files, err := getFileList(res)
+		if err != nil {
+			//TODO
+			log.Printf("fiasco : %v", err)
+			return
+		}
+
+		for _, f := range files {
+
+			jsn, err := json.Marshal(f)
+			if err != nil {
+				//TODO
+				log.Println(err)
+				return
+			}
+
+			if err := conn.WriteMessage(websocket.TextMessage, jsn); err != nil {
+				//TODO
+				log.Println(err)
+				return
+			} else {
+				//TODO
+				log.Printf("printed to websocket : %#v", f)
+			}
+		}
+
+	}
+
+}
+
+func getFileList(r protocol.FileListingRequest) ([]protocol.Handshake, error) {
+	res, err := listAudioFiles(outputDir)
+	if err != nil {
+		return res, err
+	}
+
+	res = filterUser(r.User, res)
+	res = filterSession(r.Session, res)
+	res = filterProject(r.Project, res)
+
+	return res, nil
+}
+
+func listAudioFiles(dataPath string) ([]protocol.Handshake, error) {
+	var res []protocol.Handshake
+
+	jsonFiles, err := filepath.Glob(filepath.Join(outputDir, "*.json"))
+	if err != nil {
+		return res, fmt.Errorf("listAudioFiles failed to list files in dir '%s' : %v", outputDir, err)
+	}
+
+	for _, jsf := range jsonFiles {
+		if strings.HasSuffix(jsf, "latest.json") {
+			continue
+		}
+
+		jsonBts, err := ioutil.ReadFile(jsf)
+		if err != nil {
+			return res, fmt.Errorf("failed to read json file : %v", err)
+		}
+
+		handShake := protocol.Handshake{}
+		err = json.Unmarshal(jsonBts, &handShake)
+		if err != nil {
+			return res, fmt.Errorf("failed to unmarshal json file : %v", err)
+		}
+
+		//log.Printf("%#v", handShake)
+		res = append(res, handShake)
+	}
+
+	return res, nil
+}
+
+func filterUser(userName string, files []protocol.Handshake) []protocol.Handshake {
+	var res []protocol.Handshake
+	for _, f := range files {
+		if strings.ToLower(f.UserName) == strings.ToLower(userName) {
+			res = append(res, f)
+		}
+	}
+
+	return res
+}
+
+func filterProject(projectName string, files []protocol.Handshake) []protocol.Handshake {
+	var res []protocol.Handshake
+	for _, f := range files {
+		if strings.ToLower(f.Project) == strings.ToLower(projectName) {
+			res = append(res, f)
+		}
+	}
+
+	return res
+}
+
+func filterSession(sessionName string, files []protocol.Handshake) []protocol.Handshake {
+	var res []protocol.Handshake
+	for _, f := range files {
+		if strings.ToLower(f.Session) == strings.ToLower(sessionName) {
+			res = append(res, f)
+		}
+	}
+
+	return res
 }
 
 func openDataWebsocket(w http.ResponseWriter, r *http.Request) {
@@ -255,6 +392,8 @@ func main() {
 	cfg = parseFlags()
 
 	r := mux.NewRouter()
+
+	r.HandleFunc("/ws/list_audio_files_for_user", listAudioFilesForUser)
 
 	r.HandleFunc("/ws/register", openDataWebsocket)
 
