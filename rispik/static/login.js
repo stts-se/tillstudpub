@@ -66,7 +66,7 @@ document.getElementById("login").addEventListener("click", function (evt) {
         window.location.replace(baseURLWithProtocol + "/main.html");
     }
     else {
-        alert("Admin login is not implemented");
+         window.location.replace(baseURLWithProtocol + "/admin.html");
     }
 });
 

@@ -394,7 +394,7 @@ func main() {
 	r.HandleFunc("/ws/list_audio_files_for_user", listAudioFilesForUser)
 
 	r.HandleFunc("/ws/register", openDataWebsocket)
-	//r.HandleFunc("/ws/admin", openAdminWebsocket)
+	r.HandleFunc("/ws/admin", openAdminWebsocket)
 
 	// code in login.go
 	r.HandleFunc("/list/users", listUsers)

@@ -2,10 +2,26 @@
 package logger
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"sync"
+	"time"
+
+	"github.com/gorilla/websocket"
+
+	"github.com/stts-se/tillstudpub/rispik/protocol"
 )
+
+var wsListeners = map[*websocket.Conn]bool{}
+var wsMux sync.RWMutex
+
+func AddWSListener(conn *websocket.Conn) {
+	wsMux.Lock()
+	defer wsMux.Unlock()
+	wsListeners[conn] = true
+}
 
 const (
 	debug   = "debug"
@@ -67,7 +83,22 @@ func Fatalf(format string, v ...interface{}) {
 }
 
 func log0(level, message string) {
-	log.Printf("%s: %s", level, message)
+	timestamp := time.Now().Format("2006-01-02 15:04:06")
+	log.Printf("%s %s: %s", timestamp, level, message)
+
+	logEntry := protocol.LogEntry{Timestamp: timestamp, Level: level, Message: message}
+	jsn, err := json.Marshal(logEntry)
+	if err != nil {
+		log.Printf("%s: couldn't marshal log entry: %v", error, err)
+		return
+	}
+
+	for conn := range wsListeners {
+		if err := conn.WriteMessage(websocket.TextMessage, jsn); err != nil {
+			log.Printf("%s: couldn't log to websocket connection: %v", error, err)
+			return
+		}
+	}
 }
 
 // func SetConfig(applicationName, logger string) {
