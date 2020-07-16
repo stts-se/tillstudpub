@@ -125,7 +125,7 @@ func listAudioFiles(dataPath string) ([]protocol.FileInfo, error) {
 	}
 
 	var sorter = func(i, j int) bool {
-		return res[i].Handshake.Timestamp < res[j].Handshake.Timestamp
+		return res[i].Handshake.Timestamp > res[j].Handshake.Timestamp
 	}
 	sort.Slice(res, sorter)
 

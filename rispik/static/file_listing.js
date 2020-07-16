@@ -63,6 +63,8 @@ window.onload = function () {
 			playPause.style["font-family"] = "times new roman, times, serif";
 			td0.appendChild(playPause);
 			tr.appendChild(td0);
+			let duration = document.createElement("span");
+			td0.appendChild(duration);
 
 			audioEle.onended = function () {
 				playPause.innerHTML = "&#x25b6;";
@@ -72,7 +74,7 @@ window.onload = function () {
 				if (audioEle.paused || audioEle.ended) {
 					playPause.innerHTML = "&#10074;&#10074;";
 					let uuid = tr.getAttribute("id");
-					getAudio(uuid, audioEle, playPause);
+					getAudio(uuid, audioEle, playPause, duration);
 					//audioEle.play();
 				}
 				else {
@@ -95,7 +97,7 @@ window.onload = function () {
 };
 
 
-function getAudio(uuid, audioEle, playPause) {
+function getAudio(uuid, audioEle, playPause, duration) {
 	//console.log(uuid);
 
 	const baseURLWithProtocol = window.location.protocol + '//' + baseURL;
@@ -120,7 +122,7 @@ function getAudio(uuid, audioEle, playPause) {
 			let promise = audioEle.play();
 			if (promise !== undefined) {
 				promise.then(_ => {
-					// Autoplay started!
+					// All is fine
 				}).catch(error => {
 						console.log("Couldn't play audio id " + uuid, error);
 						playPause.classList.add("disabled");
@@ -133,11 +135,13 @@ function getAudio(uuid, audioEle, playPause) {
 			}
 
 			audioEle.onloadedmetadata = function () {
-				console.log("duration for audio " + uuid, audioEle.duration);
-				if (audioEle.duration === 0) {
-					playPause.classList.add("disabled");
-					playPause.setAttribute("disabled", "disabled");
-				}
+				//console.log("duration for audio " + uuid, audioEle.duration);
+				let dRound = audioEle.duration.toFixed(2);
+				duration.innerHTML = "(" + dRound + "s)";
+				// if (audioEle.duration === 0) {
+				// 	playPause.classList.add("disabled");
+				// 	playPause.setAttribute("disabled", "disabled");
+				// }
 			};
 		})
 		.catch(msg => {
