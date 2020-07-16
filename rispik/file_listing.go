@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	//"github.com/google/uuid"
@@ -114,6 +115,11 @@ func listAudioFiles(dataPath string) ([]protocol.Handshake, error) {
 		//logger.Infof("%#v", handShake)
 		res = append(res, handShake)
 	}
+
+	var sorter = func(i, j int) bool {
+		return res[i].Timestamp < res[j].Timestamp
+	}
+	sort.Slice(res, sorter)
 
 	return res, nil
 }
