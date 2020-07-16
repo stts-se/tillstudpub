@@ -1,4 +1,7 @@
-//let baseURL 
+"use strict";
+const baseURL = window.location.host;
+const baseURLWithProtocol = window.location.protocol + '//' + baseURL;
+
 window.onload = function() { 
     
     let btn = document.getElementById("file_list_button");
@@ -35,18 +38,40 @@ window.onload = function() {
 	    let tr = document.createElement("tr"); 
 	    let td1 = document.createElement("td");
 	    td1.innerHTML = resp.uuid;
+	    tr.setAttribute("id", resp.uuid);
 	    
 	    let td2 = document.createElement("td"); 
 	    td2.innerHTML = resp.timestamp;
 
 	    tr.appendChild(td1);
 	    tr.appendChild(td2);
+	    
+	    tr.addEventListener('click', function(evt) {
+		let uuid = this.getAttribute("id");
+		getAudio(uuid);
+	    });
+	    
 	    table.appendChild(tr);
 	    
 	};
     });
 };
 
+
+function getAudio(uuid) {
+    console.log(uuid);
+
+    const baseURLWithProtocol = window.location.protocol + '//' + baseURL;
+    fetch(baseURLWithProtocol + "/get_audio_for_uuid/" + uuid)
+	.then(response => response.json())
+	.then(data => {
+	    let base64 = data;
+	}
+	     )
+	.catch(msg => {
+	    console.log("ERROR", msg);
+	});
+}
 
 function logMessage(source, title, text, stacktrace) {
     let ts = timestampHHMMSS(new Date());
