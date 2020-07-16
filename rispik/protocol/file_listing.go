@@ -7,6 +7,12 @@ type FileListingRequest struct {
 	Session string `json:"session"`
 }
 
+//FileInfo  is sent by server to client when listing audio files on server
+type FileInfo struct {
+	Handshake *Handshake `json:"handshake"`
+	Size      int        `json:"size"`
+}
+
 // FileInfo is sent by server to client when listing audio files on server.
 // type FileInfo struct {
 // 	Date string `json:"date"`

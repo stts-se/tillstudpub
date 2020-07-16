@@ -8,6 +8,7 @@ import (
 
 	"github.com/cryptix/wav"
 	"github.com/gorilla/websocket"
+
 	"github.com/stts-se/tillstudpub/rispik/logger"
 	"github.com/stts-se/tillstudpub/rispik/protocol"
 )
