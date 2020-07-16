@@ -9,7 +9,7 @@ import (
 )
 
 func writeJSONResponse(w http.ResponseWriter, source interface{}) error {
-	//log.Printf("login debug %#v\n", source)
+	//logger.Infof("login debug %#v\n", source)
 	jsb, err := json.Marshal(source)
 	if err != nil {
 		return fmt.Errorf("failed to marshal json %v : %v", source, err)

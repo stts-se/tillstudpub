@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log" //TODO: remove
 	"net/http"
 	"os"
 	"path/filepath"
@@ -100,12 +99,12 @@ func listAudioFilesForUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//TODO
-	log.Println("Registered file listing sender socket")
+	logger.Info("Registered file listing sender socket")
 
 	var res protocol.FileListingRequest
 	mType, bts, err := conn.ReadMessage()
 	if err != nil {
-		log.Printf("listAudioFileForUser(): could not read from websocket : %v", err)
+		logger.Errorf("listAudioFileForUser(): could not read from websocket : %v", err)
 
 		// TODO send error to client
 
@@ -114,16 +113,16 @@ func listAudioFilesForUser(w http.ResponseWriter, r *http.Request) {
 	if mType == websocket.TextMessage {
 		if err := json.Unmarshal(bts, &res); err != nil {
 			//TODO
-			log.Printf("listAudioFileForUser(): could not parse json : %v", err)
+			logger.Errorf("listAudioFileForUser(): could not parse json : %v", err)
 			return //res, "", fmt.Errorf("listAudioFileForUser(): could not parse json : %v", err)
 		}
 
-		log.Printf("got client request %#v", res)
+		logger.Infof("got client request %#v", res)
 
 		files, err := getFileList(res)
 		if err != nil {
 			//TODO
-			log.Printf("fiasco : %v", err)
+			logger.Errorf("fiasco : %v", err)
 			return
 		}
 
@@ -132,18 +131,17 @@ func listAudioFilesForUser(w http.ResponseWriter, r *http.Request) {
 			jsn, err := json.Marshal(f)
 			if err != nil {
 				//TODO
-				log.Println(err)
+				logger.Error(err)
 				return
 			}
 
 			if err := conn.WriteMessage(websocket.TextMessage, jsn); err != nil {
 				//TODO
-				log.Println(err)
+				logger.Error(err)
 				return
-			} else {
-				//TODO
-				log.Printf("printed to websocket : %#v", f)
 			}
+			//TODO
+			logger.Infof("printed to websocket : %#v", f)
 		}
 
 	}
@@ -187,7 +185,7 @@ func listAudioFiles(dataPath string) ([]protocol.Handshake, error) {
 			return res, fmt.Errorf("failed to unmarshal json file : %v", err)
 		}
 
-		//log.Printf("%#v", handShake)
+		//logger.Infof("%#v", handShake)
 		res = append(res, handShake)
 	}
 
@@ -396,6 +394,7 @@ func main() {
 	r.HandleFunc("/ws/list_audio_files_for_user", listAudioFilesForUser)
 
 	r.HandleFunc("/ws/register", openDataWebsocket)
+	//r.HandleFunc("/ws/admin", openAdminWebsocket)
 
 	// code in login.go
 	r.HandleFunc("/list/users", listUsers)
