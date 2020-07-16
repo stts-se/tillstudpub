@@ -84,12 +84,12 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 		}
 
 		if mType == websocket.CloseMessage {
-			logger.Infof("Recevied close from client")
+			logger.Info("Recevied close from client")
 			break
 		}
 
 		if mType != websocket.BinaryMessage {
-			logger.Infof("Skipping non-binary message from websocket")
+			logger.Info("Skipping non-binary message from websocket")
 			continue
 		}
 
