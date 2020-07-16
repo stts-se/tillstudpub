@@ -119,6 +119,13 @@ window.onload = function () {
         return;
     }
 
+    if (navigator.userAgent.toLowerCase().includes("firefox")) {
+        localStorage.setItem("mode", "scriptprocessor");
+    } else {
+        localStorage.setItem("mode", "audioworklet");
+    }
+    console.log("Streaming mode for user agent " + navigator.userAgent + " : " + localStorage.getItem("mode"));
+    
     let selects = document.getElementsByTagName("select");
     for (let i = 0; i < selects.length; i++) {
         let select = selects[i];
