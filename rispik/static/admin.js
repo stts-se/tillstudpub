@@ -38,6 +38,10 @@ function logMessage(source, title, text, timestamp) {
     }
 }
 
+document.getElementById("clear").addEventListener("click", function() {
+    messageList.innerHTML = '';
+});
+
 window.onload = function () {
     if (!typeof (Storage)) {
         alert("Your browser does not support localStorage.");
