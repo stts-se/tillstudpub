@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/cryptix/wav"
 	"github.com/gorilla/websocket"
@@ -79,12 +80,17 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 		mType, bts, err := audioStreamSender.ReadMessage()
 		if err != nil {
 			// TODO: This seems to happen everytime the websocket is closed, but everything works fine? Are we not sending a proper close?
+			msg := fmt.Sprintf("%v", err)
+			if strings.Contains(msg, "close 1000") {
+				logger.Info("Received implicit close from client")
+				break
+			}
 			logger.Errorf("Could not read from websocket: %v", err)
 			break
 		}
 
 		if mType == websocket.CloseMessage { // this never happens
-			logger.Info("Recevied close from client")
+			logger.Info("Recevied explicit close from client")
 			break
 		}
 

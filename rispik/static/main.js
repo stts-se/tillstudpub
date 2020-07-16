@@ -286,7 +286,7 @@ function recStop() {
     document.getElementById("recstart").disabled = false;
 
     //recorder.stop();
-    audioWS.close();
+    audioWS.close(1000), "Connection close by client user";
     audioWS = null;
     streamingAPI.reset();
 };
