@@ -272,6 +272,11 @@ document.getElementById("recstop").addEventListener("click", function () {
     recStop();
 });
 
+document.getElementById("filelisting").addEventListener("click", function() {
+    window.open( 
+        "file_listing.html", "_blank"); 
+})
+
 function recStop() {
     //context.suspend();
     if (recorder === null) {
