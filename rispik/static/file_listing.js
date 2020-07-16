@@ -5,6 +5,9 @@ window.onload = function() {
     btn.addEventListener('click', function(evt) {
 
 
+	let table = document.getElementById("file_listing_table");	    
+	table.innerHTML = '';
+	
 	console.log("file_list_button clicked");
 	
 	let wsURL = "ws://" + window.location.host + "/ws/list_audio_files_for_user";
@@ -28,6 +31,18 @@ window.onload = function() {
 	fileListWS.onmessage = function(evt) {
 	    let resp = JSON.parse(evt.data);
 	    console.log("got file info from server", resp);
+
+	    let tr = document.createElement("tr"); 
+	    let td1 = document.createElement("td");
+	    td1.innerHTML = resp.uuid;
+	    
+	    let td2 = document.createElement("td"); 
+	    td2.innerHTML = resp.timestamp;
+
+	    tr.appendChild(td1);
+	    tr.appendChild(td2);
+	    table.appendChild(tr);
+	    
 	};
     });
 };
