@@ -54,7 +54,13 @@ window.onload = function() {
 	    table.appendChild(tr);
 	    
 	};
-    });
+
+	
+    }
+
+			 
+			);
+    btn.click();
 };
 
 
