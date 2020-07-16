@@ -83,7 +83,7 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 			break
 		}
 
-		if mType == websocket.CloseMessage {
+		if mType == websocket.CloseMessage { // this never happens
 			logger.Info("Recevied close from client")
 			break
 		}
