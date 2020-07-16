@@ -78,19 +78,18 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 	for {
 		mType, bts, err := audioStreamSender.ReadMessage()
 		if err != nil {
-			if err != nil {
-				logger.Errorf("Could not read from websocket: %v", err)
-				break
-			}
+			// is this just because the audio stream is closed?
+			logger.Errorf("Could not read from websocket: %v", err)
+			break
 		}
 
 		if mType == websocket.CloseMessage {
-			logger.Infof("Recevied close from client")
+			logger.Info("Recevied close from client")
 			break
 		}
 
 		if mType != websocket.BinaryMessage {
-			logger.Infof("Skipping non-binary message from websocket")
+			logger.Info("Skipping non-binary message from websocket")
 			continue
 		}
 
