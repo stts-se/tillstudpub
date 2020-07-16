@@ -257,6 +257,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/ws/list_audio_files_for_user", listAudioFilesForUser)
+	r.HandleFunc("/get_audio_for_uuid/{uuid}", getAudio)
 
 	r.HandleFunc("/ws/register", openDataWebsocket)
 	r.HandleFunc("/ws/admin", openAdminWebsocket)

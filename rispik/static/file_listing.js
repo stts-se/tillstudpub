@@ -63,9 +63,28 @@ function getAudio(uuid) {
 
     const baseURLWithProtocol = window.location.protocol + '//' + baseURL;
     fetch(baseURLWithProtocol + "/get_audio_for_uuid/" + uuid)
-	.then(response => response.json())
-	.then(data => {
-	    let base64 = data;
+	.then(response => response.text())
+	.then(base64 => {
+	    //let wav = atob(base64);
+	    //console.log(wav);
+	    
+	    // https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript#16245768
+	    let byteCharacters = atob(base64);  
+	    
+	    var byteNumbers = new Array(byteCharacters.length);
+	    for (var i = 0; i < byteCharacters.length; i++) {
+		byteNumbers[i] = byteCharacters.charCodeAt(i);
+	    }
+	    var byteArray = new Uint8Array(byteNumbers);
+	    
+	    let blob = new Blob([byteArray], {'type' : 'audio/wav'});
+	    let audio = document.getElementById("audio_element");
+	    audio.src = URL.createObjectURL(blob);
+	    console.log("getAudio onloadend")
+	    audio.play();
+	    
+
+	    
 	}
 	     )
 	.catch(msg => {
