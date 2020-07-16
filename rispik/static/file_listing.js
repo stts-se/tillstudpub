@@ -58,11 +58,17 @@ window.onload = function () {
 			let td0 = document.createElement("td");
 			let audioEle = document.createElement("audio");
 			td0.appendChild(audioEle);
+
 			let playPause = document.createElement("span");
 			playPause.innerHTML = "&#x25b6;";
 			playPause.style["font-family"] = "times new roman, times, serif";
+			if (resp.size <= 44) { // 44 is the size of the wav header
+				disablePlayPause(playPause, "Empty audio file");
+			}
 			td0.appendChild(playPause);
+
 			tr.appendChild(td0);
+
 			let duration = document.createElement("span");
 			td0.appendChild(duration);
 
@@ -97,6 +103,15 @@ window.onload = function () {
 };
 
 
+function disablePlayPause(playPause, info) {
+	playPause.classList.add("disabled");
+	playPause.setAttribute("disabled", "disabled");
+	playPause.style["background-color"] = "inherit";
+	playPause.style["width"] = "100%";
+	playPause.innerHTML = "&#x2639;";
+	playPause.title = info;
+}
+
 function getAudio(uuid, audioEle, playPause, duration) {
 	//console.log(uuid);
 
@@ -118,19 +133,14 @@ function getAudio(uuid, audioEle, playPause, duration) {
 
 			let blob = new Blob([byteArray], { 'type': 'audio/wav' });
 			audioEle.src = URL.createObjectURL(blob);
-			
+
 			let promise = audioEle.play();
 			if (promise !== undefined) {
 				promise.then(_ => {
 					// All is fine
 				}).catch(error => {
-						console.log("Couldn't play audio id " + uuid, error);
-						playPause.classList.add("disabled");
-						playPause.setAttribute("disabled", "disabled");
-						playPause.style["background-color"] = "inherit";
-						playPause.style["width"] = "100%";
-						playPause.innerHTML = "&#x2639;";
-						playPause.title= "Corrupted audio file";
+					console.log("Couldn't play audio id " + uuid, error);
+					disablePlayPause(playPause, "Corrupted audio file");
 				});
 			}
 
