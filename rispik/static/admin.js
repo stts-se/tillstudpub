@@ -18,6 +18,8 @@ function timestampYYYYMMDDHHMMSS(date) {
     return yyyy + "-" + mo + "-" + da + " " + hh + ":" + mi + ":" + ss;
 }
 
+let messageList = document.getElementById("message_list");
+
 function logMessage(source, title, text, timestamp) {
     if (!timestamp) {
         timestamp = timestampYYYYMMDDHHMMSS(new Date());
@@ -25,7 +27,15 @@ function logMessage(source, title, text, timestamp) {
     console.log("logMessage", timestamp, source, title, text);
     let p = document.createElement("p");
     p.innerText = timestamp + " " + source + " " + title + ": " + text;
-    document.getElementById("message_list").appendChild(p);
+    messageList.appendChild(p);
+
+    let maxCount = document.getElementById("max_count").value;
+    let messages = messageList.children;
+    if (maxCount && maxCount !== "" && messages.length > maxCount) {
+        for (let i=0;i<messages.length-maxCount;i++) {
+            messageList.removeChild(messages[i]);
+        }
+    }
 }
 
 window.onload = function () {

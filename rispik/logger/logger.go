@@ -23,6 +23,12 @@ func AddWSListener(conn *websocket.Conn) {
 	wsListeners[conn] = true
 }
 
+func removeWSListener(conn *websocket.Conn) {
+	wsMux.Lock()
+	defer wsMux.Unlock()
+	delete(wsListeners, conn)
+}
+
 const (
 	debug   = "debug"
 	error   = "error"
@@ -83,7 +89,7 @@ func Fatalf(format string, v ...interface{}) {
 }
 
 func log0(level, message string) {
-	timestamp := time.Now().Format("2006-01-02 15:04:06")
+	timestamp := time.Now().Format("2006-01-02 15:04:05")
 	log.Printf("%s %s: %s", timestamp, level, message)
 
 	logEntry := protocol.LogEntry{Timestamp: timestamp, Level: level, Message: message}
@@ -96,7 +102,7 @@ func log0(level, message string) {
 	for conn := range wsListeners {
 		if err := conn.WriteMessage(websocket.TextMessage, jsn); err != nil {
 			log.Printf("%s: couldn't log to websocket connection: %v", error, err)
-			return
+			removeWSListener(conn)
 		}
 	}
 }
