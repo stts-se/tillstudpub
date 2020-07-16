@@ -37,8 +37,8 @@ window.onload = function () {
 			console.log("got file info from server", resp);
 
 			let tr = document.createElement("tr");
-			tr.setAttribute("id", resp.handshake.uuid);
-			tr.setAttribute("title", "uuid: " + resp.handshake.uuid);
+			tr.setAttribute("id", resp.audiometadata.uuid);
+			tr.setAttribute("title", "uuid: " + resp.audiometadata.uuid);
 
 			let td1 = document.createElement("td");
 			td1.innerHTML = resp.project;
@@ -46,12 +46,12 @@ window.onload = function () {
 			tr.appendChild(td1);
 
 			let td2 = document.createElement("td");
-			td2.innerHTML = resp.handshake.session;
+			td2.innerHTML = resp.audiometadata.session;
 			//td2.classList.add("btn");
 			tr.appendChild(td2);
 
 			let td3 = document.createElement("td");
-			td3.innerHTML = resp.handshake.timestamp;
+			td3.innerHTML = resp.audiometadata.timestamp;
 			//td2.classList.add("btn");
 			tr.appendChild(td3);
 

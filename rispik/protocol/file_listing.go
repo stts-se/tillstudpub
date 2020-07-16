@@ -9,8 +9,8 @@ type FileListingRequest struct {
 
 //FileInfo  is sent by server to client when listing audio files on server
 type FileInfo struct {
-	Handshake *Handshake `json:"handshake"`
-	Size      int        `json:"size"`
+	AudioMetaData *AudioMetaData `json:"audiometadata"`
+	Size          int            `json:"size"`
 }
 
 // FileInfo is sent by server to client when listing audio files on server.
