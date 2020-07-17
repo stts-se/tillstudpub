@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -75,7 +76,7 @@ func listAudioFilesForUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getFileList(r protocol.FileListingRequest) ([]protocol.Handshake, error) {
+func getFileList(r protocol.FileListingRequest) ([]protocol.FileInfo, error) {
 	res, err := listAudioFiles(outputDir)
 	if err != nil {
 		return res, err
@@ -88,8 +89,8 @@ func getFileList(r protocol.FileListingRequest) ([]protocol.Handshake, error) {
 	return res, nil
 }
 
-func listAudioFiles(dataPath string) ([]protocol.Handshake, error) {
-	var res []protocol.Handshake
+func listAudioFiles(dataPath string) ([]protocol.FileInfo, error) {
+	var res []protocol.FileInfo
 
 	jsonFiles, err := filepath.Glob(filepath.Join(outputDir, "*.json"))
 	if err != nil {
@@ -106,28 +107,35 @@ func listAudioFiles(dataPath string) ([]protocol.Handshake, error) {
 			return res, fmt.Errorf("failed to read json file : %v", err)
 		}
 
-		handShake := protocol.Handshake{}
-		err = json.Unmarshal(jsonBts, &handShake)
+		metaData := protocol.AudioMetaData{}
+		err = json.Unmarshal(jsonBts, &metaData)
 		if err != nil {
 			return res, fmt.Errorf("failed to unmarshal json file : %v", err)
 		}
 
-		//logger.Infof("%#v", handShake)
-		res = append(res, handShake)
+		//logger.Infof("%#v", metaData)
+
+		wavFile := fmt.Sprintf("%s.wav", strings.TrimSuffix(jsf, ".json"))
+		fi, err := os.Stat(wavFile)
+		if err != nil {
+			return res, fmt.Errorf("failed to retreive wav file size : %v", err)
+		}
+		size := fi.Size()
+		res = append(res, protocol.FileInfo{AudioMetaData: &metaData, Size: int(size)})
 	}
 
 	var sorter = func(i, j int) bool {
-		return res[i].Timestamp < res[j].Timestamp
+		return res[i].AudioMetaData.Timestamp > res[j].AudioMetaData.Timestamp
 	}
 	sort.Slice(res, sorter)
 
 	return res, nil
 }
 
-func filterUser(userName string, files []protocol.Handshake) []protocol.Handshake {
-	var res []protocol.Handshake
+func filterUser(userName string, files []protocol.FileInfo) []protocol.FileInfo {
+	var res []protocol.FileInfo
 	for _, f := range files {
-		if strings.ToLower(f.UserName) == strings.ToLower(userName) {
+		if strings.ToLower(f.AudioMetaData.UserName) == strings.ToLower(userName) {
 			res = append(res, f)
 		}
 	}
@@ -135,10 +143,10 @@ func filterUser(userName string, files []protocol.Handshake) []protocol.Handshak
 	return res
 }
 
-func filterProject(projectName string, files []protocol.Handshake) []protocol.Handshake {
-	var res []protocol.Handshake
+func filterProject(projectName string, files []protocol.FileInfo) []protocol.FileInfo {
+	var res []protocol.FileInfo
 	for _, f := range files {
-		if strings.ToLower(f.Project) == strings.ToLower(projectName) {
+		if strings.ToLower(f.AudioMetaData.Project) == strings.ToLower(projectName) {
 			res = append(res, f)
 		}
 	}
@@ -146,10 +154,10 @@ func filterProject(projectName string, files []protocol.Handshake) []protocol.Ha
 	return res
 }
 
-func filterSession(sessionName string, files []protocol.Handshake) []protocol.Handshake {
-	var res []protocol.Handshake
+func filterSession(sessionName string, files []protocol.FileInfo) []protocol.FileInfo {
+	var res []protocol.FileInfo
 	for _, f := range files {
-		if strings.ToLower(f.Session) == strings.ToLower(sessionName) {
+		if strings.ToLower(f.AudioMetaData.Session) == strings.ToLower(sessionName) {
 			res = append(res, f)
 		}
 	}

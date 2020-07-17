@@ -37,8 +37,8 @@ window.onload = function () {
 			console.log("got file info from server", resp);
 
 			let tr = document.createElement("tr");
-			tr.setAttribute("id", resp.uuid);
-			tr.setAttribute("title", "uuid: " + resp.uuid);
+			tr.setAttribute("id", resp.audiometadata.uuid);
+			tr.setAttribute("title", "uuid: " + resp.audiometadata.uuid);
 
 			let td1 = document.createElement("td");
 			td1.innerHTML = resp.project;
@@ -46,25 +46,33 @@ window.onload = function () {
 			tr.appendChild(td1);
 
 			let td2 = document.createElement("td");
-			td2.innerHTML = resp.session;
+			td2.innerHTML = resp.audiometadata.session;
 			//td2.classList.add("btn");
 			tr.appendChild(td2);
 
 			let td3 = document.createElement("td");
-			td3.innerHTML = resp.timestamp;
+			td3.innerHTML = resp.audiometadata.timestamp;
 			//td2.classList.add("btn");
 			tr.appendChild(td3);
 
 			let td0 = document.createElement("td");
 			let audioEle = document.createElement("audio");
 			td0.appendChild(audioEle);
+
 			let playPause = document.createElement("span");
 			playPause.innerHTML = "&#x25b6;";
 			playPause.style["font-family"] = "times new roman, times, serif";
+			if (resp.size <= 44) { // 44 is the size of the wav header
+				disablePlayPause(playPause, "Empty audio file");
+			}
 			td0.appendChild(playPause);
+
 			tr.appendChild(td0);
 
-			audioEle.onended = function() {
+			let duration = document.createElement("span");
+			td0.appendChild(duration);
+
+			audioEle.onended = function () {
 				playPause.innerHTML = "&#x25b6;";
 			};
 
@@ -72,7 +80,7 @@ window.onload = function () {
 				if (audioEle.paused || audioEle.ended) {
 					playPause.innerHTML = "&#10074;&#10074;";
 					let uuid = tr.getAttribute("id");
-					getAudio(uuid, audioEle);
+					getAudio(uuid, audioEle, playPause, duration);
 					//audioEle.play();
 				}
 				else {
@@ -95,8 +103,17 @@ window.onload = function () {
 };
 
 
-function getAudio(uuid, audioEle) {
-	console.log(uuid);
+function disablePlayPause(playPause, info) {
+	playPause.classList.add("disabled");
+	playPause.setAttribute("disabled", "disabled");
+	playPause.style["background-color"] = "inherit";
+	playPause.style["width"] = "100%";
+	playPause.innerHTML = "&#x2639;";
+	playPause.title = info;
+}
+
+function getAudio(uuid, audioEle, playPause, duration) {
+	//console.log(uuid);
 
 	const baseURLWithProtocol = window.location.protocol + '//' + baseURL;
 	fetch(baseURLWithProtocol + "/get_audio_for_uuid/" + uuid)
@@ -115,15 +132,28 @@ function getAudio(uuid, audioEle) {
 			var byteArray = new Uint8Array(byteNumbers);
 
 			let blob = new Blob([byteArray], { 'type': 'audio/wav' });
-			//let audio = document.getElementById("audio_element");
 			audioEle.src = URL.createObjectURL(blob);
-			console.log("getAudio onloadend")
-			audioEle.play();
 
+			let promise = audioEle.play();
+			if (promise !== undefined) {
+				promise.then(_ => {
+					// All is fine
+				}).catch(error => {
+					console.log("Couldn't play audio id " + uuid, error);
+					disablePlayPause(playPause, "Corrupted audio file");
+				});
+			}
 
-
-		}
-		)
+			audioEle.onloadedmetadata = function () {
+				//console.log("duration for audio " + uuid, audioEle.duration);
+				let dRound = audioEle.duration.toFixed(2);
+				duration.innerHTML = "(" + dRound + "s)";
+				// if (audioEle.duration === 0) {
+				// 	playPause.classList.add("disabled");
+				// 	playPause.setAttribute("disabled", "disabled");
+				// }
+			};
+		})
 		.catch(msg => {
 			console.log("ERROR", msg);
 		});

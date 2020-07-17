@@ -8,6 +8,7 @@ import (
 
 	"github.com/cryptix/wav"
 	"github.com/gorilla/websocket"
+
 	"github.com/stts-se/tillstudpub/rispik/logger"
 	"github.com/stts-se/tillstudpub/rispik/protocol"
 )
@@ -38,7 +39,7 @@ func createWavHeader(audioConfig *protocol.AudioConfig) wav.File {
 	return res
 }
 
-func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websocket.Conn) {
+func receiveAudioStream(metaData *protocol.AudioMetaData, audioStreamSender *websocket.Conn) {
 	defer audioStreamSender.Close() // ??
 	var err error
 
@@ -47,7 +48,7 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 	var rawWriter bufferedFileWriter
 	var audioRawFileName string
 	if *cfg.saveRaw {
-		audioRawFileName = filepath.Join(outputDir, fmt.Sprintf("%s.raw", handshake.UUID.String()))
+		audioRawFileName = filepath.Join(outputDir, fmt.Sprintf("%s.raw", metaData.UUID.String()))
 		rawWriter, err = newBufferedFileWriter(audioRawFileName)
 		if err != nil {
 			logger.Errorf("Couldn't open raw audio file for writing: %v", err)
@@ -58,8 +59,8 @@ func receiveAudioStream(handshake *protocol.Handshake, audioStreamSender *websoc
 	var wavWriter *wav.Writer
 	var audioWavFileName string
 	if !*cfg.noWav {
-		wavHeader := createWavHeader(handshake.AudioConfig)
-		audioWavFileName = filepath.Join(outputDir, fmt.Sprintf("%s.wav", handshake.UUID.String()))
+		wavHeader := createWavHeader(metaData.AudioConfig)
+		audioWavFileName = filepath.Join(outputDir, fmt.Sprintf("%s.wav", metaData.UUID.String()))
 
 		wavFile, err := os.Create(audioWavFileName)
 		if err != nil {

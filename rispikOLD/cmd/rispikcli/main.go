@@ -117,7 +117,7 @@ func readMessageFromSocket(socket *websocket.Conn) (protocol.Message, error) {
 func doHandshakes(c *websocket.Conn) error {
 	msg := protocol.Message{
 		Label: "handshake",
-		Handshake: &protocol.Handshake{
+		Handshake: &protocol.AudioMetaData{
 			AudioConfig: &protocol.AudioConfig{
 				SampleRate:   *sampleRate,
 				Encoding:     *encoding,
@@ -133,17 +133,17 @@ func doHandshakes(c *websocket.Conn) error {
 		},
 	}
 	if err := writeMessageToSocket(msg, c); err != nil {
-		return fmt.Errorf("failed to write handshake to server %v : %v", msg, err)
+		return fmt.Errorf("failed to write metadata to server %v : %v", msg, err)
 	}
-	log.Println("Waiting for server to return handshake")
+	log.Println("Waiting for server to return metadata")
 	msg, err := readMessageFromSocket(c)
 	if err != nil {
-		return fmt.Errorf("failed to read handshake from server : %v", err)
+		return fmt.Errorf("failed to read metadata from server : %v", err)
 	}
 	if msg.Error != "" {
 		return fmt.Errorf("got error from server : %s", msg.Error)
 	}
-	log.Println("Server handshake received")
+	log.Println("Server metadata received")
 	return nil
 }
 

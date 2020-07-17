@@ -99,12 +99,12 @@ func openDataWebsocket(w http.ResponseWriter, r *http.Request) {
 	}
 	logger.Infof("Registered audio stream sender socket")
 
-	handshake, err := initialiseStream(conn)
+	metadata, err := initialiseStream(conn)
 	if err != nil {
 		logger.Fatal(err) // TODO
 	}
 
-	go receiveAudioStream(&handshake, conn)
+	go receiveAudioStream(&metadata, conn)
 }
 
 type bufferedFileWriter struct {
@@ -179,10 +179,10 @@ func readMessageFromSocket(socket *websocket.Conn) (protocol.Message, string, er
 	return res, string(bts), nil
 }
 
-func initialiseStream(conn *websocket.Conn) (protocol.Handshake, error) {
+func initialiseStream(conn *websocket.Conn) (protocol.AudioMetaData, error) {
 	logger.Info("Opened audio stream")
 
-	var handshake protocol.Handshake
+	var handshake protocol.AudioMetaData
 	var id uuid.UUID
 	var err error
 	var writer bufferedFileWriter
@@ -197,7 +197,7 @@ func initialiseStream(conn *websocket.Conn) (protocol.Handshake, error) {
 		return handshake, fmt.Errorf("couldn't connect recogniser context : %v", err)
 	}
 
-	// Receive handshake with config/settings, and return handshake confirmation + uuid (or error)
+	// Receive metaData with config/settings, and return metaData confirmation + uuid (or error)
 	msg, js, err := readMessageFromSocket(conn)
 	if err != nil {
 		return handshake, fmt.Errorf("couldn't read from websocket : %v", err)
@@ -215,7 +215,7 @@ func initialiseStream(conn *websocket.Conn) (protocol.Handshake, error) {
 	}
 
 	if err = writer.writeJSON(handshake); err != nil {
-		return handshake, fmt.Errorf("failed to write handshake to file %v : %v", handshake, err)
+		return handshake, fmt.Errorf("failed to write metadata to file %v : %v", handshake, err)
 	}
 	if err := writer.close(); err != nil {
 		return handshake, fmt.Errorf("couldn't save json file : %v", err)
@@ -233,7 +233,7 @@ func initialiseStream(conn *websocket.Conn) (protocol.Handshake, error) {
 	if err != nil {
 		return handshake, fmt.Errorf("received non-handshake message from websocket : %v", err)
 	}
-	logger.Infof("Sent handshake message to client: %s", js)
+	logger.Infof("Sent metadata message to client: %s", js)
 
 	if msg.Error != "" {
 		return handshake, fmt.Errorf("received non-handshake message from websocket : %s", msg.Error)
